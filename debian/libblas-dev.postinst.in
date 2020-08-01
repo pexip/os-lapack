@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+update-alternatives --install /usr/lib/@DEB_HOST_MULTIARCH@/libblas.so libblas.so-@DEB_HOST_MULTIARCH@ \
+                    /usr/lib/@DEB_HOST_MULTIARCH@/blas/libblas.so 10 \
+                    --slave /usr/lib/@DEB_HOST_MULTIARCH@/libblas.a libblas.a-@DEB_HOST_MULTIARCH@ \
+                    /usr/lib/@DEB_HOST_MULTIARCH@/blas/libblas.a \
+                    --slave /usr/include/@DEB_HOST_MULTIARCH@/cblas.h cblas.h-@DEB_HOST_MULTIARCH@ \
+                    /usr/include/@DEB_HOST_MULTIARCH@/cblas-netlib.h \
+                    --slave /usr/lib/@DEB_HOST_MULTIARCH@/pkgconfig/blas.pc \
+                    blas.pc-@DEB_HOST_MULTIARCH@ /usr/lib/@DEB_HOST_MULTIARCH@/pkgconfig/blas-netlib.pc
+
+#DEBHELPER#
+
+exit 0

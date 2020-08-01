@@ -1,0 +1,7 @@
+icamax-izamax-extended-precision.patch
+doxygen-downsize.patch
+makefile-blas-remove-dep.patch
+verbose-tests.patch
+python3.patch
+missing-lapacke-prototypes.patch
+combssq-nan-propagation.patch

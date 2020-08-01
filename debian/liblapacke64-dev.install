@@ -1,0 +1,6 @@
+#!/usr/bin/dh-exec
+
+#LAPACKE/include/*.h usr/include/
+liblapacke64.so usr/lib/${DEB_HOST_MULTIARCH}/
+static-64/liblapacke.a => usr/lib/${DEB_HOST_MULTIARCH}/liblapacke64.a
+LAPACKE/lapacke64.pc usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/

@@ -1,0 +1,16 @@
+TESTING64/*.in usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/EIG/xeigtstc usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/EIG/xeigtstd usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/EIG/xeigtsts usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/EIG/xeigtstz usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstc usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstd usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintsts usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstz usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstds usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstrfc usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstrfd usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstrfs usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstrfz usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+TESTING64/LIN/xlintstzc usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+lapack_testing.py usr/lib/${DEB_HOST_MULTIARCH}/lapack64/

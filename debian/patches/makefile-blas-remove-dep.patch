@@ -1,0 +1,15 @@
+Description: remove the target dependency in order to avoid unnecessary rebuild
+ that would incur FTBFS.
+Author: Mo Zhou
+Last-Update: 20190828
+--- a/BLAS/Makefile
++++ b/BLAS/Makefile
+@@ -9,7 +9,7 @@ blas:
+ 	$(MAKE) -C SRC
+ 
+ .PHONY: blas_testing
+-blas_testing: blas
++blas_testing:
+ 	$(MAKE) -C TESTING run
+ 
+ .PHONY: clean cleanobj cleanlib cleanexe cleantest

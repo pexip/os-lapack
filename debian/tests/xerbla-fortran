@@ -1,0 +1,26 @@
+#!/bin/sh
+set -ue
+cd $AUTOPKGTEST_TMP
+
+DEB_HOST_MULTIARCH=$(dpkg-architecture -q DEB_HOST_MULTIARCH)
+
+# Enforce the BLAS (resp. LAPACK) contained in package libblas3 (resp. liblapack3)
+export LD_LIBRARY_PATH=/usr/lib/${DEB_HOST_MULTIARCH}/blas:/usr/lib/${DEB_HOST_MULTIARCH}/lapack
+
+cat << EOF > tmp.f
+        Program LinearEquations
+        Implicit none
+        Real*4 A(3,3), b(3)
+        integer i, j, pivot(3), ok
+        call SGESV(9, 1, A, 3, pivot, b, 3, ok)
+        end
+
+
+        SUBROUTINE XERBLA(srcname, info)
+        PRINT *,'OVERRIDE SUCCESSFUL'
+        RETURN
+        END
+EOF
+gfortran tmp.f -llapack
+./a.out 2>&1 | grep "OVERRIDE SUCCESSFUL"
+

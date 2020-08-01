@@ -1,0 +1,4 @@
+#!/usr/bin/dh-exec
+
+static-64/libtmglib.a => usr/lib/${DEB_HOST_MULTIARCH}/libtmglib64.a
+libtmglib64.so usr/lib/${DEB_HOST_MULTIARCH}/

@@ -1,0 +1,432 @@
+Source: lapack
+Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+Uploaders: Sébastien Villemot <sebastien@debian.org>,
+           Mo Zhou <lumin@debian.org>,
+Section: libs
+Priority: optional
+Build-Depends: debhelper-compat (= 13),
+               debhelper (>= 12.8~),
+               dh-exec
+Build-Depends-Arch: gfortran,
+                    python3
+Build-Depends-Indep: doxygen,
+                     graphviz, rename
+Standards-Version: 4.5.0
+Vcs-Browser: https://salsa.debian.org/science-team/lapack
+Vcs-Git: https://salsa.debian.org/science-team/lapack.git
+Homepage: http://www.netlib.org/lapack/
+Rules-Requires-Root: no
+
+Package: liblapack3
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Breaks: libatlas3-base (<< 3.10.3-4~),
+        libopenblas-base (<< 0.2.20+ds-3~),
+        liblapack-dev (<< 3.7.1-2~)
+Provides: liblapack.so.3
+Description: Library of linear algebra routines 3 - shared version
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains a shared version of the library.
+
+Package: liblapack64-3
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Provides: liblapack64.so.3
+Description: Library of linear algebra routines 3 - shared version (64bit-index)
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains a shared version of the library.
+ Compiled with Fortran option "-fdefault-integer-8".
+
+Package: liblapacke
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Provides: liblapacke.so.3
+Description: Library of linear algebra routines 3 - C lib shared version
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains the Standard C language library for LAPACK.
+
+Package: liblapacke64
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Provides: liblapacke64.so.3
+Description: Library of linear algebra routines 3 - C lib shared version (64bit-index)
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains the Standard C language library for LAPACK.
+ Compiled with C flag "-DHAVE_LAPACK_CONFIG_H -DLAPACK_ILP64".
+
+Package: liblapacke-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${misc:Depends},
+         liblapacke (= ${binary:Version}),
+         libblas-dev | libblas.so,
+         liblapack-dev | liblapack.so,
+         libtmglib-dev
+Suggests: liblapack-doc
+Breaks: liblapacke (<< 3.8.0-3)
+Replaces: liblapacke (<< 3.8.0-3)
+Description: Library of linear algebra routines 3 () - Headers
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains development files for the C language library for LAPACK,
+ including a static version of the library.
+
+Package: liblapacke64-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${misc:Depends},
+         liblapacke64 (= ${binary:Version}),
+         libblas64-dev | libblas64.so,
+         liblapack64-dev | liblapack64.so,
+         libtmglib64-dev
+Suggests: liblapack-doc
+Description: Library of linear algebra routines 3 - Headers (64bit-index)
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains development files for the C language library for LAPACK,
+ including a static version of the library.
+ Compiled with C flag "-DHAVE_LAPACK_CONFIG_H -DLAPACK_ILP64".
+
+Package: libtmglib3
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: test matrix generators of LAPACK - shared version
+ libtmglib is a component of the LAPACK library, containing routines for
+ generation of input matrices for testing and timing of LAPACK.
+ .
+ This package contains a shared version of the library.
+
+Package: libtmglib64-3
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Description: test matrix generators of LAPACK - shared version (64bit-index)
+ libtmglib is a component of the LAPACK library, containing routines for
+ generation of input matrices for testing and timing of LAPACK.
+ .
+ This package contains a shared version of the library.
+ Compiled with Fortran flag "-fdefault-integer-8".
+
+Package: libtmglib-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${misc:Depends},
+         libtmglib3 (= ${binary:Version}),
+         libblas-dev | libblas.so,
+         liblapack-dev | liblapack.so
+Description: test matrix generators of LAPACK - development files
+ libtmglib is a component of the LAPACK library, containing routines for
+ generation of input matrices for testing and timing of LAPACK.
+ .
+ This package contains development files, including a static version of the
+ library.
+
+Package: libtmglib64-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${misc:Depends},
+         libtmglib64-3 (= ${binary:Version}),
+         libblas64-dev | libblas64.so,
+         liblapack64-dev | liblapack64.so
+Description: test matrix generators of LAPACK - development files (64bit-index)
+ libtmglib is a component of the LAPACK library, containing routines for
+ generation of input matrices for testing and timing of LAPACK.
+ .
+ This package contains development files, including a static version of the
+ library.
+ Compiled with Fortran flag "-fdefault-integer-8".
+
+Package: liblapack-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${misc:Depends},
+         liblapack3 (= ${binary:Version}),
+         libblas-dev | libblas.so
+Suggests: liblapack-doc
+Breaks: libatlas-base-dev (<< 3.10.3-4~),
+        libopenblas-dev (<< 0.2.20+ds-3~),
+        liblapack-pic (<< 3.8.0-3)
+Replaces: liblapack-pic (<< 3.8.0-3)
+Provides: liblapack.so
+Description: Library of linear algebra routines 3 - static version
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains a static version of the library.
+
+Package: liblapack64-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${misc:Depends},
+         liblapack64-3 (= ${binary:Version}),
+         libblas64-dev | libblas64.so
+Suggests: liblapack-doc
+Provides: liblapack64.so
+Description: Library of linear algebra routines 3 - static version (64bit-index)
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains a static version of the library.
+ Compiled with Fortran flag "-fdefault-integer-8".
+
+Package: liblapack-pic
+Architecture: any
+Multi-Arch: same
+Section: oldlibs
+Depends: ${misc:Depends}, liblapack-dev (= ${binary:Version})
+Description: Library of linear algebra routines 3 - transitional
+ This is a dummy transitional package, it can be safely removed.
+
+Package: liblapack-test
+Architecture: any
+Multi-Arch: same
+Section: devel
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Recommends: python3
+Description: Library of linear algebra routines 3 - testing programs
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ These testing programs have been run against the
+ shared library in the lapack package.  The results have been
+ collected in the files test_results.  These
+ programs are provided separately here so that the user can
+ test and compare alternate versions of the lapack libraries,
+ such as those provided by the ATLAS packages, and the lapack
+ package.
+
+Package: liblapack64-test
+Architecture: any
+Multi-Arch: same
+Section: devel
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
+Recommends: python3
+Description: Library of linear algebra routines 3 - testing programs (64bit-index)
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ These testing programs have been run against the
+ shared library in the lapack package.  The results have been
+ collected in the files test_results.  These
+ programs are provided separately here so that the user can
+ test and compare alternate versions of the lapack libraries,
+ such as those provided by the ATLAS packages, and the lapack
+ package.
+ .
+ Compiled with Fortran option "-fdefault-integer-8".
+
+Package: liblapack-doc
+Architecture: all
+Multi-Arch: foreign
+Section: doc
+Depends: ${misc:Depends}
+Description: Library of linear algebra routines 3 - documentation
+ LAPACK version 3.X is a comprehensive FORTRAN library that does
+ linear algebra operations including matrix inversions, least
+ squared solutions to linear sets of equations, eigenvector
+ analysis, singular value decomposition, etc. It is a very
+ comprehensive and reputable package that has found extensive
+ use in the scientific community.
+ .
+ This package contains:
+  - manpages of BLAS and LAPACK routines,
+  - the Lapack User's Guide manual (in HTML),
+  - the manual for the LAPACKE C interface to LAPACK (in PDF).
+
+Package: libblas3
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Breaks: libatlas3-base (<< 3.10.3-4~),
+        libopenblas-base (<< 0.2.20+ds-3~),
+        libblas-dev (<< 3.7.1-2~)
+Provides: libblas.so.3
+Description: Basic Linear Algebra Reference implementations, shared library
+ BLAS (Basic Linear Algebra Subroutines) is a set of efficient
+ routines for most of the basic vector and matrix operations.
+ They are widely used as the basis for other high quality linear
+ algebra software, for example lapack and linpack.  This
+ implementation is the Fortran 77 reference implementation found
+ at netlib.
+ .
+ This package contains a shared version of the library.
+
+Package: libblas64-3
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Provides: libblas64.so.3
+Description: Basic Linear Algebra Reference implementations, shared library (64bit-index)
+ BLAS (Basic Linear Algebra Subroutines) is a set of efficient
+ routines for most of the basic vector and matrix operations.
+ They are widely used as the basis for other high quality linear
+ algebra software, for example lapack and linpack.  This
+ implementation is the Fortran 77 reference implementation found
+ at netlib.
+ .
+ This package contains a shared version of the library.
+ Compiled with Fortran option "-fdefault-integer-8".
+
+Package: libblas-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${misc:Depends}, libblas3 (= ${binary:Version}),
+Suggests: liblapack-doc
+Breaks: libatlas-base-dev (<< 3.10.3-4~),
+        libopenblas-dev (<< 0.2.20+ds-3~)
+Provides: libblas.so
+Description: Basic Linear Algebra Subroutines 3, static library
+ This package is a binary incompatible upgrade to the blas-dev
+ package. Several minor changes to the C interface have been
+ incorporated.
+ .
+ BLAS (Basic Linear Algebra Subroutines) is a set of efficient
+ routines for most of the basic vector and matrix operations.
+ They are widely used as the basis for other high quality linear
+ algebra software, for example lapack and linpack.  This
+ implementation is the Fortran 77 reference implementation found
+ at netlib.
+ .
+ This package contains a static version of the library.
+
+Package: libblas64-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: libblas64-3 (= ${binary:Version}), ${misc:Depends}
+Suggests: liblapack-doc
+Provides: libblas64.so
+Description: Basic Linear Algebra Subroutines 3, static library (64bit-index)
+ This package is a binary incompatible upgrade to the blas-dev
+ package. Several minor changes to the C interface have been
+ incorporated.
+ .
+ BLAS (Basic Linear Algebra Subroutines) is a set of efficient
+ routines for most of the basic vector and matrix operations.
+ They are widely used as the basis for other high quality linear
+ algebra software, for example lapack and linpack.  This
+ implementation is the Fortran 77 reference implementation found
+ at netlib.
+ .
+ This package contains a static version of the library.
+ Compiled with Fortran option "-fdefault-integer-8".
+
+Package: libblas-test
+Architecture: any
+Multi-Arch: same
+Section: devel
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: Basic Linear Algebra Subroutines 3, testing programs
+ BLAS (Basic Linear Algebra Subroutines) is a set of efficient
+ routines for most of the basic vector and matrix operations.
+ They are widely used as the basis for other high quality linear
+ algebra software, for example lapack and linpack.  This
+ implementation is the Fortran 77 reference implementation found
+ at netlib.
+ .
+ This package contains a set of programs which test the integrity of an
+ installed blas-compatible shared library. These programs may therefore be used
+ to test the libraries provided by the blas package as well as those provided
+ by the libatlas3-base and libopenblas-base packages. The programs are
+ dynamically linked -- one can explicitly select a library to test by setting
+ the libblas.so.3 alternative, or by using the LD_LIBRARY_PATH or LD_PRELOAD
+ environment variables. Likewise, one can display the library selected using
+ the ldd program in an identical environment.
+
+Package: libblas64-test
+Architecture: any
+Multi-Arch: same
+Section: devel
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
+Description: Basic Linear Algebra Subroutines 3, testing programs (64bit-index)
+ BLAS (Basic Linear Algebra Subroutines) is a set of efficient
+ routines for most of the basic vector and matrix operations.
+ They are widely used as the basis for other high quality linear
+ algebra software, for example lapack and linpack.  This
+ implementation is the Fortran 77 reference implementation found
+ at netlib.
+ .
+ This package contains a set of programs which test the integrity of an
+ installed blas-compatible shared library. These programs may therefore be used
+ to test the libraries provided by the blas package as well as those provided
+ by the libatlas3-base and libopenblas-base packages. The programs are
+ dynamically linked -- one can explicitly select a library to test by setting
+ the libblas.so.3 alternative, or by using the LD_LIBRARY_PATH or LD_PRELOAD
+ environment variables. Likewise, one can display the library selected using
+ the ldd program in an identical environment.
+ .
+ Compiled with Fortran option "-fdefault-integer-8".

@@ -1,0 +1,23 @@
+Description: Fix i{c,z}amax behavior on any-i386 and m68k
+ On arches with extended precision (any-i386 and m68k), the icamax and izamax
+ routines must be compiled with -ffloat-store, in order to avoid the extra
+ precision bits which make the test fails.
+ .
+ The FFLAGS_FLOAT_STORE variable is set by debian/rules.
+Author: Sébastien Villemot <sebastien@debian.org>
+Forwarded: not-needed
+Last-Update: 2015-12-24
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/BLAS/SRC/Makefile
++++ b/BLAS/SRC/Makefile
+@@ -169,3 +169,9 @@ cleanobj:
+ 	rm -f *.o
+ cleanlib:
+ 	#rm -f $(BLASLIB)  # May point to a system lib, e.g. -lblas
++
++icamax.o: icamax.f
++	$(FC) $(FFLAGS) $(FFLAGS_FLOAT_STORE) -c $< -o $@
++
++izamax.o: izamax.f
++	$(FC) $(FFLAGS) $(FFLAGS_FLOAT_STORE) -c $< -o $@

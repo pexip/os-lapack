@@ -1,0 +1,8 @@
+#!/usr/bin/dh-exec
+
+libblas.so usr/lib/${DEB_HOST_MULTIARCH}/blas/
+static-32/libblas.a usr/lib/${DEB_HOST_MULTIARCH}/blas/
+CBLAS/include/cblas.h => usr/include/${DEB_HOST_MULTIARCH}/cblas-netlib.h
+CBLAS/include/cblas_mangling.h usr/include/${DEB_HOST_MULTIARCH}/
+CBLAS/include/cblas_f77.h usr/include/${DEB_HOST_MULTIARCH}/
+BLAS/blas-netlib.pc usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/

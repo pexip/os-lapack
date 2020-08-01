@@ -1,0 +1,7 @@
+Document: liblapack-doc.lapacke
+Title: The LAPACKE C interface to LAPACK
+Section: Programming
+
+Format: PDF
+Files: /usr/share/doc/liblapack-dev/lapacke.pdf.gz
+

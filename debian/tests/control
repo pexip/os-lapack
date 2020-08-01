@@ -1,0 +1,31 @@
+Tests: xerbla-fortran
+Depends: liblapack-dev, gfortran
+Restrictions: superficial
+
+Tests: xerbla-c
+Depends: liblapacke-dev, build-essential
+Restrictions: superficial
+
+Tests: blas-testsuite
+# gcc is needed for dpkg-architecture
+Depends: libblas3, libblas-test, gcc
+# Allow stderr for at least i386 (see #833567)
+Restrictions: allow-stderr
+
+Tests: lapack-testsuite
+# gcc is needed for dpkg-architecture (see #875671)
+Depends: libblas3, liblapack3, liblapack-test, python3, gcc
+
+Tests: blas64-testsuite
+Depends:
+ libblas64-3 [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
+ libblas64-test [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
+ gcc, dpkg-dev
+Restrictions: allow-stderr, skippable
+
+Tests: lapack64-testsuite
+Depends: libblas64-3 [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
+ liblapack64-3 [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
+ liblapack64-test [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
+ python3, gcc, dpkg-dev
+Restrictions: allow-stderr, skippable

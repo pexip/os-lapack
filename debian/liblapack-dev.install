@@ -1,0 +1,4 @@
+liblapack.so usr/lib/${DEB_HOST_MULTIARCH}/lapack/
+static-32/liblapack.a usr/lib/${DEB_HOST_MULTIARCH}/lapack/
+lapack-netlib.pc  /usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/
+pic32/liblapack_pic.a usr/lib/${DEB_HOST_MULTIARCH}/

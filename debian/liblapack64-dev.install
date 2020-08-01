@@ -1,0 +1,6 @@
+#!/usr/bin/dh-exec
+
+liblapack64.so usr/lib/${DEB_HOST_MULTIARCH}/lapack64/
+static-64/liblapack.a => usr/lib/${DEB_HOST_MULTIARCH}/lapack64/liblapack64.a
+lapack64-netlib.pc usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/
+pic64/liblapack_pic.a => usr/lib/${DEB_HOST_MULTIARCH}/liblapack64_pic.a

@@ -1,0 +1,4 @@
+libblas 3 libblas3 | libblas.so.3
+liblapack 3 liblapack3 | liblapack.so.3
+libblas64 3 libblas64-3 | libblas64.so.3
+liblapack64 3 liblapack64-3 | liblapack64.so.3

@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# Run upstream testsuite for BLAS and CBLAS
+
+set -e
+
+DEB_HOST_MULTIARCH=$(dpkg-architecture -q DEB_HOST_MULTIARCH)
+
+# Enforce the BLAS contained in package libblas3
+export LD_LIBRARY_PATH=/usr/lib/${DEB_HOST_MULTIARCH}/blas
+
+PATH=/usr/lib/${DEB_HOST_MULTIARCH}/blas:$PATH
+
+DATADIR=/usr/lib/${DEB_HOST_MULTIARCH}/blas
+
+cd "$AUTOPKGTEST_TMP"
+
+# Test Fortran BLAS
+for p in s d c z
+do
+    xblat1${p} > ${p}blat1.out
+    xblat2${p} < $DATADIR/${p}blat2.in
+    xblat3${p} < $DATADIR/${p}blat3.in
+done
+
+# Test CBLAS
+for p in s d c z
+do
+    x${p}cblat1 > ${p}test1.out
+    x${p}cblat2 < $DATADIR/${p}in2 > ${p}test2.out
+    x${p}cblat3 < $DATADIR/${p}in3 > ${p}test3.out
+done
+
+! grep -q -i fail *.out

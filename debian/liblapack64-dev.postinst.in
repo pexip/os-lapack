@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+update-alternatives --install /usr/lib/@DEB_HOST_MULTIARCH@/liblapack64.so \
+                    liblapack64.so-@DEB_HOST_MULTIARCH@ \
+                    /usr/lib/@DEB_HOST_MULTIARCH@/lapack64/liblapack64.so 10 \
+                    --slave /usr/lib/@DEB_HOST_MULTIARCH@/liblapack64.a \
+                    liblapack64.a-@DEB_HOST_MULTIARCH@ \
+                    /usr/lib/@DEB_HOST_MULTIARCH@/lapack64/liblapack64.a \
+                    --slave /usr/lib/@DEB_HOST_MULTIARCH@/pkgconfig/lapack64.pc \
+                    lapack64.pc-@DEB_HOST_MULTIARCH@ \
+                    /usr/lib/@DEB_HOST_MULTIARCH@/pkgconfig/lapack64-netlib.pc
+
+#DEBHELPER#
+
+exit 0
