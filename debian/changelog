@@ -1,3 +1,9 @@
+lapack (3.9.0-3pexip1) pexip; urgency=medium
+
+  * Prepare Pexip packaging
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Tue, 05 Apr 2022 22:57:07 +0000
+
 lapack (3.9.0-3) unstable; urgency=medium
 
   [ Sébastien Villemot ]

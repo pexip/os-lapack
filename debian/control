@@ -1,6 +1,7 @@
 Source: lapack
-Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
-Uploaders: Sébastien Villemot <sebastien@debian.org>,
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
+XSBC-Pexip-Original-Uploaders: Sébastien Villemot <sebastien@debian.org>,
            Mo Zhou <lumin@debian.org>,
 Section: libs
 Priority: optional
@@ -16,6 +17,7 @@ Vcs-Browser: https://salsa.debian.org/science-team/lapack
 Vcs-Git: https://salsa.debian.org/science-team/lapack.git
 Homepage: http://www.netlib.org/lapack/
 Rules-Requires-Root: no
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ bullseye
 
 Package: liblapack3
 Architecture: any
