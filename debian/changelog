@@ -1,3 +1,10 @@
+lapack (3.9.0-3pexip2) pexip; urgency=medium
+
+  * Move Source package to main
+  * Move Binary packages libblas3 and liblapack3 to main
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Wed, 06 Apr 2022 10:27:21 +0000
+
 lapack (3.9.0-3pexip1) pexip; urgency=medium
 
   * Prepare Pexip packaging
