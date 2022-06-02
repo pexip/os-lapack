@@ -1,3 +1,9 @@
+lapack (3.9.0-3pexip3) pexip; urgency=medium
+
+  * Initial bullseye build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 02 Jun 2022 14:42:22 +0100
+
 lapack (3.9.0-3pexip2) pexip; urgency=medium
 
   * Move Source package to main
