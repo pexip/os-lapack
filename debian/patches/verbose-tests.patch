@@ -2,8 +2,8 @@ Description: sed -i -e 's#\(>\)\s*\($@\)\s*\(2>&1\)#\3 | tee \2#g' TESTING/Makef
  Make the tests verbose (printing something to the screen) so that they
  won't timeout on buildd.
 Author: Mo Zhou
-Date: see git blame
-Forward: no need.
+Last-Update: 2019-09-13
+Forwarded: not-needed
 --- a/TESTING/Makefile
 +++ b/TESTING/Makefile
 @@ -158,61 +158,61 @@ complex16proto: $(ZLINTSTPROTO)

@@ -73,17 +73,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup aux_blas
 *
 *  =====================================================================
       SUBROUTINE XERBLA_ARRAY(SRNAME_ARRAY, SRNAME_LEN, INFO)
 *
-*  -- Reference BLAS level1 routine (version 3.7.0) --
+*  -- Reference BLAS level1 routine --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER SRNAME_LEN, INFO
@@ -108,7 +105,7 @@
       EXTERNAL XERBLA
 *     ..
 *     .. Executable Statements ..
-      SRNAME = ''
+      SRNAME = ' '
       DO I = 1, MIN( SRNAME_LEN, LEN( SRNAME ) )
          SRNAME( I:I ) = SRNAME_ARRAY( I )
       END DO
@@ -116,4 +113,7 @@
       CALL XERBLA( SRNAME, INFO )
 
       RETURN
+*
+*     End of XERBLA_ARRAY
+*
       END

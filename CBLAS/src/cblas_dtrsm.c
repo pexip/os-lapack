@@ -11,9 +11,9 @@
 #include "cblas_f77.h"
 void cblas_dtrsm(const CBLAS_LAYOUT layout, const CBLAS_SIDE Side,
                  const CBLAS_UPLO Uplo, const CBLAS_TRANSPOSE TransA,
-                 const CBLAS_DIAG Diag, const int M, const int N,
-                 const double alpha, const double  *A, const int lda,
-                 double  *B, const int ldb)
+                 const CBLAS_DIAG Diag, const CBLAS_INT M, const CBLAS_INT N,
+                 const double alpha, const double  *A, const CBLAS_INT lda,
+                 double  *B, const CBLAS_INT ldb)
 
 {
    char UL, TA, SD, DI;

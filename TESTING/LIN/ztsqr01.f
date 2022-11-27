@@ -77,16 +77,13 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *  =====================================================================
       SUBROUTINE ZTSQR01(TSSW, M, N, MB, NB, RESULT)
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *     .. Scalar Arguments ..
       CHARACTER         TSSW
@@ -99,8 +96,9 @@
 *     ..
 *     .. Local allocatable arrays
       COMPLEX*16, ALLOCATABLE :: AF(:,:), Q(:,:),
-     $  R(:,:), RWORK(:), WORK( : ), T(:),
+     $  R(:,:), WORK( : ), T(:),
      $  CF(:,:), DF(:,:), A(:,:), C(:,:), D(:,:), LQ(:,:)
+      DOUBLE PRECISION, ALLOCATABLE :: RWORK(:)
 *
 *     .. Parameters ..
       DOUBLE PRECISION ZERO

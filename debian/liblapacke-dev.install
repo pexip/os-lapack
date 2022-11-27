@@ -1,4 +1,4 @@
 LAPACKE/include/*.h usr/include/
-LAPACKE/lapacke.pc  /usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/
+LAPACKE/lapacke.pc  usr/lib/${DEB_HOST_MULTIARCH}/pkgconfig/
 liblapacke.so usr/lib/${DEB_HOST_MULTIARCH}/
 static-32/liblapacke.a usr/lib/${DEB_HOST_MULTIARCH}/

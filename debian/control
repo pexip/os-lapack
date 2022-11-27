@@ -1,20 +1,20 @@
 Source: lapack
 Maintainer: Debian Science Team <debian-science-maintainers@lists.alioth.debian.org>
 Uploaders: Sébastien Villemot <sebastien@debian.org>,
-           Mo Zhou <lumin@debian.org>,
+           Mo Zhou <lumin@debian.org>
 Section: libs
 Priority: optional
 Build-Depends: debhelper-compat (= 13),
-               debhelper (>= 12.8~),
                dh-exec
 Build-Depends-Arch: gfortran,
                     python3
 Build-Depends-Indep: doxygen,
-                     graphviz, rename
-Standards-Version: 4.5.0
+                     graphviz,
+                     rename
+Standards-Version: 4.6.1
 Vcs-Browser: https://salsa.debian.org/science-team/lapack
 Vcs-Git: https://salsa.debian.org/science-team/lapack.git
-Homepage: http://www.netlib.org/lapack/
+Homepage: https://www.netlib.org/lapack/
 Rules-Requires-Root: no
 
 Package: liblapack3
@@ -22,9 +22,6 @@ Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Breaks: libatlas3-base (<< 3.10.3-4~),
-        libopenblas-base (<< 0.2.20+ds-3~),
-        liblapack-dev (<< 3.7.1-2~)
 Provides: liblapack.so.3
 Description: Library of linear algebra routines 3 - shared version
  LAPACK version 3.X is a comprehensive FORTRAN library that does
@@ -193,10 +190,6 @@ Depends: ${misc:Depends},
          liblapack3 (= ${binary:Version}),
          libblas-dev | libblas.so
 Suggests: liblapack-doc
-Breaks: libatlas-base-dev (<< 3.10.3-4~),
-        libopenblas-dev (<< 0.2.20+ds-3~),
-        liblapack-pic (<< 3.8.0-3)
-Replaces: liblapack-pic (<< 3.8.0-3)
 Provides: liblapack.so
 Description: Library of linear algebra routines 3 - static version
  LAPACK version 3.X is a comprehensive FORTRAN library that does
@@ -227,14 +220,6 @@ Description: Library of linear algebra routines 3 - static version (64bit-index)
  .
  This package contains a static version of the library.
  Compiled with Fortran flag "-fdefault-integer-8".
-
-Package: liblapack-pic
-Architecture: any
-Multi-Arch: same
-Section: oldlibs
-Depends: ${misc:Depends}, liblapack-dev (= ${binary:Version})
-Description: Library of linear algebra routines 3 - transitional
- This is a dummy transitional package, it can be safely removed.
 
 Package: liblapack-test
 Architecture: any
@@ -307,9 +292,6 @@ Architecture: any
 Multi-Arch: same
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Breaks: libatlas3-base (<< 3.10.3-4~),
-        libopenblas-base (<< 0.2.20+ds-3~),
-        libblas-dev (<< 3.7.1-2~)
 Provides: libblas.so.3
 Description: Basic Linear Algebra Reference implementations, shared library
  BLAS (Basic Linear Algebra Subroutines) is a set of efficient
@@ -336,16 +318,16 @@ Description: Basic Linear Algebra Reference implementations, shared library (64b
  at netlib.
  .
  This package contains a shared version of the library.
- Compiled with Fortran option "-fdefault-integer-8".
+ Compiled with Fortran option "-fdefault-integer-8" and C preprocessor option
+ "-DWeirdNEC" (for the CBLAS part).
 
 Package: libblas-dev
 Architecture: any
 Multi-Arch: same
 Section: libdevel
-Depends: ${misc:Depends}, libblas3 (= ${binary:Version}),
+Depends: ${misc:Depends},
+         libblas3 (= ${binary:Version})
 Suggests: liblapack-doc
-Breaks: libatlas-base-dev (<< 3.10.3-4~),
-        libopenblas-dev (<< 0.2.20+ds-3~)
 Provides: libblas.so
 Description: Basic Linear Algebra Subroutines 3, static library
  This package is a binary incompatible upgrade to the blas-dev
@@ -365,7 +347,8 @@ Package: libblas64-dev
 Architecture: any
 Multi-Arch: same
 Section: libdevel
-Depends: libblas64-3 (= ${binary:Version}), ${misc:Depends}
+Depends: libblas64-3 (= ${binary:Version}),
+         ${misc:Depends}
 Suggests: liblapack-doc
 Provides: libblas64.so
 Description: Basic Linear Algebra Subroutines 3, static library (64bit-index)
@@ -381,7 +364,8 @@ Description: Basic Linear Algebra Subroutines 3, static library (64bit-index)
  at netlib.
  .
  This package contains a static version of the library.
- Compiled with Fortran option "-fdefault-integer-8".
+ Compiled with Fortran option "-fdefault-integer-8" and C preprocessor option
+ "-DWeirdNEC" (for the CBLAS part).
 
 Package: libblas-test
 Architecture: any

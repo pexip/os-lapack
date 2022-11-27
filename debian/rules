@@ -92,7 +92,7 @@ make.inc-64: INSTALL/make.inc.gfortran
 	    -e "s%\(^LDFLAGS  *=\).*%\1 $(LDFLAGS)%1" \
 	    -e "s%\(^AR  *=\).*%\1 $(DEB_HOST_GNU_TYPE)-ar%1" \
 	    -e "s%\(^RANLIB  *=\).*%\1 $(DEB_HOST_GNU_TYPE)-ranlib%1" \
-	    -e "s%\(^CFLAGS  *=\).*%\1 $(CPPFLAGS) \$$(PICOPTS) -DHAVE_LAPACK_CONFIG_H -DLAPACK_ILP64 $(CFLAGS)%1" \
+	    -e "s%\(^CFLAGS  *=\).*%\1 $(CPPFLAGS) \$$(PICOPTS) -DHAVE_LAPACK_CONFIG_H -DWeirdNEC -DLAPACK_ILP64 $(CFLAGS)%1" \
 	    -e "s%^#\(LAPACKE_WITH_TMG  *=\)%\1%1" \
 	    < $< > $@
 	# Build deprecated routines as well
@@ -104,7 +104,6 @@ override_dh_auto_clean: make.inc-32 make.inc-64
 	rm -rf pic32/ pic64/ static-32/ static-64/
 	rm -rf debian/test/ debian/time/
 	rm -f TESTING/tmp TESTING/testing_results.txt
-	rm -f LAPACKE/include/lapacke_mangling.h
 	rm -f CBLAS/include/cblas_mangling.h
 	rm -rf DOCS/explore-html/ DOCS/man/
 	rm -f output_err
@@ -129,28 +128,31 @@ override_dh_auto_configure: make.inc-32 make.inc-64
 
 	# Create lapacke.pc
 	sed -e "s%@LAPACK_VERSION@%$(DEB_VERSION_UPSTREAM)%" \
+	    -e "s%@LAPACKLIB@%lapack%" \
+	    -e "s%@LAPACKELIB@%lapacke%" \
 	    -e "s%@CMAKE_INSTALL_FULL_INCLUDEDIR@%/usr/include/$(DEB_HOST_MULTIARCH)%"  \
 	    -e "s%@CMAKE_INSTALL_FULL_LIBDIR@%/usr/lib/$(DEB_HOST_MULTIARCH)%" < LAPACKE/lapacke.pc.in > LAPACKE/lapacke.pc
 
 	# Create lapacke64.pc
 	sed -e "s%@LAPACK_VERSION@%$(DEB_VERSION_UPSTREAM)%" \
+	    -e "s%@LAPACKLIB@%lapack64%" \
+	    -e "s%@LAPACKELIB@%lapacke64%" \
 	    -e "s%@CMAKE_INSTALL_FULL_INCLUDEDIR@%/usr/include/$(DEB_HOST_MULTIARCH)%"  \
 	    -e "s%@CMAKE_INSTALL_FULL_LIBDIR@%/usr/lib/$(DEB_HOST_MULTIARCH)%"	\
-	    -e "s/Name: LAPACKE$$/Name: LAPACKE64/" \
-	    -e "s/-llapacke/-llapacke64/" \
-	    -e "s/Requires.private: lapack$$/Requires.private: lapack64/" < LAPACKE/lapacke.pc.in > LAPACKE/lapacke64.pc
+	    -e "s/Name: LAPACKE$$/Name: LAPACKE64/" < LAPACKE/lapacke.pc.in > LAPACKE/lapacke64.pc
 
 	# Create blas-netlib.pc
 	sed -e "s%@LAPACK_VERSION@%$(DEB_VERSION_UPSTREAM)%" \
+	    -e "s%@BLASLIB@%blas%" \
 	    -e "s%@CMAKE_INSTALL_FULL_INCLUDEDIR@%/usr/include/$(DEB_HOST_MULTIARCH)%"  \
 	    -e "s%@CMAKE_INSTALL_FULL_LIBDIR@%/usr/lib/$(DEB_HOST_MULTIARCH)%" < BLAS/blas.pc.in > BLAS/blas-netlib.pc
 
 	# Create blas64-netlib.pc
 	sed -e "s%@LAPACK_VERSION@%$(DEB_VERSION_UPSTREAM)%" \
+	    -e "s%@BLASLIB@%blas64%" \
 	    -e "s%@CMAKE_INSTALL_FULL_INCLUDEDIR@%/usr/include/$(DEB_HOST_MULTIARCH)%"  \
 	    -e "s%@CMAKE_INSTALL_FULL_LIBDIR@%/usr/lib/$(DEB_HOST_MULTIARCH)%"	\
-	    -e "s/Name: BLAS$$/Name: BLAS64/" \
-	    -e "s/-lblas/-lblas64/" < BLAS/blas.pc.in > BLAS/blas64-netlib.pc
+	    -e "s/Name: BLAS$$/Name: BLAS64/" < BLAS/blas.pc.in > BLAS/blas64-netlib.pc
 
 	# Create source directories for 64-bit indexing variant
 	for I in INSTALL BLAS CBLAS SRC LAPACKE TESTING; do cp -r $$I $${I}64; done
@@ -230,18 +232,18 @@ ifeq (64,$(DEB_HOST_ARCH_BITS))
 	###########################################################################
 	for I in INSTALL64 BLAS64 CBLAS64 SRC64 LAPACKE64 TESTING64/MATGEN; do $(MAKE) -C $$I clean; done
 	$(MAKE) -C BLAS64 PICOPTS=-fPIC
-	#$(MAKE) -C CBLAS64 PICOPTS=-fPIC  # FIXME: not ready, don't build it
+	$(MAKE) -C CBLAS64 PICOPTS=-fPIC
 	$(MAKE) -C SRC64 PICOPTS=-fPIC
 	$(MAKE) -C LAPACKE64 PICOPTS=-fPIC
 	$(MAKE) -C TESTING64/MATGEN PICOPTS=-fPIC
 
 	mkdir -p pic64
-	for I in refblas lapack tmglib lapacke; do cp lib$${I}.a pic64/lib$${I}_pic.a; done #FIXME: cblas
+	for I in refblas cblas lapack tmglib lapacke; do cp lib$${I}.a pic64/lib$${I}_pic.a; done
 
 	# Build libblas64.so.*
-	#ar d pic64/librefblas_pic.a xerbla.o # We want to use the xerbla.o from libcblas_pic.a
+	ar d pic64/librefblas_pic.a xerbla.o # We want to use the xerbla.o from libcblas_pic.a
 	mkdir -p tmp
-	cd tmp && ar x ../pic64/librefblas_pic.a #&& ar x ../pic64/libcblas_pic.a
+	cd tmp && ar x ../pic64/librefblas_pic.a && ar x ../pic64/libcblas_pic.a
 	$(FC) -shared -Wl,-soname=libblas64.so.$(SO) -o libblas64.so.$(DEB_VERSION_UPSTREAM) tmp/*.o $(LDFLAGS)
 	rm -rf tmp
 	ln -s libblas64.so.$(DEB_VERSION_UPSTREAM) libblas64.so.$(SO)
@@ -277,15 +279,15 @@ ifeq (64,$(DEB_HOST_ARCH_BITS))
 	###########################################################################
 	for I in INSTALL64 BLAS64 CBLAS64 SRC64 LAPACKE64 TESTING64/MATGEN; do $(MAKE) -C $$I clean; done
 	$(MAKE) -C BLAS64
-	#$(MAKE) -C CBLAS64  # FIXME: not ready, don't build it
+	$(MAKE) -C CBLAS64
 	$(MAKE) -C SRC64
 	$(MAKE) -C LAPACKE64
 	$(MAKE) -C TESTING64/MATGEN
 
 	# Build libblas.a (64)
-	#ar d librefblas.a xerbla.o # We want to use the xerbla.o from libcblas.a
+	ar d librefblas.a xerbla.o # We want to use the xerbla.o from libcblas.a
 	mkdir -p tmp
-	cd tmp && ar x ../librefblas.a #&& ar x ../libcblas.a
+	cd tmp && ar x ../librefblas.a && ar x ../libcblas.a
 	ar r libblas.a $$(env LC_ALL=C ls tmp/*.o)
 	rm -rf tmp
 
@@ -294,7 +296,7 @@ ifeq (64,$(DEB_HOST_ARCH_BITS))
 
 	# Build the test programs, in order to avoid FTBFS if DEB_BUILD_OPTIONS contains nocheck
 	$(MAKE) FFLAGS="$(FFLAGS_BLAS_TESTSUITE) -fdefault-integer-8" BLASLIB="../../libblas64.so" -C BLAS64/TESTING
-	#$(MAKE) FFLAGS="$(FFLAGS_BLAS_TESTSUITE) -fdefault-integer-8" BLASLIB="../../libblas64.so" CBLASLIB="" -C CBLAS64/testing
+	$(MAKE) FFLAGS="$(FFLAGS_BLAS_TESTSUITE) -fdefault-integer-8" BLASLIB="../../libblas64.so" CBLASLIB="" -C CBLAS64/testing
 	$(MAKE) FFLAGS="$(FFLAGS_LAPACK_TESTSUITE) -fdefault-integer-8" BLASLIB="../../libblas64.so" LAPACKLIB="../../liblapack64.so" TMGLIB="../../libtmglib64.so" -C TESTING64 EIG/xeigtstc EIG/xeigtstd EIG/xeigtsts EIG/xeigtstz LIN/xlintstc LIN/xlintstd LIN/xlintsts LIN/xlintstz LIN/xlintstds LIN/xlintstrfc LIN/xlintstrfd LIN/xlintstrfs LIN/xlintstrfz LIN/xlintstzc
 endif #(64,$(DEB_HOST_ARCH_BITS))
 
@@ -313,6 +315,8 @@ ifeq (,$(filter nodoc,$(DEB_BUILD_OPTIONS)))
 	# Remove directory reference files, because they include local build pathnames
 	# (but don't delete some __*__.3 files)
 	-rm DOCS/man/man3/_[a-zA-Z]*
+	# Remove manpages with too generic name (and no content) (see #1011422)
+	rm DOCS/man/man3/real.3 DOCS/man/man3/imag.3
 
 	for I in INSTALL64 BLAS64 CBLAS64 SRC64 TESTING64 LAPACKE64; do \
 		find $$I -type f -name '*.fbak' -exec rename 's/\.fbak/.f/' '{}' + ; \
@@ -323,7 +327,6 @@ endif
 override_dh_auto_test-arch:
 	###########################################################################
 	## 32-BIT INDEXING -- TEST
-	#ln -sf make.inc-32 make.inc
 	###########################################################################
 	# Run BLAS tests, output the result, and stop if one test fails
 	LD_LIBRARY_PATH=$$(pwd):$$LD_LIBRARY_PATH $(MAKE) -C BLAS/TESTING run BLASLIB="../../libblas.so"
@@ -343,7 +346,6 @@ override_dh_auto_test-arch:
 ifeq (64,$(DEB_HOST_ARCH_BITS))
 	###########################################################################
 	## 64-BIT INDEXING -- TEST
-	#ln -sf make.inc-64 make.inc
 	###########################################################################
 	# Run BLAS tests, output the result, and stop if one test fails
 	LD_LIBRARY_PATH=$$(pwd):$$LD_LIBRARY_PATH $(MAKE) -C BLAS64/TESTING run BLASLIB="../../libblas64.so"
@@ -351,14 +353,14 @@ ifeq (64,$(DEB_HOST_ARCH_BITS))
 	! grep -q -i fail BLAS64/TESTING/*.out
 
 	# Run CBLAS tests, output the result, and stop if one test fails
-	#LD_LIBRARY_PATH=$$(pwd):$$LD_LIBRARY_PATH $(MAKE) -C CBLAS64/testing run BLASLIB="../../libblas64.so" CBLASLIB=""
-	#cat CBLAS/testing/*.out
-	#! grep -q -i fail CBLAS64/testing/*.out
+	LD_LIBRARY_PATH=$$(pwd):$$LD_LIBRARY_PATH $(MAKE) -C CBLAS64/testing run BLASLIB="../../libblas64.so" CBLASLIB=""
+	cat CBLAS64/testing/*.out
+	! grep -q -i fail CBLAS64/testing/*.out
 
 	# Run LAPACK tests, but don't stop if one test fails
 	# Only a summary is displayed; full test results in TESTING64/testing_results.txt
-	-LD_LIBRARY_PATH=$$(pwd):$$LD_LIBRARY_PATH $(MAKE) -C TESTING64 FFLAGS="$(FFLAGS_LAPACK_TESTSUITE) -fdefault-integer-8" BLASLIB="../../libblas64.so" LAPACKLIB="../../liblapack64.so" TMGLIB="../../libtmglib64.so"
-	LD_LIBRARY_PATH=$$(pwd):$$LD_LIBRARY_PATH ./lapack_testing.py -d TESTING64 
+	LD_LIBRARY_PATH=$$(pwd):$$LD_LIBRARY_PATH $(MAKE) -C TESTING64 FFLAGS="$(FFLAGS_LAPACK_TESTSUITE) -fdefault-integer-8" BLASLIB="../../libblas64.so" LAPACKLIB="../../liblapack64.so" TMGLIB="../../libtmglib64.so"
+	LD_LIBRARY_PATH=$$(pwd):$$LD_LIBRARY_PATH ./lapack_testing.py -d TESTING64
 endif
 
 override_dh_makeshlibs-arch:

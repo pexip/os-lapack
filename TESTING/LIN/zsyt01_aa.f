@@ -116,20 +116,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
-*  @generated from LIN/dsyt01_aa.f, fortran d -> z, Thu Nov 17 13:01:50 2016
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
       SUBROUTINE ZSYT01_AA( UPLO, N, A, LDA, AFAC, LDAFAC, IPIV, C,
      $                      LDC, RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -147,8 +142,9 @@
 *     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
-      COMPLEX*16         CZERO, CONE
-      PARAMETER          ( CZERO = 0.0E+0, CONE = 1.0E+0 )
+      COMPLEX*16          CZERO, CONE
+      PARAMETER          ( CZERO = ( 0.0D+0, 0.0D+0 ),
+     $                     CONE  = ( 1.0D+0, 0.0D+0 ) )
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, J
@@ -260,6 +256,6 @@
 *
       RETURN
 *
-*     End of ZSYT01
+*     End of ZSYT01_AA
 *
       END

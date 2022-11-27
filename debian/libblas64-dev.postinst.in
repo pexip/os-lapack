@@ -6,10 +6,10 @@ update-alternatives --install /usr/lib/@DEB_HOST_MULTIARCH@/libblas64.so libblas
                     /usr/lib/@DEB_HOST_MULTIARCH@/blas64/libblas64.so 10 \
                     --slave /usr/lib/@DEB_HOST_MULTIARCH@/libblas64.a libblas64.a-@DEB_HOST_MULTIARCH@ \
                     /usr/lib/@DEB_HOST_MULTIARCH@/blas64/libblas64.a \
+                    --slave /usr/include/@DEB_HOST_MULTIARCH@/cblas64.h cblas64.h-@DEB_HOST_MULTIARCH@ \
+                    /usr/include/@DEB_HOST_MULTIARCH@/cblas64-netlib.h \
                     --slave /usr/lib/@DEB_HOST_MULTIARCH@/pkgconfig/blas64.pc \
                     blas64.pc-@DEB_HOST_MULTIARCH@ /usr/lib/@DEB_HOST_MULTIARCH@/pkgconfig/blas64-netlib.pc
-#                    --slave /usr/include/@DEB_HOST_MULTIARCH@/cblas.h cblas.h-@DEB_HOST_MULTIARCH@ \
-#                    /usr/include/@DEB_HOST_MULTIARCH@/cblas-netlib.h \
 
 #DEBHELPER#
 

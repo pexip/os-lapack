@@ -9,10 +9,10 @@
 #include "cblas.h"
 #include "cblas_f77.h"
 void cblas_sgemv(const CBLAS_LAYOUT layout,
-                 const CBLAS_TRANSPOSE TransA, const int M, const int N,
-                 const float alpha, const float  *A, const int lda,
-                 const float  *X, const int incX, const float beta,
-                 float  *Y, const int incY)
+                 const CBLAS_TRANSPOSE TransA, const CBLAS_INT M, const CBLAS_INT N,
+                 const float alpha, const float  *A, const CBLAS_INT lda,
+                 const float  *X, const CBLAS_INT incX, const float beta,
+                 float  *Y, const CBLAS_INT incY)
 {
    char TA;
 #ifdef F77_CHAR

@@ -96,17 +96,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex_blas_testing
 *
 *  =====================================================================
       PROGRAM CBLAT2
 *
-*  -- Reference BLAS test routine (version 3.7.0) --
+*  -- Reference BLAS test routine --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *  =====================================================================
 *
@@ -431,7 +428,7 @@
  9981 FORMAT( /' ******* FATAL ERROR - TESTS ABANDONED *******' )
  9980 FORMAT( ' ERROR-EXITS WILL NOT BE TESTED' )
 *
-*     End of CBLAT2.
+*     End of CBLAT2
 *
       END
       SUBROUTINE CCHK1( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -482,7 +479,7 @@
       LOGICAL            LCE, LCERES
       EXTERNAL           LCE, LCERES
 *     .. External Subroutines ..
-      EXTERNAL           CGBMV, CGEMV, CMAKE, CMVCH
+      EXTERNAL           CGBMV, CGEMV, CMAKE, CMVCH, CREGR1
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
 *     .. Scalars in Common ..
@@ -737,6 +734,34 @@
 *
   120 CONTINUE
 *
+*     Regression test to verify preservation of y when m zero, n nonzero.
+*
+      CALL CREGR1( TRANS, M, N, LY, KL, KU, ALPHA, AA, LDA, XX, INCX,
+     $   BETA, YY, INCY, YS )
+      IF( FULL )THEN
+         IF( TRACE )
+     $      WRITE( NTRA, FMT = 9994 )NC, SNAME, TRANS, M, N, ALPHA, LDA,
+     $      INCX, BETA, INCY
+         IF( REWI )
+     $      REWIND NTRA
+         CALL CGEMV( TRANS, M, N, ALPHA, AA, LDA, XX, INCX, BETA, YY,
+     $      INCY )
+      ELSE IF( BANDED )THEN
+         IF( TRACE )
+     $      WRITE( NTRA, FMT = 9995 )NC, SNAME, TRANS, M, N, KL, KU,
+     $      ALPHA, LDA, INCX, BETA, INCY
+         IF( REWI )
+     $      REWIND NTRA
+         CALL CGBMV( TRANS, M, N, KL, KU, ALPHA, AA, LDA, XX, INCX,
+     $      BETA, YY, INCY )
+      END IF
+      NC = NC + 1
+      IF( .NOT.LCE( YS, YY, LY ) )THEN
+         WRITE( NOUT, FMT = 9998 )NARGS - 1
+         FATAL = .TRUE.
+         GO TO 130
+      END IF
+*
 *     Report result.
 *
       IF( ERRMAX.LT.THRESH )THEN
@@ -776,7 +801,7 @@
  9993 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of CCHK1.
+*     End of CCHK1
 *
       END
       SUBROUTINE CCHK2( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -1124,7 +1149,7 @@
  9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of CCHK2.
+*     End of CCHK2
 *
       END
       SUBROUTINE CCHK3( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -1485,7 +1510,7 @@
  9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of CCHK3.
+*     End of CCHK3
 *
       END
       SUBROUTINE CCHK4( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -1762,7 +1787,7 @@
  9993 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of CCHK4.
+*     End of CCHK4
 *
       END
       SUBROUTINE CCHK5( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -2046,7 +2071,7 @@
  9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of CCHK5.
+*     End of CCHK5
 *
       END
       SUBROUTINE CCHK6( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -2368,7 +2393,7 @@
  9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of CCHK6.
+*     End of CCHK6
 *
       END
       SUBROUTINE CCHKE( ISNUM, SRNAMT, NOUT )
@@ -2711,7 +2736,7 @@
  9998 FORMAT( ' ******* ', A6, ' FAILED THE TESTS OF ERROR-EXITS *****',
      $      '**' )
 *
-*     End of CCHKE.
+*     End of CCHKE
 *
       END
       SUBROUTINE CMAKE( TYPE, UPLO, DIAG, M, N, A, NMAX, AA, LDA, KL,
@@ -2903,7 +2928,7 @@
       END IF
       RETURN
 *
-*     End of CMAKE.
+*     End of CMAKE
 *
       END
       SUBROUTINE CMVCH( TRANS, M, N, ALPHA, A, NMAX, X, INCX, BETA, Y,
@@ -3035,7 +3060,7 @@
      $      'SULT                    COMPUTED RESULT' )
  9998 FORMAT( 1X, I7, 2( '  (', G15.6, ',', G15.6, ')' ) )
 *
-*     End of CMVCH.
+*     End of CMVCH
 *
       END
       LOGICAL FUNCTION LCE( RI, RJ, LR )
@@ -3065,7 +3090,7 @@
       LCE = .FALSE.
    30 RETURN
 *
-*     End of LCE.
+*     End of LCE
 *
       END
       LOGICAL FUNCTION LCERES( TYPE, UPLO, M, N, AA, AS, LDA )
@@ -3124,7 +3149,7 @@
       LCERES = .FALSE.
    80 RETURN
 *
-*     End of LCERES.
+*     End of LCERES
 *
       END
       COMPLEX FUNCTION CBEG( RESET )
@@ -3176,7 +3201,7 @@
       CBEG = CMPLX( ( I - 500 )/1001.0, ( J - 500 )/1001.0 )
       RETURN
 *
-*     End of CBEG.
+*     End of CBEG
 *
       END
       REAL FUNCTION SDIFF( X, Y )
@@ -3192,7 +3217,7 @@
       SDIFF = X - Y
       RETURN
 *
-*     End of SDIFF.
+*     End of SDIFF
 *
       END
       SUBROUTINE CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
@@ -3220,8 +3245,41 @@
  9999 FORMAT( ' ***** ILLEGAL VALUE OF PARAMETER NUMBER ', I2, ' NOT D',
      $      'ETECTED BY ', A6, ' *****' )
 *
-*     End of CHKXER.
+*     End of CHKXER
 *
+      END
+      SUBROUTINE CREGR1( TRANS, M, N, LY, KL, KU, ALPHA, A, LDA, X,
+     $   INCX, BETA, Y, INCY, YS )
+*
+*  Input initialization for regression test.
+*
+*     .. Scalar Arguments ..
+      CHARACTER*1        TRANS
+      INTEGER            LY, M, N, KL, KU, LDA, INCX, INCY
+      COMPLEX            ALPHA, BETA
+*     .. Array Arguments ..
+      COMPLEX            A(LDA,*), X(*), Y(*), YS(*)
+*     .. Local Scalars ..
+      INTEGER            I
+*     .. Intrinsic Functions ..
+      INTRINSIC          CMPLX, REAL
+*     .. Executable Statements ..
+      TRANS = 'T'
+      M = 0
+      N = 5
+      KL = 0
+      KU = 0
+      ALPHA = CMPLX( 1.0 )
+      LDA = MAX( 1, M )
+      INCX = 1
+      BETA = CMPLX( -0.7, -0.8 )
+      INCY = 1
+      LY = ABS( INCY )*N
+      DO 10 I = 1, LY
+         Y( I ) = CMPLX( 42.0, REAL( I ) )
+         YS( I ) = Y( I )
+  10  CONTINUE
+      RETURN
       END
       SUBROUTINE XERBLA( SRNAME, INFO )
 *
@@ -3276,4 +3334,3 @@
 *     End of XERBLA
 *
       END
-

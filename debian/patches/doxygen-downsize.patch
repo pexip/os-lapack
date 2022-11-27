@@ -12,7 +12,7 @@ Last-Update: 2017-07-04
 This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
 --- a/DOCS/Doxyfile
 +++ b/DOCS/Doxyfile
-@@ -416,7 +416,7 @@ LOOKUP_CACHE_SIZE      = 0
+@@ -475,7 +475,7 @@ NUM_PROC_THREADS       = 1
  # normally produced when WARNINGS is set to YES.
  # The default value is: NO.
  
@@ -21,7 +21,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  
  # If the EXTRACT_PRIVATE tag is set to YES, all private members of a class will
  # be included in the documentation.
-@@ -953,13 +953,13 @@ USE_MDFILE_AS_MAINPAGE =
+@@ -1055,13 +1055,13 @@ USE_MDFILE_AS_MAINPAGE =
  # also VERBATIM_HEADERS is set to NO.
  # The default value is: NO.
  
@@ -37,7 +37,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  
  # Setting the STRIP_CODE_COMMENTS tag to YES will instruct doxygen to hide any
  # special comment blocks from generated source code fragments. Normal C, C++ and
-@@ -2281,7 +2281,7 @@ INCLUDED_BY_GRAPH      = YES
+@@ -2436,7 +2436,7 @@ INCLUDED_BY_GRAPH      = YES
  # The default value is: NO.
  # This tag requires that the tag HAVE_DOT is set to YES.
  
@@ -46,7 +46,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  
  # If the CALLER_GRAPH tag is set to YES then doxygen will generate a caller
  # dependency graph for every global function or class method.
-@@ -2293,7 +2293,7 @@ CALL_GRAPH             = YES
+@@ -2448,7 +2448,7 @@ CALL_GRAPH             = YES
  # The default value is: NO.
  # This tag requires that the tag HAVE_DOT is set to YES.
  
@@ -57,7 +57,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  # hierarchy of all classes instead of a textual one.
 --- a/DOCS/Doxyfile_man
 +++ b/DOCS/Doxyfile_man
-@@ -416,7 +416,7 @@ LOOKUP_CACHE_SIZE      = 0
+@@ -475,7 +475,7 @@ NUM_PROC_THREADS       = 1
  # normally produced when WARNINGS is set to YES.
  # The default value is: NO.
  
@@ -66,7 +66,7 @@ This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
  
  # If the EXTRACT_PRIVATE tag is set to YES, all private members of a class will
  # be included in the documentation.
-@@ -933,7 +933,7 @@ USE_MDFILE_AS_MAINPAGE =
+@@ -1034,7 +1034,7 @@ USE_MDFILE_AS_MAINPAGE =
  # also VERBATIM_HEADERS is set to NO.
  # The default value is: NO.
  
