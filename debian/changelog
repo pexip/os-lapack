@@ -1,3 +1,11 @@
+lapack (3.9.0-3+deb11u1) bullseye; urgency=medium
+
+  * lapacke-syev-heev.patch: new patch, fixes eigenvector matrix in
+    LAPACKE’s interface to symmetric eigenvalue problem (syev and heev
+    functions) (Closes: #1037242)
+
+ -- Sébastien Villemot <sebastien@debian.org>  Fri, 23 Jun 2023 14:53:50 +0200
+
 lapack (3.9.0-3) unstable; urgency=medium
 
   [ Sébastien Villemot ]

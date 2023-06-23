@@ -1,0 +1,215 @@
+Description: Fix eigenvector matrix in LAPACKE’s interface to symmetric eigenvalue problem
+ The syev and heev functions, when passed jobz=V and called in row major order
+ mode, would return an incorrect eigenvector matrix (incorrect lower- or
+ upper-triangle part).
+Origin: upstream, https://github.com/Reference-LAPACK/lapack/commit/7d5bb9e5e641772227022689162dd9cc47e64de0
+Bug: https://github.com/Reference-LAPACK/lapack/issues/850
+Bug-Debian: https://bugs.debian.org/1037242
+Last-Update: 2023-06-23
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+diff --git a/LAPACKE/src/lapacke_cheev_work.c b/LAPACKE/src/lapacke_cheev_work.c
+index f505dfab0..aa78e678e 100644
+--- a/LAPACKE/src/lapacke_cheev_work.c
++++ b/LAPACKE/src/lapacke_cheev_work.c
+@@ -78,7 +78,11 @@ lapack_int LAPACKE_cheev_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_che_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_cge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_che_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_cheevd_2stage_work.c b/LAPACKE/src/lapacke_cheevd_2stage_work.c
+index e9e6a5d1d..d26c84785 100644
+--- a/LAPACKE/src/lapacke_cheevd_2stage_work.c
++++ b/LAPACKE/src/lapacke_cheevd_2stage_work.c
+@@ -79,7 +79,11 @@ lapack_int LAPACKE_cheevd_2stage_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_che_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_cge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_che_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda ); 
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_cheevd_work.c b/LAPACKE/src/lapacke_cheevd_work.c
+index 4c5f352a8..e8f212efb 100644
+--- a/LAPACKE/src/lapacke_cheevd_work.c
++++ b/LAPACKE/src/lapacke_cheevd_work.c
+@@ -79,8 +79,11 @@ lapack_int LAPACKE_cheevd_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_che_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
+-
++        if ( jobz == 'V') {
++            LAPACKE_cge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else { 
++            LAPACKE_che_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_dsyev_work.c b/LAPACKE/src/lapacke_dsyev_work.c
+index 5a416ff45..f696c608f 100644
+--- a/LAPACKE/src/lapacke_dsyev_work.c
++++ b/LAPACKE/src/lapacke_dsyev_work.c
+@@ -72,7 +72,11 @@ lapack_int LAPACKE_dsyev_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_dsy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_dge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_dsy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_dsyevd_2stage_work.c b/LAPACKE/src/lapacke_dsyevd_2stage_work.c
+index 90d8ce8dc..6f9c02f6a 100644
+--- a/LAPACKE/src/lapacke_dsyevd_2stage_work.c
++++ b/LAPACKE/src/lapacke_dsyevd_2stage_work.c
+@@ -76,7 +76,11 @@ lapack_int LAPACKE_dsyevd_2stage_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_dsy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_dge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_dsy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_dsyevd_work.c b/LAPACKE/src/lapacke_dsyevd_work.c
+index fff476445..81ba2acb3 100644
+--- a/LAPACKE/src/lapacke_dsyevd_work.c
++++ b/LAPACKE/src/lapacke_dsyevd_work.c
+@@ -76,7 +76,11 @@ lapack_int LAPACKE_dsyevd_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_dsy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_dge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_dsy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_ssyev_work.c b/LAPACKE/src/lapacke_ssyev_work.c
+index 6a2f8fce3..abd62ddf3 100644
+--- a/LAPACKE/src/lapacke_ssyev_work.c
++++ b/LAPACKE/src/lapacke_ssyev_work.c
+@@ -72,7 +72,11 @@ lapack_int LAPACKE_ssyev_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_ssy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_sge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_ssy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_ssyevd_2stage_work.c b/LAPACKE/src/lapacke_ssyevd_2stage_work.c
+index 9394f822f..d9fe47599 100644
+--- a/LAPACKE/src/lapacke_ssyevd_2stage_work.c
++++ b/LAPACKE/src/lapacke_ssyevd_2stage_work.c
+@@ -76,7 +76,11 @@ lapack_int LAPACKE_ssyevd_2stage_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_ssy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_sge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_ssy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda ); 
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_ssyevd_work.c b/LAPACKE/src/lapacke_ssyevd_work.c
+index 12d9e84e6..bfbf49aee 100644
+--- a/LAPACKE/src/lapacke_ssyevd_work.c
++++ b/LAPACKE/src/lapacke_ssyevd_work.c
+@@ -76,7 +76,11 @@ lapack_int LAPACKE_ssyevd_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_ssy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_sge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_ssy_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_zheev_work.c b/LAPACKE/src/lapacke_zheev_work.c
+index ce278b272..d4e93aed2 100644
+--- a/LAPACKE/src/lapacke_zheev_work.c
++++ b/LAPACKE/src/lapacke_zheev_work.c
+@@ -78,7 +78,11 @@ lapack_int LAPACKE_zheev_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_zge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_zheevd_2stage_work.c b/LAPACKE/src/lapacke_zheevd_2stage_work.c
+index bf2e2c828..fb33c3e2a 100644
+--- a/LAPACKE/src/lapacke_zheevd_2stage_work.c
++++ b/LAPACKE/src/lapacke_zheevd_2stage_work.c
+@@ -79,7 +79,11 @@ lapack_int LAPACKE_zheevd_2stage_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_zge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else {
++            LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
+diff --git a/LAPACKE/src/lapacke_zheevd_work.c b/LAPACKE/src/lapacke_zheevd_work.c
+index f09cfe49d..5af2a1269 100644
+--- a/LAPACKE/src/lapacke_zheevd_work.c
++++ b/LAPACKE/src/lapacke_zheevd_work.c
+@@ -79,7 +79,11 @@ lapack_int LAPACKE_zheevd_work( int matrix_layout, char jobz, char uplo,
+             info = info - 1;
+         }
+         /* Transpose output matrices */
+-        LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        if ( jobz == 'V') {
++            LAPACKE_zge_trans( LAPACK_COL_MAJOR, n, n, a_t, lda_t, a, lda );
++        } else { 
++            LAPACKE_zhe_trans( LAPACK_COL_MAJOR, uplo, n, a_t, lda_t, a, lda );
++        }
+         /* Release memory and exit */
+         LAPACKE_free( a_t );
+ exit_level_0:
