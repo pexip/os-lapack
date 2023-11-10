@@ -9,8 +9,8 @@
 
 void cblas_stbmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
                  const CBLAS_TRANSPOSE TransA, const CBLAS_DIAG Diag,
-                 const int N, const int K, const float  *A, const int lda,
-                 float  *X, const int incX)
+                 const CBLAS_INT N, const CBLAS_INT K, const float  *A, const CBLAS_INT lda,
+                 float  *X, const CBLAS_INT incX)
 {
    char TA;
    char UL;

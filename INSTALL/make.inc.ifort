@@ -1,7 +1,5 @@
 ####################################################################
 #  LAPACK make include file.                                       #
-#  LAPACK, Version 3.7.0                                           #
-#  December 2016                                                   #
 ####################################################################
 
 SHELL = /bin/sh
@@ -16,9 +14,9 @@ CFLAGS = -O3
 #  the compiler options desired when NO OPTIMIZATION is selected.
 #
 FC = ifort
-FFLAGS = -O3 -fp-model strict -assume protect_parens
+FFLAGS = -O3 -fp-model strict -assume protect_parens -recursive
 FFLAGS_DRV = $(FFLAGS)
-FFLAGS_NOOPT = -O0 -fp-model strict -assume protect_parens
+FFLAGS_NOOPT = -O0 -fp-model strict -assume protect_parens -recursive
 
 #  Define LDFLAGS to the desired linker options for your machine.
 #

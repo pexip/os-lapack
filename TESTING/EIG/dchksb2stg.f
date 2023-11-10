@@ -1,4 +1,4 @@
-*> \brief \b DCHKSBSTG
+*> \brief \b DCHKSB2STG
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -21,6 +21,7 @@
 *       LOGICAL            DOTYPE( * )
 *       INTEGER            ISEED( 4 ), KK( * ), NN( * )
 *       DOUBLE PRECISION   A( LDA, * ), RESULT( * ), SD( * ), SE( * ),
+*      $                   D1( * ), D2( * ), D3( * ),
 *      $                   U( LDU, * ), WORK( * )
 *       ..
 *
@@ -30,20 +31,20 @@
 *>
 *> \verbatim
 *>
-*> DCHKSBSTG tests the reduction of a symmetric band matrix to tridiagonal
+*> DCHKSB2STG tests the reduction of a symmetric band matrix to tridiagonal
 *> form, used with the symmetric eigenvalue problem.
 *>
 *> DSBTRD factors a symmetric band matrix A as  U S U' , where ' means
 *> transpose, S is symmetric tridiagonal, and U is orthogonal.
 *> DSBTRD can use either just the lower or just the upper triangle
-*> of A; DCHKSBSTG checks both cases.
+*> of A; DCHKSB2STG checks both cases.
 *>
-*> DSYTRD_SB2ST factors a symmetric band matrix A as  U S U' , 
+*> DSYTRD_SB2ST factors a symmetric band matrix A as  U S U' ,
 *> where ' means transpose, S is symmetric tridiagonal, and U is
 *> orthogonal. DSYTRD_SB2ST can use either just the lower or just
-*> the upper triangle of A; DCHKSBSTG checks both cases.
+*> the upper triangle of A; DCHKSB2STG checks both cases.
 *>
-*> DSTEQR factors S as  Z D1 Z'.  
+*> DSTEQR factors S as  Z D1 Z'.
 *> D1 is the matrix of eigenvalues computed when Z is not computed
 *> and from the S resulting of DSBTRD "U" (used as reference for DSYTRD_SB2ST)
 *> D2 is the matrix of eigenvalues computed when Z is not computed
@@ -51,7 +52,7 @@
 *> D3 is the matrix of eigenvalues computed when Z is not computed
 *> and from the S resulting of DSYTRD_SB2ST "L".
 *>
-*> When DCHKSBSTG is called, a number of matrix "sizes" ("n's"), a number
+*> When DCHKSB2STG is called, a number of matrix "sizes" ("n's"), a number
 *> of bandwidths ("k's"), and a number of matrix "types" are
 *> specified.  For each size ("n"), each bandwidth ("k") less than or
 *> equal to "n", and each type of matrix, one matrix will be generated
@@ -125,7 +126,7 @@
 *> \verbatim
 *>          NSIZES is INTEGER
 *>          The number of sizes of matrices to use.  If it is zero,
-*>          DCHKSBSTG does nothing.  It must be at least zero.
+*>          DCHKSB2STG does nothing.  It must be at least zero.
 *> \endverbatim
 *>
 *> \param[in] NN
@@ -140,7 +141,7 @@
 *> \verbatim
 *>          NWDTHS is INTEGER
 *>          The number of bandwidths to use.  If it is zero,
-*>          DCHKSBSTG does nothing.  It must be at least zero.
+*>          DCHKSB2STG does nothing.  It must be at least zero.
 *> \endverbatim
 *>
 *> \param[in] KK
@@ -153,7 +154,7 @@
 *> \param[in] NTYPES
 *> \verbatim
 *>          NTYPES is INTEGER
-*>          The number of elements in DOTYPE.   If it is zero, DCHKSBSTG
+*>          The number of elements in DOTYPE.   If it is zero, DCHKSB2STG
 *>          does nothing.  It must be at least zero.  If it is MAXTYP+1
 *>          and NSIZES is 1, then an additional type, MAXTYP+1 is
 *>          defined, which is to use whatever matrix is in A.  This
@@ -183,7 +184,7 @@
 *>          congruential sequence limited to small integers, and so
 *>          should produce machine independent random numbers. The
 *>          values of ISEED are changed on exit, and can be used in the
-*>          next call to DCHKSBSTG to continue the same random number
+*>          next call to DCHKSB2STG to continue the same random number
 *>          sequence.
 *> \endverbatim
 *>
@@ -232,6 +233,21 @@
 *>          SE is DOUBLE PRECISION array, dimension (max(NN))
 *>          Used to hold the off-diagonal of the tridiagonal matrix
 *>          computed by DSBTRD.
+*> \endverbatim
+*>
+*> \param[out] D1
+*> \verbatim
+*>          D1 is DOUBLE PRECISION array, dimension (max(NN))
+*> \endverbatim
+*>
+*> \param[out] D2
+*> \verbatim
+*>          D2 is DOUBLE PRECISION array, dimension (max(NN))
+*> \endverbatim
+*>
+*> \param[out] D3
+*> \verbatim
+*>          D3 is DOUBLE PRECISION array, dimension (max(NN))
 *> \endverbatim
 *>
 *> \param[out] U
@@ -307,8 +323,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date June 2017
-*
 *> \ingroup double_eig
 *
 *  =====================================================================
@@ -316,10 +330,9 @@
      $                   ISEED, THRESH, NOUNIT, A, LDA, SD, SE, D1,
      $                   D2, D3, U, LDU, WORK, LWORK, RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.1) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     June 2017
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDU, LWORK, NOUNIT, NSIZES, NTYPES,
@@ -422,7 +435,7 @@
       END IF
 *
       IF( INFO.NE.0 ) THEN
-         CALL XERBLA( 'DCHKSBSTG', -INFO )
+         CALL XERBLA( 'DCHKSB2STG', -INFO )
          RETURN
       END IF
 *
@@ -635,22 +648,22 @@
                CALL DSBT21( 'Upper', N, K, 1, A, LDA, SD, SE, U, LDU,
      $                      WORK, RESULT( 1 ) )
 *
-*              Before converting A into lower for DSBTRD, run DSYTRD_SB2ST 
+*              Before converting A into lower for DSBTRD, run DSYTRD_SB2ST
 *              otherwise matrix A will be converted to lower and then need
-*              to be converted back to upper in order to run the upper case 
+*              to be converted back to upper in order to run the upper case
 *              ofDSYTRD_SB2ST
-*            
+*
 *              Compute D1 the eigenvalues resulting from the tridiagonal
 *              form using the DSBTRD and used as reference to compare
 *              with the DSYTRD_SB2ST routine
-*            
+*
 *              Compute D1 from the DSBTRD and used as reference for the
 *              DSYTRD_SB2ST
-*            
+*
                CALL DCOPY( N, SD, 1, D1, 1 )
                IF( N.GT.0 )
      $            CALL DCOPY( N-1, SE, 1, WORK, 1 )
-*            
+*
                CALL DSTEQR( 'N', N, D1, WORK, WORK( N+1 ), LDU,
      $                      WORK( N+1 ), IINFO )
                IF( IINFO.NE.0 ) THEN
@@ -664,26 +677,26 @@
                      GO TO 150
                   END IF
                END IF
-*            
+*
 *              DSYTRD_SB2ST Upper case is used to compute D2.
-*              Note to set SD and SE to zero to be sure not reusing 
-*              the one from above. Compare it with D1 computed 
+*              Note to set SD and SE to zero to be sure not reusing
+*              the one from above. Compare it with D1 computed
 *              using the DSBTRD.
-*            
-               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+*
+               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
                CALL DLACPY( ' ', K+1, N, A, LDA, U, LDU )
                LH = MAX(1, 4*N)
                LW = LWORK - LH
-               CALL DSYTRD_SB2ST( 'N', 'N', "U", N, K, U, LDU, SD, SE, 
+               CALL DSYTRD_SB2ST( 'N', 'N', "U", N, K, U, LDU, SD, SE,
      $                      WORK, LH, WORK( LH+1 ), LW, IINFO )
-*            
+*
 *              Compute D2 from the DSYTRD_SB2ST Upper case
-*            
+*
                CALL DCOPY( N, SD, 1, D2, 1 )
                IF( N.GT.0 )
      $            CALL DCOPY( N-1, SE, 1, WORK, 1 )
-*            
+*
                CALL DSTEQR( 'N', N, D2, WORK, WORK( N+1 ), LDU,
      $                      WORK( N+1 ), IINFO )
                IF( IINFO.NE.0 ) THEN
@@ -739,24 +752,24 @@
      $                      WORK, RESULT( 3 ) )
 *
 *              DSYTRD_SB2ST Lower case is used to compute D3.
-*              Note to set SD and SE to zero to be sure not reusing 
-*              the one from above. Compare it with D1 computed 
-*              using the DSBTRD. 
-*           
-               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, 1 )
-               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, 1 )
+*              Note to set SD and SE to zero to be sure not reusing
+*              the one from above. Compare it with D1 computed
+*              using the DSBTRD.
+*
+               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SD, N )
+               CALL DLASET( 'Full', N, 1, ZERO, ZERO, SE, N )
                CALL DLACPY( ' ', K+1, N, A, LDA, U, LDU )
                LH = MAX(1, 4*N)
                LW = LWORK - LH
-               CALL DSYTRD_SB2ST( 'N', 'N', "L", N, K, U, LDU, SD, SE, 
+               CALL DSYTRD_SB2ST( 'N', 'N', "L", N, K, U, LDU, SD, SE,
      $                      WORK, LH, WORK( LH+1 ), LW, IINFO )
-*           
+*
 *              Compute D3 from the 2-stage Upper case
-*           
+*
                CALL DCOPY( N, SD, 1, D3, 1 )
                IF( N.GT.0 )
      $            CALL DCOPY( N-1, SE, 1, WORK, 1 )
-*           
+*
                CALL DSTEQR( 'N', N, D3, WORK, WORK( N+1 ), LDU,
      $                      WORK( N+1 ), IINFO )
                IF( IINFO.NE.0 ) THEN
@@ -770,24 +783,24 @@
                      GO TO 150
                   END IF
                END IF
-*           
-*           
+*
+*
 *              Do Tests 3 and 4 which are similar to 11 and 12 but with the
 *              D1 computed using the standard 1-stage reduction as reference
-*           
+*
                NTEST = 6
                TEMP1 = ZERO
                TEMP2 = ZERO
                TEMP3 = ZERO
                TEMP4 = ZERO
-*           
+*
                DO 151 J = 1, N
                   TEMP1 = MAX( TEMP1, ABS( D1( J ) ), ABS( D2( J ) ) )
                   TEMP2 = MAX( TEMP2, ABS( D1( J )-D2( J ) ) )
                   TEMP3 = MAX( TEMP3, ABS( D1( J ) ), ABS( D3( J ) ) )
                   TEMP4 = MAX( TEMP4, ABS( D1( J )-D3( J ) ) )
   151          CONTINUE
-*           
+*
                RESULT(5) = TEMP2 / MAX( UNFL, ULP*MAX( TEMP1, TEMP2 ) )
                RESULT(6) = TEMP4 / MAX( UNFL, ULP*MAX( TEMP3, TEMP4 ) )
 *
@@ -827,12 +840,13 @@
       CALL DLASUM( 'DSB', NOUNIT, NERRS, NTESTT )
       RETURN
 *
- 9999 FORMAT( ' DCHKSBSTG: ', A, ' returned INFO=', I6, '.', / 9X, 'N=',
-     $      I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5, ')' )
+ 9999 FORMAT( ' DCHKSB2STG: ', A, ' returned INFO=', I6, '.', / 9X,
+     $      'N=', I6, ', JTYPE=', I6, ', ISEED=(', 3( I5, ',' ), I5,
+     $      ')' )
 *
  9998 FORMAT( / 1X, A3,
      $      ' -- Real Symmetric Banded Tridiagonal Reduction Routines' )
- 9997 FORMAT( ' Matrix types (see DCHKSBSTG for details): ' )
+ 9997 FORMAT( ' Matrix types (see DCHKSB2STG for details): ' )
 *
  9996 FORMAT( / ' Special Matrices:',
      $      / '  1=Zero matrix.                        ',
@@ -863,6 +877,6 @@
  9993 FORMAT( ' N=', I5, ', K=', I4, ', seed=', 4( I4, ',' ), ' type ',
      $      I2, ', test(', I2, ')=', G10.3 )
 *
-*     End of DCHKSBSTG
+*     End of DCHKSB2STG
 *
       END

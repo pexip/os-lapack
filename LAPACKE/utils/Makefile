@@ -28,7 +28,6 @@
 ##############################################################################
 # Contents: Native C interface to LAPACK
 # Author: Intel Corporation
-# September, 2010
 ##############################################################################
 # makefile for LAPACKE, used to build lapacke binary.
 #
@@ -77,6 +76,8 @@ OBJ = lapacke_cgb_nancheck.o \
       lapacke_ctp_trans.o \
       lapacke_ctr_nancheck.o \
       lapacke_ctr_trans.o \
+      lapacke_ctz_nancheck.o \
+      lapacke_ctz_trans.o \
       lapacke_dgb_nancheck.o \
       lapacke_dgb_trans.o \
       lapacke_dge_nancheck.o \
@@ -111,6 +112,8 @@ OBJ = lapacke_cgb_nancheck.o \
       lapacke_dtp_trans.o \
       lapacke_dtr_nancheck.o \
       lapacke_dtr_trans.o \
+      lapacke_dtz_nancheck.o \
+      lapacke_dtz_trans.o \
       lapacke_lsame.o \
       lapacke_sgb_nancheck.o \
       lapacke_sgb_trans.o \
@@ -146,6 +149,8 @@ OBJ = lapacke_cgb_nancheck.o \
       lapacke_stp_trans.o \
       lapacke_str_nancheck.o \
       lapacke_str_trans.o \
+      lapacke_stz_nancheck.o \
+      lapacke_stz_trans.o \
       lapacke_xerbla.o \
       lapacke_zgb_nancheck.o \
       lapacke_zgb_trans.o \
@@ -185,6 +190,8 @@ OBJ = lapacke_cgb_nancheck.o \
       lapacke_ztp_trans.o \
       lapacke_ztr_nancheck.o \
       lapacke_ztr_trans.o \
+      lapacke_ztz_nancheck.o \
+      lapacke_ztz_trans.o \
       lapacke_make_complex_float.o \
       lapacke_make_complex_double.o
 

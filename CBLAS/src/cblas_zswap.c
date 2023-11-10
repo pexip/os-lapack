@@ -8,8 +8,8 @@
  */
 #include "cblas.h"
 #include "cblas_f77.h"
-void cblas_zswap( const int N, void  *X, const int incX, void  *Y,
-                       const int incY)
+void cblas_zswap( const CBLAS_INT N, void  *X, const CBLAS_INT incX, void  *Y,
+                       const CBLAS_INT incY)
 {
 #ifdef F77_INT
    F77_INT F77_N=N, F77_incX=incX, F77_incY=incY;

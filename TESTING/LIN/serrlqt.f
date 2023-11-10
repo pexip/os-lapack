@@ -48,18 +48,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup double_lin
 *
 *  =====================================================================
       SUBROUTINE SERRLQT( PATH, NUNIT )
       IMPLICIT NONE
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER*3        PATH
@@ -104,11 +101,11 @@
 *
       DO J = 1, NMAX
          DO I = 1, NMAX
-            A( I, J ) = 1.D0 / REAL( I+J )
-            C( I, J ) = 1.D0 / REAL( I+J )
-            T( I, J ) = 1.D0 / REAL( I+J )
+            A( I, J ) = 1. / REAL( I+J )
+            C( I, J ) = 1. / REAL( I+J )
+            T( I, J ) = 1. / REAL( I+J )
          END DO
-         W( J ) = 0.D0
+         W( J ) = 0.
       END DO
       OK = .TRUE.
 *

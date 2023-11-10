@@ -95,17 +95,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup single_blas_testing
 *
 *  =====================================================================
       PROGRAM SBLAT2
 *
-*  -- Reference BLAS test routine (version 3.7.0) --
+*  -- Reference BLAS test routine --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *  =====================================================================
 *
@@ -424,7 +421,7 @@
  9981 FORMAT( /' ******* FATAL ERROR - TESTS ABANDONED *******' )
  9980 FORMAT( ' ERROR-EXITS WILL NOT BE TESTED' )
 *
-*     End of SBLAT2.
+*     End of SBLAT2
 *
       END
       SUBROUTINE SCHK1( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -472,7 +469,7 @@
       LOGICAL            LSE, LSERES
       EXTERNAL           LSE, LSERES
 *     .. External Subroutines ..
-      EXTERNAL           SGBMV, SGEMV, SMAKE, SMVCH
+      EXTERNAL           SGBMV, SGEMV, SMAKE, SMVCH, SREGR1
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN
 *     .. Scalars in Common ..
@@ -727,6 +724,34 @@
 *
   120 CONTINUE
 *
+*     Regression test to verify preservation of y when m zero, n nonzero.
+*
+      CALL SREGR1( TRANS, M, N, LY, KL, KU, ALPHA, AA, LDA, XX, INCX,
+     $   BETA, YY, INCY, YS )
+      IF( FULL )THEN
+         IF( TRACE )
+     $      WRITE( NTRA, FMT = 9994 )NC, SNAME, TRANS, M, N, ALPHA, LDA,
+     $      INCX, BETA, INCY
+         IF( REWI )
+     $      REWIND NTRA
+         CALL SGEMV( TRANS, M, N, ALPHA, AA, LDA, XX, INCX, BETA, YY,
+     $      INCY )
+      ELSE IF( BANDED )THEN
+         IF( TRACE )
+     $      WRITE( NTRA, FMT = 9995 )NC, SNAME, TRANS, M, N, KL, KU,
+     $      ALPHA, LDA, INCX, BETA, INCY
+         IF( REWI )
+     $      REWIND NTRA
+         CALL SGBMV( TRANS, M, N, KL, KU, ALPHA, AA, LDA, XX, INCX,
+     $      BETA, YY, INCY )
+      END IF
+      NC = NC + 1
+      IF( .NOT.LSE( YS, YY, LY ) )THEN
+         WRITE( NOUT, FMT = 9998 )NARGS - 1
+         FATAL = .TRUE.
+         GO TO 130
+      END IF
+*
 *     Report result.
 *
       IF( ERRMAX.LT.THRESH )THEN
@@ -765,7 +790,7 @@
  9993 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of SCHK1.
+*     End of SCHK1
 *
       END
       SUBROUTINE SCHK2( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -1108,7 +1133,7 @@
  9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of SCHK2.
+*     End of SCHK2
 *
       END
       SUBROUTINE SCHK3( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -1465,7 +1490,7 @@
  9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of SCHK3.
+*     End of SCHK3
 *
       END
       SUBROUTINE SCHK4( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -1726,7 +1751,7 @@
  9993 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of SCHK4.
+*     End of SCHK4
 *
       END
       SUBROUTINE SCHK5( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -2004,7 +2029,7 @@
  9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of SCHK5.
+*     End of SCHK5
 *
       END
       SUBROUTINE SCHK6( SNAME, EPS, THRESH, NOUT, NTRA, TRACE, REWI,
@@ -2319,7 +2344,7 @@
  9992 FORMAT( ' ******* FATAL ERROR - ERROR-EXIT TAKEN ON VALID CALL *',
      $      '******' )
 *
-*     End of SCHK6.
+*     End of SCHK6
 *
       END
       SUBROUTINE SCHKE( ISNUM, SRNAMT, NOUT )
@@ -2645,7 +2670,7 @@
  9998 FORMAT( ' ******* ', A6, ' FAILED THE TESTS OF ERROR-EXITS *****',
      $      '**' )
 *
-*     End of SCHKE.
+*     End of SCHKE
 *
       END
       SUBROUTINE SMAKE( TYPE, UPLO, DIAG, M, N, A, NMAX, AA, LDA, KL,
@@ -2821,7 +2846,7 @@
       END IF
       RETURN
 *
-*     End of SMAKE.
+*     End of SMAKE
 *
       END
       SUBROUTINE SMVCH( TRANS, M, N, ALPHA, A, NMAX, X, INCX, BETA, Y,
@@ -2938,7 +2963,7 @@
      $      'TED RESULT' )
  9998 FORMAT( 1X, I7, 2G18.6 )
 *
-*     End of SMVCH.
+*     End of SMVCH
 *
       END
       LOGICAL FUNCTION LSE( RI, RJ, LR )
@@ -2968,7 +2993,7 @@
       LSE = .FALSE.
    30 RETURN
 *
-*     End of LSE.
+*     End of LSE
 *
       END
       LOGICAL FUNCTION LSERES( TYPE, UPLO, M, N, AA, AS, LDA )
@@ -3027,7 +3052,7 @@
       LSERES = .FALSE.
    80 RETURN
 *
-*     End of LSERES.
+*     End of LSERES
 *
       END
       REAL FUNCTION SBEG( RESET )
@@ -3073,7 +3098,7 @@
       SBEG = REAL( I - 500 )/1001.0
       RETURN
 *
-*     End of SBEG.
+*     End of SBEG
 *
       END
       REAL FUNCTION SDIFF( X, Y )
@@ -3089,7 +3114,7 @@
       SDIFF = X - Y
       RETURN
 *
-*     End of SDIFF.
+*     End of SDIFF
 *
       END
       SUBROUTINE CHKXER( SRNAMT, INFOT, NOUT, LERR, OK )
@@ -3117,8 +3142,41 @@
  9999 FORMAT( ' ***** ILLEGAL VALUE OF PARAMETER NUMBER ', I2, ' NOT D',
      $      'ETECTED BY ', A6, ' *****' )
 *
-*     End of CHKXER.
+*     End of CHKXER
 *
+      END
+      SUBROUTINE SREGR1( TRANS, M, N, LY, KL, KU, ALPHA, A, LDA, X,
+     $   INCX, BETA, Y, INCY, YS )
+*
+*  Input initialization for regression test.
+*
+*     .. Scalar Arguments ..
+      CHARACTER*1        TRANS
+      INTEGER            LY, M, N, KL, KU, LDA, INCX, INCY
+      REAL               ALPHA, BETA
+*     .. Array Arguments ..
+      REAL               A(LDA,*), X(*), Y(*), YS(*)
+*     .. Local Scalars ..
+      INTEGER            I
+*     .. Intrinsic Functions ..
+      INTRINSIC          REAL
+*     .. Executable Statements ..
+      TRANS = 'T'
+      M = 0
+      N = 5
+      KL = 0
+      KU = 0
+      ALPHA = 1.0
+      LDA = MAX( 1, M )
+      INCX = 1
+      BETA = -0.7
+      INCY = 1
+      LY = ABS( INCY )*N
+      DO 10 I = 1, LY
+         Y( I ) = 42.0 + REAL( I )
+         YS( I ) = Y( I )
+  10  CONTINUE
+      RETURN
       END
       SUBROUTINE XERBLA( SRNAME, INFO )
 *
@@ -3173,4 +3231,3 @@
 *     End of XERBLA
 *
       END
-

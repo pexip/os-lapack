@@ -27,9 +27,10 @@
 *>
 *> \verbatim
 *>
-*> ZBDT02 tests the change of basis C = U' * B by computing the residual
+*> ZBDT02 tests the change of basis C = U**H * B by computing the
+*> residual
 *>
-*>    RESID = norm( B - U * C ) / ( max(m,n) * norm(B) * EPS ),
+*>    RESID = norm(B - U * C) / ( max(m,n) * norm(B) * EPS ),
 *>
 *> where B and C are M by N matrices, U is an M by M orthogonal matrix,
 *> and EPS is the machine precision.
@@ -66,7 +67,7 @@
 *> \param[in] C
 *> \verbatim
 *>          C is COMPLEX*16 array, dimension (LDC,N)
-*>          The m by n matrix C, assumed to contain U' * B.
+*>          The m by n matrix C, assumed to contain U**H * B.
 *> \endverbatim
 *>
 *> \param[in] LDC
@@ -100,7 +101,7 @@
 *> \param[out] RESID
 *> \verbatim
 *>          RESID is DOUBLE PRECISION
-*>          RESID = norm( B - U * C ) / ( max(m,n) * norm(B) * EPS ),
+*>          RESID = norm(B - U * C) / ( max(m,n) * norm(B) * EPS ),
 *> \endverbatim
 *
 *  Authors:
@@ -111,18 +112,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
       SUBROUTINE ZBDT02( M, N, B, LDB, C, LDC, U, LDU, WORK, RWORK,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            LDB, LDC, LDU, M, N
@@ -164,7 +162,7 @@
       REALMN = DBLE( MAX( M, N ) )
       EPS = DLAMCH( 'Precision' )
 *
-*     Compute norm( B - U * C )
+*     Compute norm(B - U * C)
 *
       DO 10 J = 1, N
          CALL ZCOPY( M, B( 1, J ), 1, WORK, 1 )

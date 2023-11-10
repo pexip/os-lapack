@@ -10,10 +10,10 @@
 #include "cblas.h"
 #include "cblas_f77.h"
 void cblas_cher2k(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
-                  const CBLAS_TRANSPOSE Trans, const int N, const int K,
-                  const void *alpha, const void *A, const int lda,
-                  const void *B, const int ldb, const float beta,
-                  void *C, const int ldc)
+                  const CBLAS_TRANSPOSE Trans, const CBLAS_INT N, const CBLAS_INT K,
+                  const void *alpha, const void *A, const CBLAS_INT lda,
+                  const void *B, const CBLAS_INT ldb, const float beta,
+                  void *C, const CBLAS_INT ldc)
 {
    char UL, TR;
 #ifdef F77_CHAR

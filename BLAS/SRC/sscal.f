@@ -62,8 +62,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup single_blas_level1
 *
 *> \par Further Details:
@@ -79,10 +77,9 @@
 *  =====================================================================
       SUBROUTINE SSCAL(N,SA,SX,INCX)
 *
-*  -- Reference BLAS level1 routine (version 3.8.0) --
+*  -- Reference BLAS level1 routine --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       REAL SA
@@ -97,10 +94,14 @@
 *     .. Local Scalars ..
       INTEGER I,M,MP1,NINCX
 *     ..
+*     .. Parameters ..
+      REAL ONE
+      PARAMETER (ONE=1.0E+0)
+*     ..
 *     .. Intrinsic Functions ..
       INTRINSIC MOD
 *     ..
-      IF (N.LE.0 .OR. INCX.LE.0) RETURN
+      IF (N.LE.0 .OR. INCX.LE.0 .OR. SA.EQ.ONE) RETURN
       IF (INCX.EQ.1) THEN
 *
 *        code for increment equal to 1
@@ -133,4 +134,7 @@
          END DO
       END IF
       RETURN
+*
+*     End of SSCAL
+*
       END

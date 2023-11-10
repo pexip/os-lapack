@@ -61,8 +61,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complex_blas_level1
 *
 *> \par Further Details:
@@ -78,10 +76,9 @@
 *  =====================================================================
       SUBROUTINE CSCAL(N,CA,CX,INCX)
 *
-*  -- Reference BLAS level1 routine (version 3.8.0) --
+*  -- Reference BLAS level1 routine --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
 *     .. Scalar Arguments ..
       COMPLEX CA
@@ -96,7 +93,11 @@
 *     .. Local Scalars ..
       INTEGER I,NINCX
 *     ..
-      IF (N.LE.0 .OR. INCX.LE.0) RETURN
+*     .. Parameters ..
+      COMPLEX ONE
+      PARAMETER (ONE= (1.0E+0,0.0E+0))
+*     ..
+      IF (N.LE.0 .OR. INCX.LE.0 .OR. CA.EQ.ONE) RETURN
       IF (INCX.EQ.1) THEN
 *
 *        code for increment equal to 1
@@ -114,4 +115,7 @@
          END DO
       END IF
       RETURN
+*
+*     End of CSCAL
+*
       END
