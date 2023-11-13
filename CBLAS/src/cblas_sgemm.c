@@ -10,10 +10,10 @@
 #include "cblas.h"
 #include "cblas_f77.h"
 void cblas_sgemm(const CBLAS_LAYOUT layout, const CBLAS_TRANSPOSE TransA,
-                 const CBLAS_TRANSPOSE TransB, const int M, const int N,
-                 const int K, const float alpha, const float  *A,
-                 const int lda, const float  *B, const int ldb,
-                 const float beta, float  *C, const int ldc)
+                 const CBLAS_TRANSPOSE TransB, const CBLAS_INT M, const CBLAS_INT N,
+                 const CBLAS_INT K, const float alpha, const float  *A,
+                 const CBLAS_INT lda, const float  *B, const CBLAS_INT ldb,
+                 const float beta, float  *C, const CBLAS_INT ldc)
 {
    char TA, TB;
 #ifdef F77_CHAR
@@ -91,7 +91,7 @@ void cblas_sgemm(const CBLAS_LAYOUT layout, const CBLAS_TRANSPOSE TransA,
       else
       {
          cblas_xerbla(2, "cblas_sgemm",
-                       "Illegal TransA setting, %d\n", TransA);
+                       "Illegal TransB setting, %d\n", TransB);
          CBLAS_CallFromC = 0;
          RowMajorStrg = 0;
          return;

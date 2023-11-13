@@ -1,4 +1,4 @@
-*> \brief \b SLAED4 used by sstedc. Finds a single root of the secular equation.
+*> \brief \b SLAED4 used by SSTEDC. Finds a single root of the secular equation.
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -132,8 +132,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup auxOTHERcomputational
 *
 *> \par Contributors:
@@ -145,10 +143,9 @@
 *  =====================================================================
       SUBROUTINE SLAED4( N, I, D, Z, DELTA, RHO, DLAM, INFO )
 *
-*  -- LAPACK computational routine (version 3.7.0) --
+*  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            I, INFO, N
@@ -331,9 +328,12 @@
          IF( C.LT.ZERO )
      $      C = ABS( C )
          IF( C.EQ.ZERO ) THEN
-*          ETA = B/A
+*           ETA = B/A
 *           ETA = RHO - TAU
-            ETA = DLTUB - TAU
+*           ETA = DLTUB - TAU
+*
+*           Update proposed by Li, Ren-Cang:
+            ETA = -W / ( DPSI+DPHI )
          ELSE IF( A.GE.ZERO ) THEN
             ETA = ( A+SQRT( ABS( A*A-FOUR*B*C ) ) ) / ( TWO*C )
          ELSE

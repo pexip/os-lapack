@@ -26,7 +26,7 @@
 *>
 *> \verbatim
 *>
-*> SGBT01 reconstructs a band matrix  A  from its L*U factorization and
+*> SGBT01 reconstructs a band matrix A from its L*U factorization and
 *> computes the residual:
 *>    norm(L*U - A) / ( N * norm(A) * EPS ),
 *> where EPS is the machine epsilon.
@@ -118,18 +118,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup single_lin
 *
 *  =====================================================================
       SUBROUTINE SGBT01( M, N, KL, KU, A, LDA, AFAC, LDAFAC, IPIV, WORK,
      $                   RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            KL, KU, LDA, LDAFAC, M, N
@@ -228,7 +225,7 @@
          END IF
    40 CONTINUE
 *
-*     Compute norm( L*U - A ) / ( N * norm(A) * EPS )
+*     Compute norm(L*U - A) / ( N * norm(A) * EPS )
 *
       IF( ANORM.LE.ZERO ) THEN
          IF( RESID.NE.ZERO )

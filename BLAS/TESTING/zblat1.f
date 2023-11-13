@@ -30,17 +30,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup complex16_blas_testing
 *
 *  =====================================================================
       PROGRAM ZBLAT1
 *
-*  -- Reference BLAS test routine (version 3.7.0) --
+*  -- Reference BLAS test routine --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *  =====================================================================
 *
@@ -86,6 +83,9 @@
 *
 99999 FORMAT (' Complex BLAS Test Program Results',/1X)
 99998 FORMAT ('                                    ----- PASS -----')
+*
+*     End of ZBLAT1
+*
       END
       SUBROUTINE HEADER
 *     .. Parameters ..
@@ -114,6 +114,9 @@
       RETURN
 *
 99999 FORMAT (/' Test of subprogram number',I3,12X,A6)
+*
+*     End of HEADER
+*
       END
       SUBROUTINE CHECK1(SFAC)
 *     .. Parameters ..
@@ -127,12 +130,12 @@
 *     .. Local Scalars ..
       COMPLEX*16        CA
       DOUBLE PRECISION  SA
-      INTEGER           I, J, LEN, NP1
+      INTEGER           I, IX, J, LEN, NP1
 *     .. Local Arrays ..
-      COMPLEX*16        CTRUE5(8,5,2), CTRUE6(8,5,2), CV(8,5,2), CX(8),
-     +                  MWPCS(5), MWPCT(5)
+      COMPLEX*16        CTRUE5(8,5,2), CTRUE6(8,5,2), CV(8,5,2), CVR(8),
+     +                  CX(8), CXR(15), MWPCS(5), MWPCT(5)
       DOUBLE PRECISION  STRUE2(5), STRUE4(5)
-      INTEGER           ITRUE3(5)
+      INTEGER           ITRUE3(5), ITRUEC(5)
 *     .. External Functions ..
       DOUBLE PRECISION  DZASUM, DZNRM2
       INTEGER           IZAMAX
@@ -173,6 +176,9 @@
      +                  (7.0D0,2.0D0), (0.3D0,0.1D0), (5.0D0,8.0D0),
      +                  (0.5D0,0.0D0), (6.0D0,9.0D0), (0.0D0,0.5D0),
      +                  (8.0D0,3.0D0), (0.0D0,0.2D0), (9.0D0,4.0D0)/
+      DATA              CVR/(8.0D0,8.0D0), (-7.0D0,-7.0D0),
+     +                  (9.0D0,9.0D0), (5.0D0,5.0D0), (9.0D0,9.0D0),
+     +                  (8.0D0,8.0D0), (7.0D0,7.0D0), (7.0D0,7.0D0)/
       DATA              STRUE2/0.0D0, 0.5D0, 0.6D0, 0.7D0, 0.8D0/
       DATA              STRUE4/0.0D0, 0.7D0, 1.0D0, 1.3D0, 1.6D0/
       DATA              ((CTRUE5(I,J,1),I=1,8),J=1,5)/(0.1D0,0.1D0),
@@ -238,6 +244,7 @@
      +                  (0.15D0,0.00D0), (6.0D0,9.0D0), (0.00D0,0.15D0),
      +                  (8.0D0,3.0D0), (0.00D0,0.06D0), (9.0D0,4.0D0)/
       DATA              ITRUE3/0, 1, 2, 2, 2/
+      DATA              ITRUEC/0, 1, 1, 1, 1/
 *     .. Executable Statements ..
       DO 60 INCX = 1, 2
          DO 40 NP1 = 1, 5
@@ -268,12 +275,25 @@
             ELSE IF (ICASE.EQ.10) THEN
 *              .. IZAMAX ..
                CALL ITEST1(IZAMAX(N,CX,INCX),ITRUE3(NP1))
+               DO 160 I = 1, LEN
+                  CX(I) = (42.0D0,43.0D0)
+  160          CONTINUE
+               CALL ITEST1(IZAMAX(N,CX,INCX),ITRUEC(NP1))
             ELSE
                WRITE (NOUT,*) ' Shouldn''t be here in CHECK1'
                STOP
             END IF
 *
    40    CONTINUE
+         IF (ICASE.EQ.10) THEN
+            N = 8
+            IX = 1
+            DO 180 I = 1, N
+               CXR(IX) = CVR(I)
+               IX = IX + INCX
+  180       CONTINUE
+            CALL ITEST1(IZAMAX(N,CXR,INCX),3)
+         END IF
    60 CONTINUE
 *
       INCX = 1
@@ -315,6 +335,9 @@
          CALL CTEST(5,CX,MWPCT,MWPCS,SFAC)
       END IF
       RETURN
+*
+*     End of CHECK1
+*
       END
       SUBROUTINE CHECK2(SFAC)
 *     .. Parameters ..
@@ -327,11 +350,13 @@
       LOGICAL           PASS
 *     .. Local Scalars ..
       COMPLEX*16        CA
-      INTEGER           I, J, KI, KN, KSIZE, LENX, LENY, MX, MY
+      INTEGER           I, J, KI, KN, KSIZE, LENX, LENY, LINCX, LINCY,
+     +                  MX, MY
 *     .. Local Arrays ..
       COMPLEX*16        CDOT(1), CSIZE1(4), CSIZE2(7,2), CSIZE3(14),
      +                  CT10X(7,4,4), CT10Y(7,4,4), CT6(4,4), CT7(4,4),
-     +                  CT8(7,4,4), CX(7), CX1(7), CY(7), CY1(7)
+     +                  CT8(7,4,4), CTY0(1), CX(7), CX0(1), CX1(7),
+     +                  CY(7), CY0(1), CY1(7)
       INTEGER           INCXS(4), INCYS(4), LENS(4,2), NS(4)
 *     .. External Functions ..
       COMPLEX*16        ZDOTC, ZDOTU
@@ -546,6 +571,23 @@
 *              .. ZCOPY ..
                CALL ZCOPY(N,CX,INCX,CY,INCY)
                CALL CTEST(LENY,CY,CT10Y(1,KN,KI),CSIZE3,1.0D0)
+               IF (KI.EQ.1) THEN
+                  CX0(1) = (42.0D0,43.0D0)
+                  CY0(1) = (44.0D0,45.0D0)
+                  IF (N.EQ.0) THEN
+                     CTY0(1) = CY0(1)
+                  ELSE
+                     CTY0(1) = CX0(1)
+                  END IF
+                  LINCX = INCX
+                  INCX = 0
+                  LINCY = INCY
+                  INCY = 0
+                  CALL ZCOPY(N,CX0,INCX,CY0,INCY)
+                  CALL CTEST(1,CY0,CTY0,CSIZE3,1.0D0)
+                  INCX = LINCX
+                  INCY = LINCY
+               END IF
             ELSE IF (ICASE.EQ.5) THEN
 *              .. ZSWAP ..
                CALL ZSWAP(N,CX,INCX,CY,INCY)
@@ -559,6 +601,9 @@
    40    CONTINUE
    60 CONTINUE
       RETURN
+*
+*     End of CHECK2
+*
       END
       SUBROUTINE STEST(LEN,SCOMP,STRUE,SSIZE,SFAC)
 *     ********************************* STEST **************************
@@ -615,6 +660,9 @@
      +       ' COMP(I)                             TRUE(I)  DIFFERENCE',
      +       '     SIZE(I)',/1X)
 99997 FORMAT (1X,I4,I3,3I5,I3,2D36.8,2D12.4)
+*
+*     End of STEST
+*
       END
       SUBROUTINE STEST1(SCOMP1,STRUE1,SSIZE,SFAC)
 *     ************************* STEST1 *****************************
@@ -640,6 +688,9 @@
       CALL STEST(1,SCOMP,STRUE,SSIZE,SFAC)
 *
       RETURN
+*
+*     End of STEST1
+*
       END
       DOUBLE PRECISION FUNCTION SDIFF(SA,SB)
 *     ********************************* SDIFF **************************
@@ -650,6 +701,9 @@
 *     .. Executable Statements ..
       SDIFF = SA - SB
       RETURN
+*
+*     End of SDIFF
+*
       END
       SUBROUTINE CTEST(LEN,CCOMP,CTRUE,CSIZE,SFAC)
 *     **************************** CTEST *****************************
@@ -681,6 +735,9 @@
 *
       CALL STEST(2*LEN,SCOMP,STRUE,SSIZE,SFAC)
       RETURN
+*
+*     End of CTEST
+*
       END
       SUBROUTINE ITEST1(ICOMP,ITRUE)
 *     ********************************* ITEST1 *************************
@@ -721,4 +778,7 @@
      +       ' COMP                                TRUE     DIFFERENCE',
      +       /1X)
 99997 FORMAT (1X,I4,I3,3I5,2I36,I12)
+*
+*     End of ITEST1
+*
       END

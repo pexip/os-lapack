@@ -8,7 +8,7 @@
 *  Definition:
 *  ===========
 *
-*       SUBROUTINE ZCHKHE_AA_2STAGE( DOTYPE, NN, NVAL, NNB, NBVAL, 
+*       SUBROUTINE ZCHKHE_AA_2STAGE( DOTYPE, NN, NVAL, NNB, NBVAL,
 *                             NNS, NSVAL, THRESH, TSTERR, NMAX, A,
 *                             AFAC, AINV, B, X, XACT, WORK, RWORK,
 *                             IWORK, NOUT )
@@ -66,7 +66,7 @@
 *>
 *> \param[in] NBVAL
 *> \verbatim
-*>          NBVAL is INTEGER array, dimension (NBVAL)
+*>          NBVAL is INTEGER array, dimension (NNB)
 *>          The values of the blocksize NB.
 *> \endverbatim
 *>
@@ -163,8 +163,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2017
-*
 *> \ingroup complex16_lin
 *
 *  =====================================================================
@@ -172,10 +170,9 @@
      $                      NSVAL, THRESH, TSTERR, NMAX, A, AFAC, AINV,
      $                      B, X, XACT, WORK, RWORK, IWORK, NOUT )
 *
-*  -- LAPACK test routine (version 3.8.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2017
 *
       IMPLICIT NONE
 *
@@ -188,7 +185,8 @@
       LOGICAL            DOTYPE( * )
       INTEGER            IWORK( * ), NBVAL( * ), NSVAL( * ), NVAL( * )
       COMPLEX*16         A( * ), AFAC( * ), AINV( * ), B( * ),
-     $                   RWORK( * ), WORK( * ), X( * ), XACT( * )
+     $                   WORK( * ), X( * ), XACT( * )
+      DOUBLE PRECISION   RWORK( * )
 *     ..
 *
 *  =====================================================================
@@ -575,6 +573,6 @@
      $      I6 )
       RETURN
 *
-*     End of ZCHKSY_AA_2STAGE
+*     End of ZCHKHE_AA_2STAGE
 *
       END

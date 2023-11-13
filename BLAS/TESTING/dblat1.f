@@ -30,17 +30,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date April 2012
-*
 *> \ingroup double_blas_testing
 *
 *  =====================================================================
       PROGRAM DBLAT1
 *
-*  -- Reference BLAS test routine (version 3.8.0) --
+*  -- Reference BLAS test routine --
 *  -- Reference BLAS is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     April 2012
 *
 *  =====================================================================
 *
@@ -91,6 +88,9 @@
 *
 99999 FORMAT (' Real BLAS Test Program Results',/1X)
 99998 FORMAT ('                                    ----- PASS -----')
+*
+*     End of DBLAT1
+*
       END
       SUBROUTINE HEADER
 *     .. Parameters ..
@@ -122,6 +122,9 @@
       RETURN
 *
 99999 FORMAT (/' Test of subprogram number',I3,12X,A6)
+*
+*     End of HEADER
+*
       END
       SUBROUTINE CHECK0(SFAC)
 *     .. Parameters ..
@@ -238,6 +241,9 @@
          END IF
    20 CONTINUE
    40 RETURN
+*
+*     End of CHECK0
+*
       END
       SUBROUTINE CHECK1(SFAC)
 *     .. Parameters ..
@@ -249,11 +255,12 @@
       INTEGER           ICASE, INCX, INCY, N
       LOGICAL           PASS
 *     .. Local Scalars ..
-      INTEGER           I, LEN, NP1
+      INTEGER           I, IX, LEN, NP1
 *     .. Local Arrays ..
       DOUBLE PRECISION  DTRUE1(5), DTRUE3(5), DTRUE5(8,5,2), DV(8,5,2),
-     +                  SA(10), STEMP(1), STRUE(8), SX(8)
-      INTEGER           ITRUE2(5)
+     +                  DVR(8), SA(10), STEMP(1), STRUE(8), SX(8),
+     +                  SXR(15)
+      INTEGER           ITRUE2(5), ITRUEC(5)
 *     .. External Functions ..
       DOUBLE PRECISION  DASUM, DNRM2
       INTEGER           IDAMAX
@@ -280,6 +287,8 @@
      +                  0.2D0, 3.0D0, -0.6D0, 5.0D0, 0.3D0, 2.0D0,
      +                  2.0D0, 2.0D0, 0.1D0, 4.0D0, -0.3D0, 6.0D0,
      +                  -0.5D0, 7.0D0, -0.1D0, 3.0D0/
+      DATA              DVR/8.0D0, -7.0D0, 9.0D0, 5.0D0, 9.0D0, 8.0D0,
+     +                  7.0D0, 7.0D0/
       DATA              DTRUE1/0.0D0, 0.3D0, 0.5D0, 0.7D0, 0.6D0/
       DATA              DTRUE3/0.0D0, 0.3D0, 0.7D0, 1.1D0, 1.0D0/
       DATA              DTRUE5/0.10D0, 2.0D0, 2.0D0, 2.0D0, 2.0D0,
@@ -297,6 +306,7 @@
      +                  0.03D0, 4.0D0, -0.09D0, 6.0D0, -0.15D0, 7.0D0,
      +                  -0.03D0, 3.0D0/
       DATA              ITRUE2/0, 1, 2, 2, 3/
+      DATA              ITRUEC/0, 1, 1, 1, 1/
 *     .. Executable Statements ..
       DO 80 INCX = 1, 2
          DO 60 NP1 = 1, 5
@@ -325,13 +335,29 @@
             ELSE IF (ICASE.EQ.10) THEN
 *              .. IDAMAX ..
                CALL ITEST1(IDAMAX(N,SX,INCX),ITRUE2(NP1))
+               DO 100 I = 1, LEN
+                  SX(I) = 42.0D0
+  100          CONTINUE
+               CALL ITEST1(IDAMAX(N,SX,INCX),ITRUEC(NP1))
             ELSE
                WRITE (NOUT,*) ' Shouldn''t be here in CHECK1'
                STOP
             END IF
    60    CONTINUE
+         IF (ICASE.EQ.10) THEN
+            N = 8
+            IX = 1
+            DO 120 I = 1, N
+               SXR(IX) = DVR(I)
+               IX = IX + INCX
+  120       CONTINUE
+            CALL ITEST1(IDAMAX(N,SXR,INCX),3)
+         END IF
    80 CONTINUE
       RETURN
+*
+*     End of CHECK1
+*
       END
       SUBROUTINE CHECK2(SFAC)
 *     .. Parameters ..
@@ -345,7 +371,7 @@
 *     .. Local Scalars ..
       DOUBLE PRECISION  SA
       INTEGER           I, J, KI, KN, KNI, KPAR, KSIZE, LENX, LENY,
-     $                  MX, MY
+     $                  LINCX, LINCY, MX, MY
 *     .. Local Arrays ..
       DOUBLE PRECISION  DT10X(7,4,4), DT10Y(7,4,4), DT7(4,4),
      $                  DT8(7,4,4), DX1(7),
@@ -354,7 +380,8 @@
      $                  DPAR(5,4), DT19X(7,4,16),DT19XA(7,4,4),
      $                  DT19XB(7,4,4), DT19XC(7,4,4),DT19XD(7,4,4),
      $                  DT19Y(7,4,16), DT19YA(7,4,4),DT19YB(7,4,4),
-     $                  DT19YC(7,4,4), DT19YD(7,4,4), DTEMP(5)
+     $                  DT19YC(7,4,4), DT19YD(7,4,4), DTEMP(5),
+     $                  STY0(1), SX0(1), SY0(1)
       INTEGER           INCXS(4), INCYS(4), LENS(4,2), NS(4)
 *     .. External Functions ..
       DOUBLE PRECISION  DDOT, DSDOT
@@ -628,6 +655,23 @@
    60          CONTINUE
                CALL DCOPY(N,SX,INCX,SY,INCY)
                CALL STEST(LENY,SY,STY,SSIZE2(1,1),1.0D0)
+               IF (KI.EQ.1) THEN
+                  SX0(1) = 42.0D0
+                  SY0(1) = 43.0D0
+                  IF (N.EQ.0) THEN
+                     STY0(1) = SY0(1)
+                  ELSE
+                     STY0(1) = SX0(1)
+                  END IF
+                  LINCX = INCX
+                  INCX = 0
+                  LINCY = INCY
+                  INCY = 0
+                  CALL DCOPY(N,SX0,INCX,SY0,INCY)
+                  CALL STEST(1,SY0,STY0,SSIZE2(1,1),1.0D0)
+                  INCX = LINCX
+                  INCY = LINCY
+               END IF
             ELSE IF (ICASE.EQ.6) THEN
 *              .. DSWAP ..
                CALL DSWAP(N,SX,INCX,SY,INCY)
@@ -677,6 +721,9 @@
   100    CONTINUE
   120 CONTINUE
       RETURN
+*
+*     End of CHECK2
+*
       END
       SUBROUTINE CHECK3(SFAC)
 *     .. Parameters ..
@@ -883,6 +930,9 @@
          CALL STEST(5,COPYY,MWPSTY,MWPSTY,SFAC)
   200 CONTINUE
       RETURN
+*
+*     End of CHECK3
+*
       END
       SUBROUTINE STEST(LEN,SCOMP,STRUE,SSIZE,SFAC)
 *     ********************************* STEST **************************
@@ -939,6 +989,9 @@
      +       ' COMP(I)                             TRUE(I)  DIFFERENCE',
      +       '     SIZE(I)',/1X)
 99997 FORMAT (1X,I4,I3,2I5,I3,2D36.8,2D12.4)
+*
+*     End of STEST
+*
       END
       SUBROUTINE TESTDSDOT(SCOMP,STRUE,SSIZE,SFAC)
 *     ********************************* STEST **************************
@@ -987,6 +1040,9 @@
      +       ' COMP(I)                             TRUE(I)  DIFFERENCE',
      +       '     SIZE(I)',/1X)
 99997 FORMAT (1X,I4,I3,1I5,I3,2E36.8,2E12.4)
+*
+*     End of TESTDSDOT
+*
       END
       SUBROUTINE STEST1(SCOMP1,STRUE1,SSIZE,SFAC)
 *     ************************* STEST1 *****************************
@@ -1012,6 +1068,9 @@
       CALL STEST(1,SCOMP,STRUE,SSIZE,SFAC)
 *
       RETURN
+*
+*     End of STEST1
+*
       END
       DOUBLE PRECISION FUNCTION SDIFF(SA,SB)
 *     ********************************* SDIFF **************************
@@ -1022,6 +1081,9 @@
 *     .. Executable Statements ..
       SDIFF = SA - SB
       RETURN
+*
+*     End of SDIFF
+*
       END
       SUBROUTINE ITEST1(ICOMP,ITRUE)
 *     ********************************* ITEST1 *************************
@@ -1063,4 +1125,7 @@
      +       ' COMP                                TRUE     DIFFERENCE',
      +       /1X)
 99997 FORMAT (1X,I4,I3,2I5,2I36,I12)
+*
+*     End of ITEST1
+*
       END

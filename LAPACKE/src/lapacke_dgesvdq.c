@@ -28,7 +28,6 @@
 *****************************************************************************
 * Contents: Native high-level C interface to LAPACK function dgesvdq
 * Author: Intel Corporation
-* Generated November 2018
 *****************************************************************************/
 
 #include "lapacke_utils.h"
@@ -49,7 +48,6 @@ lapack_int LAPACKE_dgesvdq( int matrix_layout, char joba, char jobp,
     lapack_int lrwork = -1;
     double* rwork = NULL;
     double rwork_query;
-    lapack_int i;
     if( matrix_layout != LAPACK_COL_MAJOR && matrix_layout != LAPACK_ROW_MAJOR ) {
         LAPACKE_xerbla( "LAPACKE_dgesvdq", -1 );
         return -1;
@@ -70,7 +68,7 @@ lapack_int LAPACKE_dgesvdq( int matrix_layout, char joba, char jobp,
     if( info != 0 ) {
         goto exit_level_0;
     }
-    liwork = (lapack_int)iwork_query;
+    liwork = iwork_query;
     lwork = (lapack_int)work_query;
     lrwork = (lapack_int)rwork_query;
     /* Allocate memory for work arrays */

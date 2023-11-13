@@ -1,16 +1,74 @@
+lapack (3.11.0-2) unstable; urgency=medium
+
+  * cblas64-test.patch: new patch, fixes test failure on 64-bit big endian archs
+  * Fix output of CBLAS64 test printed in build log.
+    It would previously print output of CBLAS tests.
+
+ -- Sébastien Villemot <sebastien@debian.org>  Sun, 27 Nov 2022 13:21:52 +0100
+
+lapack (3.11.0-1) unstable; urgency=medium
+
+  * New upstream version 3.11.0
+  * d/copyright: reflect upstream changes
+  * Incorporate CBLAS64 into libblas64-3, since CBLAS is now buildable in 64-bit
+  * d/control: drop transitional liblapack-pic package, no longer needed
+
+ -- Sébastien Villemot <sebastien@debian.org>  Sat, 26 Nov 2022 23:04:00 +0100
+
+lapack (3.10.1-2) unstable; urgency=medium
+
+  * Bump S-V to 4.6.1
+  * Remove manpages with too generic name (Closes: #1011422)
+
+ -- Sébastien Villemot <sebastien@debian.org>  Mon, 23 May 2022 09:51:12 +0200
+
+lapack (3.10.1-1) unstable; urgency=medium
+
+  [ Sébastien Villemot ]
+  * New upstream version 3.10.1
+  * d/copyright: reflect upstream changes
+  * Drop patches applied upstream:
+    + xerbla-strlen.patch
+    + docsdir.patch
+    + CVE-2021-4048.patch
+
+  [ Anton Gladky ]
+  * Skip reprotest
+
+ -- Sébastien Villemot <sebastien@debian.org>  Mon, 18 Apr 2022 21:23:06 +0200
+
+lapack (3.10.0-2) unstable; urgency=medium
+
+  * Team upload.
+  * [8d2c868] CVE-2021-4048. Fix out-of-bounds read flaw. (Closes: #1001902)
+  * [3977090] Trim trailing whitespace.
+  * [3a33ecf] Use secure URI in Homepage field.
+  * [4c1aef3] Update renamed lintian tag names in lintian overrides.
+  * [409fef7] Apply cme fix dpkg
+
+ -- Anton Gladky <gladk@debian.org>  Sat, 18 Dec 2021 19:02:36 +0100
+
+lapack (3.10.0-1) unstable; urgency=medium
+
+  * New upstream version 3.10.0
+  * d/copyright: reflect upstream changes
+  * Drop patches applied upstream:
+    + python3.patch
+    + missing-lapacke-prototypes.patch
+    + combssq-nan-propagation.patch
+  * Add d/upstream/metadata
+  * Bump to S-V 4.6.0
+  * docsdir.patch: new patch, fixes doc build directory
+  * xerbla-strlen.patch: new patch, fixes FTBFS related to xerbla C
+    implementation changes
+
+ -- Sébastien Villemot <sebastien@debian.org>  Wed, 01 Sep 2021 15:01:55 +0200
+
 lapack (3.9.0-3+deb11u1pexip1) pexip; urgency=medium
 
   * New upstream release
 
  -- Steve McIntyre <steve.mcintyre@pexip.com>  Mon, 09 Oct 2023 14:39:38 +0100
-
-lapack (3.9.0-3+deb11u1) bullseye; urgency=medium
-
-  * lapacke-syev-heev.patch: new patch, fixes eigenvector matrix in
-    LAPACKE’s interface to symmetric eigenvalue problem (syev and heev
-    functions) (Closes: #1037242)
-
- -- Sébastien Villemot <sebastien@debian.org>  Fri, 23 Jun 2023 14:53:50 +0200
 
 lapack (3.9.0-3pexip5) pexip-bullseye; urgency=medium
 
@@ -1314,5 +1372,3 @@ lapack (2.0.1-1) unstable; urgency=low
   * Initial Release.
 
  -- Sue Campbell <sacampbe@mercator.math.uwaterloo.ca>  Tue, 7 Jan 1997 15:08:06 -0500
-
-

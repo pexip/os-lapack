@@ -360,8 +360,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
@@ -370,10 +368,9 @@
      $                   BP, WORK, NWORK, RWORK, LRWORK, IWORK, LIWORK,
      $                   RESULT, INFO )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LDB, LDZ, LIWORK, LRWORK, NOUNIT,
@@ -666,8 +663,8 @@
                IL = 1
                IU = N
             ELSE
-               IL = 1 + ( N-1 )*DLARND( 1, ISEED2 )
-               IU = 1 + ( N-1 )*DLARND( 1, ISEED2 )
+               IL = 1 + INT( ( N-1 )*DLARND( 1, ISEED2 ) )
+               IU = 1 + INT( ( N-1 )*DLARND( 1, ISEED2 ) )
                IF( IL.GT.IU ) THEN
                   ITEMP = IL
                   IL = IU

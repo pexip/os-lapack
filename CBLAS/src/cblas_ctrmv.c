@@ -9,8 +9,8 @@
 #include "cblas_f77.h"
 void cblas_ctrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
                  const CBLAS_TRANSPOSE TransA, const CBLAS_DIAG Diag,
-                 const int N, const void  *A, const int lda,
-                 void  *X, const int incX)
+                 const CBLAS_INT N, const void  *A, const CBLAS_INT lda,
+                 void  *X, const CBLAS_INT incX)
 
 {
    char TA;
@@ -30,7 +30,7 @@ void cblas_ctrmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
    #define F77_lda lda
    #define F77_incX incX
 #endif
-   int n, i=0, tincX;
+   CBLAS_INT n, i=0, tincX;
    float *st=0,*x=(float *)X;
    extern int CBLAS_CallFromC;
    extern int RowMajorStrg;

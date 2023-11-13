@@ -83,17 +83,14 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
 *> \ingroup OTHERauxiliary
 *
 *  =====================================================================
       SUBROUTINE XERBLA_ARRAY( SRNAME_ARRAY, SRNAME_LEN, INFO)
 *
-*  -- LAPACK auxiliary routine (version 3.7.0) --
+*  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       INTEGER SRNAME_LEN, INFO
@@ -118,7 +115,7 @@
       EXTERNAL XERBLA
 *     ..
 *     .. Executable Statements ..
-      SRNAME = ''
+      SRNAME = ' '
       DO I = 1, MIN( SRNAME_LEN, LEN( SRNAME ) )
          SRNAME( I:I ) = SRNAME_ARRAY( I )
       END DO

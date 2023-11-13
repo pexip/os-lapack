@@ -10,8 +10,8 @@
 #include "cblas_f77.h"
 void cblas_strmv(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
                  const CBLAS_TRANSPOSE TransA, const CBLAS_DIAG Diag,
-                 const int N, const float  *A, const int lda,
-                 float  *X, const int incX)
+                 const CBLAS_INT N, const float  *A, const CBLAS_INT lda,
+                 float  *X, const CBLAS_INT incX)
 
 {
    char TA;

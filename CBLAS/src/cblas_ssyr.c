@@ -9,8 +9,8 @@
 #include "cblas.h"
 #include "cblas_f77.h"
 void cblas_ssyr(const CBLAS_LAYOUT layout, const CBLAS_UPLO Uplo,
-                const int N, const float  alpha, const float  *X,
-                const int incX, float  *A, const int lda)
+                const CBLAS_INT N, const float  alpha, const float  *X,
+                const CBLAS_INT incX, float  *A, const CBLAS_INT lda)
 {
    char UL;
 #ifdef F77_CHAR

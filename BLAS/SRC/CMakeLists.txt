@@ -28,21 +28,32 @@
 #---------------------------------------------------------
 #  Level 1 BLAS
 #---------------------------------------------------------
-set(SBLAS1 isamax.f sasum.f saxpy.f scopy.f sdot.f snrm2.f
-	srot.f srotg.f sscal.f sswap.f sdsdot.f srotmg.f srotm.f)
 
-set(CBLAS1 scabs1.f scasum.f scnrm2.f icamax.f caxpy.f ccopy.f
-	cdotc.f cdotu.f csscal.f crotg.f cscal.f cswap.f csrot.f)
+set(SBLAS1 isamax.f sasum.f saxpy.f scopy.f sdot.f snrm2.f90
+	srot.f srotg.f90 sscal.f sswap.f sdsdot.f srotmg.f srotm.f)
 
-set(DBLAS1 idamax.f dasum.f daxpy.f dcopy.f ddot.f dnrm2.f
-	drot.f drotg.f dscal.f dsdot.f dswap.f drotmg.f drotm.f)
+set(CBLAS1 scabs1.f scasum.f scnrm2.f90 icamax.f caxpy.f ccopy.f
+	cdotc.f cdotu.f csscal.f crotg.f90 cscal.f cswap.f csrot.f)
 
-set(ZBLAS1 dcabs1.f dzasum.f dznrm2.f izamax.f zaxpy.f zcopy.f
-	zdotc.f zdotu.f zdscal.f zrotg.f zscal.f zswap.f zdrot.f)
+set(DBLAS1 idamax.f dasum.f daxpy.f dcopy.f ddot.f dnrm2.f90
+	drot.f drotg.f90 dscal.f dsdot.f dswap.f drotmg.f drotm.f)
 
-set(CB1AUX isamax.f sasum.f saxpy.f scopy.f snrm2.f sscal.f)
+set(DB1AUX sscal.f isamax.f)
 
-set(ZB1AUX idamax.f dasum.f daxpy.f dcopy.f dnrm2.f dscal.f)
+set(ZBLAS1 dcabs1.f dzasum.f dznrm2.f90 izamax.f zaxpy.f zcopy.f
+	zdotc.f zdotu.f zdscal.f zrotg.f90 zscal.f zswap.f zdrot.f)
+
+set(CB1AUX
+    isamax.f idamax.f
+    sasum.f saxpy.f scopy.f sdot.f sgemm.f sgemv.f snrm2.f90 srot.f sscal.f
+    sswap.f)
+
+set(ZB1AUX
+    icamax.f idamax.f
+    cgemm.f cherk.f cscal.f ctrsm.f
+    dasum.f daxpy.f dcopy.f ddot.f dgemm.f dgemv.f dnrm2.f90 drot.f dscal.f
+    dswap.f
+    scabs1.f)
 
 #---------------------------------------------------------------------
 #  Auxiliary routines needed by both the Level 2 and Level 3 BLAS
@@ -87,7 +98,8 @@ if(BUILD_SINGLE)
   list(APPEND SOURCES ${SBLAS1} ${ALLBLAS} ${SBLAS2} ${SBLAS3})
 endif()
 if(BUILD_DOUBLE)
-  list(APPEND SOURCES ${DBLAS1} ${ALLBLAS} ${DBLAS2} ${DBLAS3})
+  list(APPEND SOURCES
+       ${DBLAS1} ${DB1AUX} ${ALLBLAS} ${DBLAS2} ${DBLAS3} ${SBLAS3})
 endif()
 if(BUILD_COMPLEX)
   list(APPEND SOURCES ${CBLAS1} ${CB1AUX} ${ALLBLAS} ${CBLAS2} ${CBLAS3})
@@ -97,10 +109,14 @@ if(BUILD_COMPLEX16)
 endif()
 list(REMOVE_DUPLICATES SOURCES)
 
-add_library(blas ${SOURCES})
+add_library(${BLASLIB} ${SOURCES})
 set_target_properties(
-  blas PROPERTIES
+  ${BLASLIB} PROPERTIES
   VERSION ${LAPACK_VERSION}
   SOVERSION ${LAPACK_MAJOR_VERSION}
   )
-lapack_install_library(blas)
+lapack_install_library(${BLASLIB})
+
+if( TEST_FORTRAN_COMPILER )
+  add_dependencies( ${BLASLIB} run_test_zcomplexabs run_test_zcomplexdiv run_test_zcomplexmult run_test_zminMax )
+endif()

@@ -116,19 +116,15 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date December 2016
-*
-*
 *> \ingroup complex_lin
 *
 *  =====================================================================
       SUBROUTINE CHET01_AA( UPLO, N, A, LDA, AFAC, LDAFAC, IPIV, C,
      $                      LDC, RWORK, RESID )
 *
-*  -- LAPACK test routine (version 3.7.0) --
+*  -- LAPACK test routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
 *  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     December 2016
 *
 *     .. Scalar Arguments ..
       CHARACTER          UPLO
@@ -163,7 +159,7 @@
       EXTERNAL           CLASET, CLAVHE
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          DBLE
+      INTRINSIC          REAL
 *     ..
 *     .. Executable Statements ..
 *
@@ -259,7 +255,7 @@
          IF( RESID.NE.ZERO )
      $      RESID = ONE / EPS
       ELSE
-         RESID = ( ( RESID / DBLE( N ) ) / ANORM ) / EPS
+         RESID = ( ( RESID / REAL( N ) ) / ANORM ) / EPS
       END IF
 *
       RETURN

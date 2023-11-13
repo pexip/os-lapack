@@ -44,8 +44,6 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \date November 2019
-*
 *> \ingroup auxOTHERauxiliary
 *
 *  =====================================================================
@@ -60,7 +58,7 @@
       INTEGER VERS_MAJOR, VERS_MINOR, VERS_PATCH
 *  =====================================================================
       VERS_MAJOR = 3
-      VERS_MINOR = 9
+      VERS_MINOR = 11
       VERS_PATCH = 0
 *  =====================================================================
 *

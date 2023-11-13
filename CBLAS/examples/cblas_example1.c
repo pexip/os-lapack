@@ -11,7 +11,7 @@ int main ( )
 
    double *a, *x, *y;
    double alpha, beta;
-   int m, n, lda, incx, incy, i;
+   CBLAS_INT m, n, lda, incx, incy, i;
 
    Layout = CblasColMajor;
    transa = CblasNoTrans;
@@ -61,7 +61,7 @@ int main ( )
                 y, incy );
    /* Print y */
    for( i = 0; i < n; i++ )
-      printf(" y%d = %f\n", i, y[i]);
+      printf(" y%" CBLAS_IFMT " = %f\n", i, y[i]);
    free(a);
    free(x);
    free(y);

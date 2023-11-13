@@ -6,12 +6,20 @@
 #define XerblaStrLen 6
 #define XerblaStrLen1 7
 
-#ifdef F77_CHAR
-void F77_xerbla(F77_CHAR F77_srname, void *vinfo)
-#else
-void F77_xerbla(char *srname, void *vinfo)
+void
+#ifdef HAS_ATTRIBUTE_WEAK_SUPPORT
+__attribute__((weak))
 #endif
-
+F77_xerbla_base
+#ifdef F77_CHAR
+(F77_CHAR F77_srname, void *vinfo
+#else
+(char *srname, void *vinfo
+#endif
+#ifdef BLAS_FORTRAN_STRLEN_END
+, size_t len
+#endif
+)
 {
 #ifdef F77_CHAR
    char *srname;

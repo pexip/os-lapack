@@ -9,11 +9,11 @@
 #include "cblas.h"
 #include "cblas_f77.h"
 void cblas_dgbmv(const CBLAS_LAYOUT layout,
-                 const CBLAS_TRANSPOSE TransA, const int M, const int N,
-                 const int KL, const int KU,
-                 const double alpha, const double  *A, const int lda,
-                 const double  *X, const int incX, const double beta,
-                 double  *Y, const int incY)
+                 const CBLAS_TRANSPOSE TransA, const CBLAS_INT M, const CBLAS_INT N,
+                 const CBLAS_INT KL, const CBLAS_INT KU,
+                 const double alpha, const double  *A, const CBLAS_INT lda,
+                 const double  *X, const CBLAS_INT incX, const double beta,
+                 double  *Y, const CBLAS_INT incY)
 {
    char TA;
 #ifdef F77_CHAR

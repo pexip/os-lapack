@@ -5,14 +5,14 @@
 #include "cblas.h"
 #include "cblas_test.h"
 
-void cblas_xerbla(int info, const char *rout, const char *form, ...)
+void cblas_xerbla(CBLAS_INT info, const char *rout, const char *form, ...)
 {
    extern int cblas_lerr, cblas_info, cblas_ok;
    extern int link_xerbla;
    extern int RowMajorStrg;
    extern char *cblas_rout;
 
-   /* Initially, c__3chke will call this routine with
+   /* Initially, c__3chke may call this routine with
     * global variable link_xerbla=1, and F77_xerbla will set link_xerbla=0.
     * This is done to fool the linker into loading these subroutines first
     * instead of ones in the CBLAS or the legacy BLAS library.
@@ -78,7 +78,7 @@ void cblas_xerbla(int info, const char *rout, const char *form, ...)
    }
 
    if (info != cblas_info){
-      printf("***** XERBLA WAS CALLED WITH INFO = %d INSTEAD OF %d in %s *******\n",info, cblas_info, rout);
+      printf("***** XERBLA WAS CALLED WITH INFO = %" CBLAS_IFMT " INSTEAD OF %d in %s *******\n",info, cblas_info, rout);
       cblas_lerr = PASSED;
       cblas_ok = FALSE;
    } else cblas_lerr = FAILED;
