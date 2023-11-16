@@ -1,3 +1,9 @@
+lapack (3.11.0-2pexip1) pexip-bookworm; urgency=medium
+
+  * Initial bookworm build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 16 Nov 2023 10:05:19 +0000
+
 lapack (3.11.0-2) unstable; urgency=medium
 
   * cblas64-test.patch: new patch, fixes test failure on 64-bit big endian archs
