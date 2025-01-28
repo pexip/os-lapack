@@ -61,6 +61,16 @@
 *>                  x
 *>
 *> where inv(B) denotes the inverse of B.
+*>
+*> Callers of this subroutine should note that the singularity/rank-deficiency checks
+*> implemented in this subroutine are rudimentary. The CTRTRS subroutine called by this
+*> subroutine only signals a failure due to singularity if the problem is exactly singular.
+*>
+*> It is conceivable for one (or more) of the factors involved in the generalized QR
+*> factorization of the pair (A, B) to be subnormally close to singularity without this
+*> subroutine signalling an error. The solutions computed for such almost-rank-deficient
+*> problems may be less accurate due to a loss of numerical precision.
+*> 
 *> \endverbatim
 *
 *  Arguments:
@@ -159,12 +169,12 @@
 *>          = 0:  successful exit.
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value.
 *>          = 1:  the upper triangular factor R associated with A in the
-*>                generalized QR factorization of the pair (A, B) is
+*>                generalized QR factorization of the pair (A, B) is exactly
 *>                singular, so that rank(A) < M; the least squares
 *>                solution could not be computed.
 *>          = 2:  the bottom (N-M) by (N-M) part of the upper trapezoidal
 *>                factor T associated with B in the generalized QR
-*>                factorization of the pair (A, B) is singular, so that
+*>                factorization of the pair (A, B) is exactly singular, so that
 *>                rank( A B ) < N; the least squares solution could not
 *>                be computed.
 *> \endverbatim
@@ -177,10 +187,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHEReigen
+*> \ingroup ggglm
 *
 *  =====================================================================
-      SUBROUTINE CGGGLM( N, M, P, A, LDA, B, LDB, D, X, Y, WORK, LWORK,
+      SUBROUTINE CGGGLM( N, M, P, A, LDA, B, LDB, D, X, Y, WORK,
+     $                   LWORK,
      $                   INFO )
 *
 *  -- LAPACK driver routine --
@@ -208,12 +219,14 @@
      $                   NB4, NP
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CGEMV, CGGQRF, CTRTRS, CUNMQR, CUNMRQ,
+      EXTERNAL           CCOPY, CGEMV, CGGQRF, CTRTRS, CUNMQR,
+     $                   CUNMRQ,
      $                   XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, MAX, MIN
@@ -252,7 +265,7 @@
             LWKMIN = M + N + P
             LWKOPT = M + NP + MAX( N, P )*NB
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
             INFO = -12
@@ -294,7 +307,8 @@
 *     Update left-hand-side vector d = Q**H*d = ( d1 ) M
 *                                               ( d2 ) N-M
 *
-      CALL CUNMQR( 'Left', 'Conjugate transpose', N, 1, M, A, LDA, WORK,
+      CALL CUNMQR( 'Left', 'Conjugate transpose', N, 1, M, A, LDA,
+     $             WORK,
      $             D, MAX( 1, N ), WORK( M+NP+1 ), LWORK-M-NP, INFO )
       LOPT = MAX( LOPT, INT( WORK( M+NP+1 ) ) )
 *
@@ -320,13 +334,15 @@
 *
 *     Update d1 = d1 - T12*y2
 *
-      CALL CGEMV( 'No transpose', M, N-M, -CONE, B( 1, M+P-N+1 ), LDB,
+      CALL CGEMV( 'No transpose', M, N-M, -CONE, B( 1, M+P-N+1 ),
+     $            LDB,
      $            Y( M+P-N+1 ), 1, CONE, D, 1 )
 *
 *     Solve triangular system: R11*x = d1
 *
       IF( M.GT.0 ) THEN
-         CALL CTRTRS( 'Upper', 'No Transpose', 'Non unit', M, 1, A, LDA,
+         CALL CTRTRS( 'Upper', 'No Transpose', 'Non unit', M, 1, A,
+     $                LDA,
      $                D, M, INFO )
 *
          IF( INFO.GT.0 ) THEN
@@ -344,7 +360,7 @@
       CALL CUNMRQ( 'Left', 'Conjugate transpose', P, 1, NP,
      $             B( MAX( 1, N-P+1 ), 1 ), LDB, WORK( M+1 ), Y,
      $             MAX( 1, P ), WORK( M+NP+1 ), LWORK-M-NP, INFO )
-      WORK( 1 ) = M + NP + MAX( LOPT, INT( WORK( M+NP+1 ) ) )
+      WORK( 1 ) = CMPLX( M + NP + MAX( LOPT, INT( WORK( M+NP+1 ) ) ) )
 *
       RETURN
 *

@@ -156,7 +156,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realSYcomputational
+*> \ingroup trsyl
 *
 *  =====================================================================
       SUBROUTINE STRSYL( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB, C,
@@ -196,7 +196,7 @@
       EXTERNAL           LSAME, SDOT, SLAMCH, SLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLABAD, SLALN2, SLASY2, SSCAL, XERBLA
+      EXTERNAL           SLALN2, SLASY2, SSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, REAL
@@ -244,14 +244,13 @@
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
       SMLNUM = SMLNUM*REAL( M*N ) / EPS
       BIGNUM = ONE / SMLNUM
 *
       SMIN = MAX( SMLNUM, EPS*SLANGE( 'M', M, M, A, LDA, DUM ),
      $       EPS*SLANGE( 'M', N, N, B, LDB, DUM ) )
 *
-      SGN = ISGN
+      SGN = REAL( ISGN )
 *
       IF( NOTRNA .AND. NOTRNB ) THEN
 *
@@ -592,7 +591,8 @@
                   SUMR = SDOT( L1-1, C( K2, 1 ), LDC, B( 1, L2 ), 1 )
                   VEC( 2, 2 ) = C( K2, L2 ) - ( SUML+SGN*SUMR )
 *
-                  CALL SLASY2( .TRUE., .FALSE., ISGN, 2, 2, A( K1, K1 ),
+                  CALL SLASY2( .TRUE., .FALSE., ISGN, 2, 2, A( K1,
+     $                         K1 ),
      $                         LDA, B( L1, L1 ), LDB, VEC, 2, SCALOC, X,
      $                         2, XNORM, IERR )
                   IF( IERR.NE.0 )
@@ -776,7 +776,8 @@
      $                         B( L2, MIN(L2+1, N ) ), LDB )
                   VEC( 2, 2 ) = C( K2, L2 ) - ( SUML+SGN*SUMR )
 *
-                  CALL SLASY2( .TRUE., .TRUE., ISGN, 2, 2, A( K1, K1 ),
+                  CALL SLASY2( .TRUE., .TRUE., ISGN, 2, 2, A( K1,
+     $                         K1 ),
      $                         LDA, B( L1, L1 ), LDB, VEC, 2, SCALOC, X,
      $                         2, XNORM, IERR )
                   IF( IERR.NE.0 )
@@ -969,7 +970,8 @@
      $                         B( L2, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 2 ) = C( K2, L2 ) - ( SUML+SGN*SUMR )
 *
-                  CALL SLASY2( .FALSE., .TRUE., ISGN, 2, 2, A( K1, K1 ),
+                  CALL SLASY2( .FALSE., .TRUE., ISGN, 2, 2, A( K1,
+     $                         K1 ),
      $                         LDA, B( L1, L1 ), LDB, VEC, 2, SCALOC, X,
      $                         2, XNORM, IERR )
                   IF( IERR.NE.0 )

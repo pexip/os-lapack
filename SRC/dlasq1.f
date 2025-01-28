@@ -101,7 +101,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup auxOTHERcomputational
+*> \ingroup lasq1
 *
 *  =====================================================================
       SUBROUTINE DLASQ1( N, D, E, WORK, INFO )
@@ -128,7 +128,8 @@
       DOUBLE PRECISION   EPS, SCALE, SAFMIN, SIGMN, SIGMX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLAS2, DLASCL, DLASQ2, DLASRT, XERBLA
+      EXTERNAL           DCOPY, DLAS2, DLASCL, DLASQ2, DLASRT,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DLAMCH

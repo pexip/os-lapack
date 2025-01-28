@@ -18,14 +18,14 @@ Depends: libblas3, liblapack3, liblapack-test, python3, gcc
 
 Tests: blas64-testsuite
 Depends:
- libblas64-3 [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
- libblas64-test [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
+ libblas64-3 [!armhf !i386 !armel !hurd-i386 !m68k !powerpc !sh4 !x32],
+ libblas64-test [!armhf !i386 !armel !hurd-i386 !m68k !powerpc !sh4 !x32],
  gcc, dpkg-dev
 Restrictions: allow-stderr, skippable
 
 Tests: lapack64-testsuite
-Depends: libblas64-3 [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
- liblapack64-3 [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
- liblapack64-test [!armhf !i386 !armel !mipsel !hurd-i386 !kfreebsd-i386 !m68k !powerpc !sh4 !x32],
+Depends: libblas64-3 [!armhf !i386 !armel !hurd-i386 !m68k !powerpc !sh4 !x32],
+ liblapack64-3 [!armhf !i386 !armel !hurd-i386 !m68k !powerpc !sh4 !x32],
+ liblapack64-test [!armhf !i386 !armel !hurd-i386 !m68k !powerpc !sh4 !x32],
  python3, gcc, dpkg-dev
 Restrictions: allow-stderr, skippable

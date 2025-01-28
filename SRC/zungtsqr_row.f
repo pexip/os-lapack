@@ -144,6 +144,7 @@
 *>
 *> \param[in] LWORK
 *> \verbatim
+*>          LWORK is INTEGER
 *>          The dimension of the array WORK.
 *>          LWORK >= NBLOCAL * MAX(NBLOCAL,(N-NBLOCAL)),
 *>          where NBLOCAL=MIN(NB,N).
@@ -169,7 +170,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup ungtsqr_row
 *
 *> \par Contributors:
 *  ==================

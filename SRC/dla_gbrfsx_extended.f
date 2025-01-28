@@ -398,10 +398,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGBcomputational
+*> \ingroup la_gbrfsx_extended
 *
 *  =====================================================================
-      SUBROUTINE DLA_GBRFSX_EXTENDED( PREC_TYPE, TRANS_TYPE, N, KL, KU,
+      SUBROUTINE DLA_GBRFSX_EXTENDED( PREC_TYPE, TRANS_TYPE, N, KL,
+     $                                KU,
      $                                NRHS, AB, LDAB, AFB, LDAFB, IPIV,
      $                                COLEQU, C, B, LDB, Y, LDY,
      $                                BERR_OUT, N_NORMS, ERR_BNDS_NORM,
@@ -466,7 +467,8 @@
       PARAMETER          ( LA_LINRX_RCOND_I = 3 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DCOPY, DGBTRS, DGBMV, BLAS_DGBMV_X,
+      EXTERNAL           DAXPY, DCOPY, DGBTRS, DGBMV,
+     $                   BLAS_DGBMV_X,
      $                   BLAS_DGBMV2_X, DLA_GBAMV, DLA_WWADDW, DLAMCH,
      $                   CHLA_TRANSTYPE, DLA_LIN_BERR
       DOUBLE PRECISION   DLAMCH
@@ -531,7 +533,8 @@
 
 !        XXX: RES is no longer needed.
             CALL DCOPY( N, RES, 1, DY, 1 )
-            CALL DGBTRS( TRANS, N, KL, KU, 1, AFB, LDAFB, IPIV, DY, N,
+            CALL DGBTRS( TRANS, N, KL, KU, 1, AFB, LDAFB, IPIV, DY,
+     $                   N,
      $           INFO )
 *
 *         Calculate relative changes DX_X, DZ_Z and ratios DXRAT, DZRAT.
@@ -645,7 +648,7 @@
             PREVNORMDX = NORMDX
             PREV_DZ_Z = DZ_Z
 *
-*           Update soluton.
+*           Update solution.
 *
             IF (Y_PREC_STATE .LT. EXTRA_Y) THEN
                CALL DAXPY( N, 1.0D+0, DY, 1, Y(1,J), 1 )

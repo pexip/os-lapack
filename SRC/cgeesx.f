@@ -230,10 +230,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEeigen
+*> \ingroup geesx
 *
 *  =====================================================================
-      SUBROUTINE CGEESX( JOBVS, SORT, SELECT, SENSE, N, A, LDA, SDIM, W,
+      SUBROUTINE CGEESX( JOBVS, SORT, SELECT, SENSE, N, A, LDA, SDIM,
+     $                   W,
      $                   VS, LDVS, RCONDE, RCONDV, WORK, LWORK, RWORK,
      $                   BWORK, INFO )
 *
@@ -273,14 +274,16 @@
       REAL               DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CGEBAK, CGEBAL, CGEHRD, CHSEQR, CLACPY,
-     $                   CLASCL, CTRSEN, CUNGHR, SLABAD, SLASCL, XERBLA
+      EXTERNAL           CCOPY, CGEBAK, CGEBAL, CGEHRD, CHSEQR,
+     $                   CLACPY,
+     $                   CLASCL, CTRSEN, CUNGHR, SLASCL, XERBLA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               CLANGE, SLAMCH
-      EXTERNAL           LSAME, ILAENV, CLANGE, SLAMCH
+      REAL               CLANGE, SLAMCH, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, CLANGE, SLAMCH,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, SQRT
@@ -300,7 +303,8 @@
 *
       IF( ( .NOT.WANTVS ) .AND. ( .NOT.LSAME( JOBVS, 'N' ) ) ) THEN
          INFO = -1
-      ELSE IF( ( .NOT.WANTST ) .AND. ( .NOT.LSAME( SORT, 'N' ) ) ) THEN
+      ELSE IF( ( .NOT.WANTST ) .AND.
+     $         ( .NOT.LSAME( SORT, 'N' ) ) ) THEN
          INFO = -2
       ELSE IF( .NOT.( WANTSN .OR. WANTSE .OR. WANTSV .OR. WANTSB ) .OR.
      $         ( .NOT.WANTST .AND. .NOT.WANTSN ) ) THEN
@@ -342,7 +346,8 @@
             IF( .NOT.WANTVS ) THEN
                MAXWRK = MAX( MAXWRK, HSWORK )
             ELSE
-               MAXWRK = MAX( MAXWRK, N + ( N - 1 )*ILAENV( 1, 'CUNGHR',
+               MAXWRK = MAX( MAXWRK, N + ( N - 1 )*ILAENV( 1,
+     $                       'CUNGHR',
      $                       ' ', N, 1, N, -1 ) )
                MAXWRK = MAX( MAXWRK, HSWORK )
             END IF
@@ -350,7 +355,7 @@
             IF( .NOT.WANTSN )
      $         LWRK = MAX( LWRK, ( N*N )/2 )
          END IF
-         WORK( 1 ) = LWRK
+         WORK( 1 ) = SROUNDUP_LWORK(LWRK)
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
             INFO = -15
@@ -376,7 +381,6 @@
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
       SMLNUM = SQRT( SMLNUM ) / EPS
       BIGNUM = ONE / SMLNUM
 *
@@ -421,7 +425,8 @@
 *        (CWorkspace: need 2*N-1, prefer N+(N-1)*NB)
 *        (RWorkspace: none)
 *
-         CALL CUNGHR( N, ILO, IHI, VS, LDVS, WORK( ITAU ), WORK( IWRK ),
+         CALL CUNGHR( N, ILO, IHI, VS, LDVS, WORK( ITAU ),
+     $                WORK( IWRK ),
      $                LWORK-IWRK+1, IERR )
       END IF
 *
@@ -452,7 +457,8 @@
 *                     otherwise, need none )
 *        (RWorkspace: none)
 *
-         CALL CTRSEN( SENSE, JOBVS, BWORK, N, A, LDA, VS, LDVS, W, SDIM,
+         CALL CTRSEN( SENSE, JOBVS, BWORK, N, A, LDA, VS, LDVS, W,
+     $                SDIM,
      $                RCONDE, RCONDV, WORK( IWRK ), LWORK-IWRK+1,
      $                ICOND )
          IF( .NOT.WANTSN )
@@ -471,7 +477,8 @@
 *        (CWorkspace: none)
 *        (RWorkspace: need N)
 *
-         CALL CGEBAK( 'P', 'R', N, ILO, IHI, RWORK( IBAL ), N, VS, LDVS,
+         CALL CGEBAK( 'P', 'R', N, ILO, IHI, RWORK( IBAL ), N, VS,
+     $                LDVS,
      $                IERR )
       END IF
 *
@@ -483,12 +490,13 @@
          CALL CCOPY( N, A, LDA+1, W, 1 )
          IF( ( WANTSV .OR. WANTSB ) .AND. INFO.EQ.0 ) THEN
             DUM( 1 ) = RCONDV
-            CALL SLASCL( 'G', 0, 0, CSCALE, ANRM, 1, 1, DUM, 1, IERR )
+            CALL SLASCL( 'G', 0, 0, CSCALE, ANRM, 1, 1, DUM, 1,
+     $                   IERR )
             RCONDV = DUM( 1 )
          END IF
       END IF
 *
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
       RETURN
 *
 *     End of CGEESX

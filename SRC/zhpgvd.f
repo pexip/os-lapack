@@ -44,12 +44,6 @@
 *> positive definite.
 *> If eigenvectors are desired, it uses a divide and conquer algorithm.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -205,7 +199,7 @@
 *>                    i off-diagonal elements of an intermediate
 *>                    tridiagonal form did not convergeto zero;
 *>             > N:   if INFO = N + i, for 1 <= i <= n, then the leading
-*>                    minor of order i of B is not positive definite.
+*>                    principal minor of order i of B is not positive.
 *>                    The factorization of B could not be completed and
 *>                    no eigenvalues or eigenvectors were computed.
 *> \endverbatim
@@ -218,7 +212,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHEReigen
+*> \ingroup hpgvd
 *
 *> \par Contributors:
 *  ==================
@@ -226,7 +220,8 @@
 *>     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA
 *
 *  =====================================================================
-      SUBROUTINE ZHPGVD( ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ, WORK,
+      SUBROUTINE ZHPGVD( ITYPE, JOBZ, UPLO, N, AP, BP, W, Z, LDZ,
+     $                   WORK,
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, INFO )
 *
 *  -- LAPACK driver routine --
@@ -255,7 +250,8 @@
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZHPEVD, ZHPGST, ZPPTRF, ZTPMV, ZTPSV
+      EXTERNAL           XERBLA, ZHPEVD, ZHPGST, ZPPTRF, ZTPMV,
+     $                   ZTPSV
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          DBLE, MAX
@@ -299,7 +295,7 @@
          END IF
 *
          WORK( 1 ) = LWMIN
-         RWORK( 1 ) = LRWMIN
+         RWORK( 1 ) = REAL( LRWMIN )
          IWORK( 1 ) = LIWMIN
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
             INFO = -11
@@ -381,7 +377,7 @@
       END IF
 *
       WORK( 1 ) = LWMIN
-      RWORK( 1 ) = LRWMIN
+      RWORK( 1 ) = REAL( LRWMIN )
       IWORK( 1 ) = LIWMIN
       RETURN
 *

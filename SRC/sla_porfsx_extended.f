@@ -374,10 +374,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realPOcomputational
+*> \ingroup la_porfsx_extended
 *
 *  =====================================================================
-      SUBROUTINE SLA_PORFSX_EXTENDED( PREC_TYPE, UPLO, N, NRHS, A, LDA,
+      SUBROUTINE SLA_PORFSX_EXTENDED( PREC_TYPE, UPLO, N, NRHS, A,
+     $                                LDA,
      $                                AF, LDAF, COLEQU, C, B, LDB, Y,
      $                                LDY, BERR_OUT, N_NORMS,
      $                                ERR_BNDS_NORM, ERR_BNDS_COMP, RES,
@@ -446,7 +447,8 @@
       INTEGER            ILAUPLO
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL          SAXPY, SCOPY, SPOTRS, SSYMV, BLAS_SSYMV_X,
+      EXTERNAL          SAXPY, SCOPY, SPOTRS, SSYMV,
+     $                   BLAS_SSYMV_X,
      $                  BLAS_SSYMV2_X, SLA_SYAMV, SLA_WWADDW,
      $                  SLA_LIN_BERR
       REAL              SLAMCH
@@ -617,7 +619,7 @@
             PREVNORMDX = NORMDX
             PREV_DZ_Z = DZ_Z
 *
-*           Update soluton.
+*           Update solution.
 *
             IF (Y_PREC_STATE .LT. EXTRA_Y) THEN
                CALL SAXPY( N, 1.0, DY, 1, Y(1,J), 1 )

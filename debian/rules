@@ -1,14 +1,13 @@
 #!/usr/bin/make -f
 
-include /usr/share/dpkg/default.mk
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
-
-SO:=3
-
 # xerblas_ and LAPACK_xerblas must be overrideable by applications
 # --dynamic-list does not work with gold, so drop the flag completely
-BUILDFLAGS_ENV:=DEB_LDFLAGS_MAINT_STRIP="-Wl,-Bsymbolic-functions"
-LDFLAGS:=$(shell $(BUILDFLAGS_ENV) dpkg-buildflags --get LDFLAGS)
+export DEB_LDFLAGS_MAINT_STRIP = "-Wl,-Bsymbolic-functions"
+
+include /usr/share/dpkg/default.mk
+
+SO:=3
 
 # if FC isn't explicitly set (default or undefined), set it to the compiler for
 # our host architecture. This may be a cross compiler
@@ -16,7 +15,6 @@ ifneq ($(filter default undefined,$(origin FC)),)
 FC := $(DEB_HOST_GNU_TYPE)-gfortran
 endif
 
-FFLAGS:=$(shell dpkg-buildflags --get FFLAGS)
 FFLAGS_NOOPT:=$(shell DEB_BUILD_OPTIONS=noopt dpkg-buildflags --get FFLAGS)
 
 # if CC isn't explicitly set (default or undefined), set it to the compiler for
@@ -25,13 +23,17 @@ ifneq ($(filter default undefined,$(origin CC)),)
 CC := $(DEB_HOST_GNU_TYPE)-gcc
 endif
 
-CFLAGS:=$(shell dpkg-buildflags --get CFLAGS)
-CPPFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)
-
 ifeq ($(DEB_HOST_ARCH),alpha)
   FFLAGS += -mieee
   FFLAGS_NOOPT += -mieee
 endif
+
+# Using the -frecursive flag is the solution recommended by upstream for #693269
+# However, we don't want to use -frecursive for the LAPACK testsuite, it leads to
+#  segfaults on mips{,el} (xeigtstz allocates too much space on the stack)
+FFLAGS_LAPACK_TESTSUITE := $(FFLAGS)
+FFLAGS += -frecursive
+FFLAGS_NOOPT += -frecursive
 
 # On arches with extended precision, this flag is used
 # for BLAS when compiling i{c,z}amax.f and the BLAS testsuite,
@@ -43,13 +45,6 @@ ifneq (,$(filter $(DEB_HOST_ARCH_CPU),i386 m68k))
 endif
 
 FFLAGS_BLAS_TESTSUITE := $(FFLAGS) $(FFLAGS_FLOAT_STORE)
-
-# Using the -frecursive flag is the solution recommended by upstream for #693269
-# However, we don't want to use -frecursive for the LAPACK testsuite, it leads to
-#  segfaults on mips{,el} (xeigtstz allocates too much space on the stack)
-FFLAGS_LAPACK_TESTSUITE := $(FFLAGS)
-FFLAGS += -frecursive
-FFLAGS_NOOPT += -frecursive
 
 # Support parallel build
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -316,7 +311,9 @@ ifeq (,$(filter nodoc,$(DEB_BUILD_OPTIONS)))
 	# (but don't delete some __*__.3 files)
 	-rm DOCS/man/man3/_[a-zA-Z]*
 	# Remove manpages with too generic name (and no content) (see #1011422)
-	rm DOCS/man/man3/real.3 DOCS/man/man3/imag.3
+	-rm DOCS/man/man3/real.3 DOCS/man/man3/imag.3
+	# Remove manpage that conflicts with manpages-dev (see #1058459)
+	-rm DOCS/man/man3/isnan.3
 
 	for I in INSTALL64 BLAS64 CBLAS64 SRC64 TESTING64 LAPACKE64; do \
 		find $$I -type f -name '*.fbak' -exec rename 's/\.fbak/.f/' '{}' + ; \
@@ -380,12 +377,6 @@ $(GENERATED_MAINTAINER_SCRIPTS): %: %.in
 
 execute_before_dh_install: $(GENERATED_MAINTAINER_SCRIPTS)
 	true # An empty rule would confuse dh
-
-# Disable dh_dwz on mipsel
-# See e.g. https://buildd.debian.org/status/fetch.php?pkg=lapack&arch=mipsel&ver=3.8.0-6&stamp=1569904055&raw=0
-ifeq ($(DEB_HOST_ARCH),mipsel)
-override_dh_dwz-arch:
-endif
 
 execute_after_dh_clean:
 	rm -f $(GENERATED_MAINTAINER_SCRIPTS)

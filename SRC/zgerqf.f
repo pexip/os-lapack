@@ -114,7 +114,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GEcomputational
+*> \ingroup gerqf
 *
 *> \par Further Details:
 *  =====================
@@ -248,7 +248,8 @@
 *           Compute the RQ factorization of the current block
 *           A(m-k+i:m-k+i+ib-1,1:n-k+i+ib-1)
 *
-            CALL ZGERQ2( IB, N-K+I+IB-1, A( M-K+I, 1 ), LDA, TAU( I ),
+            CALL ZGERQ2( IB, N-K+I+IB-1, A( M-K+I, 1 ), LDA,
+     $                   TAU( I ),
      $                   WORK, IINFO )
             IF( M-K+I.GT.1 ) THEN
 *

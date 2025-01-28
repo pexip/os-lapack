@@ -163,6 +163,8 @@
 *>
 *> \endverbatim
 *>
+*> \ingroup hb2st_kernels
+*>
 *  =====================================================================
       SUBROUTINE  CHB2ST_KERNELS( UPLO, WANTZ, TTYPE,
      $                            ST, ED, SWEEP, N, NB, IB,
@@ -285,7 +287,8 @@
                       A( DPOS-NB-I, J1+I ) = ZERO
    30             CONTINUE
                   CTMP = CONJG( A( DPOS-NB, J1 ) )
-                  CALL CLARFG( LM, CTMP, V( VPOS+1 ), 1, TAU( TAUPOS ) )
+                  CALL CLARFG( LM, CTMP, V( VPOS+1 ), 1,
+     $                         TAU( TAUPOS ) )
                   A( DPOS-NB, J1 ) = CTMP
 *
                   CALL CLARFX( 'Right', LN-1, LM, V( VPOS ),

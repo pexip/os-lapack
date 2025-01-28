@@ -123,10 +123,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYcomputational
+*> \ingroup la_hercond
 *
 *  =====================================================================
-      REAL FUNCTION CLA_SYRCOND_X( UPLO, N, A, LDA, AF, LDAF, IPIV, X,
+      REAL FUNCTION CLA_SYRCOND_X( UPLO, N, A, LDA, AF, LDAF, IPIV,
+     $                             X,
      $                             INFO, WORK, RWORK )
 *
 *  -- LAPACK computational routine --

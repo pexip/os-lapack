@@ -208,7 +208,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEcomputational
+*> \ingroup hetf2_rk
 *
 *> \par Further Details:
 *  =====================
@@ -480,7 +480,7 @@
                   A( J, K ) = CONJG( A( P, J ) )
                   A( P, J ) = T
    14          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( P, K ) = CONJG( A( P, K ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( K, K ) )
@@ -491,7 +491,8 @@
 *              the interchanges in columns k+1:N.
 *
                IF( K.LT.N )
-     $            CALL CSWAP( N-K, A( K, K+1 ), LDA, A( P, K+1 ), LDA )
+     $            CALL CSWAP( N-K, A( K, K+1 ), LDA, A( P, K+1 ),
+     $                        LDA )
 *
             END IF
 *
@@ -508,7 +509,7 @@
                   A( J, KK ) = CONJG( A( KP, J ) )
                   A( KP, J ) = T
    15          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( KP, KK ) = CONJG( A( KP, KK ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( KK, KK ) )
@@ -560,7 +561,8 @@
 *                       = A - W(k)*1/D(k)*W(k)**T
 *
                      D11 = ONE / REAL( A( K, K ) )
-                     CALL CHER( UPLO, K-1, -D11, A( 1, K ), 1, A, LDA )
+                     CALL CHER( UPLO, K-1, -D11, A( 1, K ), 1, A,
+     $                          LDA )
 *
 *                    Store U(k) in column k
 *
@@ -579,7 +581,8 @@
 *                       = A - W(k)*(1/D(k))*W(k)**T
 *                       = A - (W(k)/D(k))*(D(k))*(W(k)/D(K))**T
 *
-                     CALL CHER( UPLO, K-1, -D11, A( 1, K ), 1, A, LDA )
+                     CALL CHER( UPLO, K-1, -D11, A( 1, K ), 1, A,
+     $                          LDA )
                   END IF
 *
 *                 Store the superdiagonal element of D in array E
@@ -752,14 +755,16 @@
 *                 Determine both ROWMAX and JMAX.
 *
                   IF( IMAX.NE.K ) THEN
-                     JMAX = K - 1 + ICAMAX( IMAX-K, A( IMAX, K ), LDA )
+                     JMAX = K - 1 + ICAMAX( IMAX-K, A( IMAX, K ),
+     $                                      LDA )
                      ROWMAX = CABS1( A( IMAX, JMAX ) )
                   ELSE
                      ROWMAX = ZERO
                   END IF
 *
                   IF( IMAX.LT.N ) THEN
-                     ITEMP = IMAX + ICAMAX( N-IMAX, A( IMAX+1, IMAX ),
+                     ITEMP = IMAX + ICAMAX( N-IMAX, A( IMAX+1,
+     $                                      IMAX ),
      $                                     1 )
                      STEMP = CABS1( A( ITEMP, IMAX ) )
                      IF( STEMP.GT.ROWMAX ) THEN
@@ -834,7 +839,7 @@
                   A( J, K ) = CONJG( A( P, J ) )
                   A( P, J ) = T
    44          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( P, K ) = CONJG( A( P, K ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( K, K ) )
@@ -855,14 +860,15 @@
             IF( KP.NE.KK ) THEN
 *              (1) Swap columnar parts
                IF( KP.LT.N )
-     $            CALL CSWAP( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ), 1 )
+     $            CALL CSWAP( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ),
+     $                        1 )
 *              (2) Swap and conjugate middle parts
                DO 45 J = KK + 1, KP - 1
                   T = CONJG( A( J, KK ) )
                   A( J, KK ) = CONJG( A( KP, J ) )
                   A( KP, J ) = T
    45          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( KP, KK ) = CONJG( A( KP, KK ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = REAL( A( KK, KK ) )

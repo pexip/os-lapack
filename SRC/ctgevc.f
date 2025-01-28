@@ -53,7 +53,7 @@
 *>
 *>    S*x = w*P*x,  (y**H)*S = w*(y**H)*P,
 *>
-*> where y**H denotes the conjugate tranpose of y.
+*> where y**H denotes the conjugate transpose of y.
 *> The eigenvalues are not input to this routine, but are computed
 *> directly from the diagonal elements of S and P.
 *>
@@ -154,7 +154,7 @@
 *> \verbatim
 *>          VR is COMPLEX array, dimension (LDVR,MM)
 *>          On entry, if SIDE = 'R' or 'B' and HOWMNY = 'B', VR must
-*>          contain an N-by-N matrix Q (usually the unitary matrix Z
+*>          contain an N-by-N matrix Z (usually the unitary matrix Z
 *>          of right Schur vectors returned by CHGEQZ).
 *>          On exit, if SIDE = 'R' or 'B', VR contains:
 *>          if HOWMNY = 'A', the matrix X of right eigenvectors of (S,P);
@@ -211,7 +211,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEcomputational
+*> \ingroup tgevc
 *
 *  =====================================================================
       SUBROUTINE CTGEVC( SIDE, HOWMNY, SELECT, N, S, LDS, P, LDP, VL,
@@ -259,7 +259,7 @@
       EXTERNAL           LSAME, SLAMCH, CLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CGEMV, SLABAD, XERBLA
+      EXTERNAL           CGEMV, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, CMPLX, CONJG, MAX, MIN, REAL
@@ -367,11 +367,10 @@
 *
       SAFMIN = SLAMCH( 'Safe minimum' )
       BIG = ONE / SAFMIN
-      CALL SLABAD( SAFMIN, BIG )
       ULP = SLAMCH( 'Epsilon' )*SLAMCH( 'Base' )
-      SMALL = SAFMIN*N / ULP
+      SMALL = SAFMIN*REAL( N ) / ULP
       BIG = ONE / SMALL
-      BIGNUM = ONE / ( SAFMIN*N )
+      BIGNUM = ONE / ( SAFMIN*REAL( N ) )
 *
 *     Compute the 1-norm of each column of the strictly upper triangular
 *     part of A and B to check for possible overflow in the triangular
@@ -528,7 +527,8 @@
 *              Back transform eigenvector if HOWMNY='B'.
 *
                IF( ILBACK ) THEN
-                  CALL CGEMV( 'N', N, N+1-JE, CONE, VL( 1, JE ), LDVL,
+                  CALL CGEMV( 'N', N, N+1-JE, CONE, VL( 1, JE ),
+     $                        LDVL,
      $                        WORK( JE ), 1, CZERO, WORK( N+1 ), 1 )
                   ISRC = 2
                   IBEG = 1

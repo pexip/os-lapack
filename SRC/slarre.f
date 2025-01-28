@@ -51,7 +51,7 @@
 *> SSTEMR to compute the eigenvectors of T.
 *> The accuracy varies depending on whether bisection is used to
 *> find a few eigenvalues or the dqds algorithm (subroutine SLASQ2) to
-*> conpute all and then discard any unwanted one.
+*> compute all and then discard any unwanted one.
 *> As an added benefit, SLARRE also outputs the n
 *> Gerschgorin intervals for the matrices L_i D_i L_i^T.
 *> \endverbatim
@@ -276,7 +276,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup OTHERauxiliary
+*> \ingroup larre
 *
 *> \par Further Details:
 *  =====================
@@ -356,7 +356,8 @@
 
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLARNV, SLARRA, SLARRB, SLARRC, SLARRD,
+      EXTERNAL           SCOPY, SLARNV, SLARRA, SLARRB, SLARRC,
+     $                   SLARRD,
      $                   SLASQ2, SLARRK
 *     ..
 *     .. Intrinsic Functions ..
@@ -367,6 +368,8 @@
 *
 
       INFO = 0
+      NSPLIT = 0
+      M = 0
 *
 *     Quick return if possible
 *
@@ -383,8 +386,6 @@
       ELSE IF( LSAME( RANGE, 'I' ) ) THEN
          IRANGE = INDRNG
       END IF
-
-      M = 0
 
 *     Get machine constants
       SAFMIN = SLAMCH( 'S' )
@@ -553,7 +554,8 @@
             ELSE
 
 *              Decide whether dqds or bisection is more efficient
-               USEDQD = ( (MB .GT. FAC*IN) .AND. (.NOT.FORCEB) )
+               USEDQD = ( (REAL( MB ) .GT. FAC*REAL( IN )) .AND.
+     $                  (.NOT.FORCEB) )
                WEND = WBEGIN + MB - 1
 *              Calculate gaps for the current block
 *              In later stages, when representations for individual
@@ -682,7 +684,7 @@
          IF( USEDQD ) THEN
 *           The initial SIGMA was to the outer end of the spectrum
 *           the matrix is definite and we need not retreat.
-            TAU = SPDIAM*EPS*N + TWO*PIVMIN
+            TAU = SPDIAM*EPS*REAL( N ) + TWO*PIVMIN
             TAU = MAX( TAU,TWO*EPS*ABS(SIGMA) )
          ELSE
             IF(MB.GT.1) THEN
@@ -739,10 +741,12 @@
                   IF( SGNDEF.EQ.ONE ) THEN
 *                    The fudged Gerschgorin shift should succeed
                      SIGMA =
-     $                    GL - FUDGE*SPDIAM*EPS*N - FUDGE*TWO*PIVMIN
+     $                    GL - FUDGE*SPDIAM*EPS*REAL( N ) -
+     $                    FUDGE*TWO*PIVMIN
                   ELSE
                      SIGMA =
-     $                    GU + FUDGE*SPDIAM*EPS*N + FUDGE*TWO*PIVMIN
+     $                    GU + FUDGE*SPDIAM*EPS*REAL( N ) +
+     $                    FUDGE*TWO*PIVMIN
                   END IF
                ELSE
                   SIGMA = SIGMA - SGNDEF * TAU

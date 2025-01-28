@@ -208,7 +208,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEcomputational
+*> \ingroup hetf2_rk
 *
 *> \par Further Details:
 *  =====================
@@ -480,7 +480,7 @@
                   A( J, K ) = DCONJG( A( P, J ) )
                   A( P, J ) = T
    14          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( P, K ) = DCONJG( A( P, K ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = DBLE( A( K, K ) )
@@ -491,7 +491,8 @@
 *              the interchanges in columns k+1:N.
 *
                IF( K.LT.N )
-     $            CALL ZSWAP( N-K, A( K, K+1 ), LDA, A( P, K+1 ), LDA )
+     $            CALL ZSWAP( N-K, A( K, K+1 ), LDA, A( P, K+1 ),
+     $                        LDA )
 *
             END IF
 *
@@ -508,7 +509,7 @@
                   A( J, KK ) = DCONJG( A( KP, J ) )
                   A( KP, J ) = T
    15          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( KP, KK ) = DCONJG( A( KP, KK ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = DBLE( A( KK, KK ) )
@@ -560,7 +561,8 @@
 *                       = A - W(k)*1/D(k)*W(k)**T
 *
                      D11 = ONE / DBLE( A( K, K ) )
-                     CALL ZHER( UPLO, K-1, -D11, A( 1, K ), 1, A, LDA )
+                     CALL ZHER( UPLO, K-1, -D11, A( 1, K ), 1, A,
+     $                          LDA )
 *
 *                    Store U(k) in column k
 *
@@ -579,7 +581,8 @@
 *                       = A - W(k)*(1/D(k))*W(k)**T
 *                       = A - (W(k)/D(k))*(D(k))*(W(k)/D(K))**T
 *
-                     CALL ZHER( UPLO, K-1, -D11, A( 1, K ), 1, A, LDA )
+                     CALL ZHER( UPLO, K-1, -D11, A( 1, K ), 1, A,
+     $                          LDA )
                   END IF
 *
 *                 Store the superdiagonal element of D in array E
@@ -752,14 +755,16 @@
 *                 Determine both ROWMAX and JMAX.
 *
                   IF( IMAX.NE.K ) THEN
-                     JMAX = K - 1 + IZAMAX( IMAX-K, A( IMAX, K ), LDA )
+                     JMAX = K - 1 + IZAMAX( IMAX-K, A( IMAX, K ),
+     $                                      LDA )
                      ROWMAX = CABS1( A( IMAX, JMAX ) )
                   ELSE
                      ROWMAX = ZERO
                   END IF
 *
                   IF( IMAX.LT.N ) THEN
-                     ITEMP = IMAX + IZAMAX( N-IMAX, A( IMAX+1, IMAX ),
+                     ITEMP = IMAX + IZAMAX( N-IMAX, A( IMAX+1,
+     $                                      IMAX ),
      $                                     1 )
                      DTEMP = CABS1( A( ITEMP, IMAX ) )
                      IF( DTEMP.GT.ROWMAX ) THEN
@@ -834,7 +839,7 @@
                   A( J, K ) = DCONJG( A( P, J ) )
                   A( P, J ) = T
    44          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( P, K ) = DCONJG( A( P, K ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = DBLE( A( K, K ) )
@@ -855,14 +860,15 @@
             IF( KP.NE.KK ) THEN
 *              (1) Swap columnar parts
                IF( KP.LT.N )
-     $            CALL ZSWAP( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ), 1 )
+     $            CALL ZSWAP( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ),
+     $                        1 )
 *              (2) Swap and conjugate middle parts
                DO 45 J = KK + 1, KP - 1
                   T = DCONJG( A( J, KK ) )
                   A( J, KK ) = DCONJG( A( KP, J ) )
                   A( KP, J ) = T
    45          CONTINUE
-*              (3) Swap and conjugate corner elements at row-col interserction
+*              (3) Swap and conjugate corner elements at row-col intersection
                A( KP, KK ) = DCONJG( A( KP, KK ) )
 *              (4) Swap diagonal elements at row-col intersection
                R1 = DBLE( A( KK, KK ) )

@@ -136,7 +136,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16SYcomputational
+*> \ingroup lahef_aa
 *
 *  =====================================================================
       SUBROUTINE ZLASYF_AA( UPLO, J1, M, NB, A, LDA, IPIV,
@@ -172,7 +172,8 @@
       EXTERNAL           LSAME, ILAENV, IZAMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZGEMV, ZAXPY, ZSCAL, ZCOPY, ZSWAP, ZLASET,
+      EXTERNAL           ZGEMV, ZAXPY, ZSCAL, ZCOPY, ZSWAP,
+     $                   ZLASET,
      $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..

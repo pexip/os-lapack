@@ -9,8 +9,10 @@ Forwarded: not-needed
 Last-Update: 2015-12-24
 ---
 This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
---- a/BLAS/SRC/Makefile
-+++ b/BLAS/SRC/Makefile
+Index: lapack/BLAS/SRC/Makefile
+===================================================================
+--- lapack.orig/BLAS/SRC/Makefile
++++ lapack/BLAS/SRC/Makefile
 @@ -175,3 +175,9 @@ cleanobj:
  	rm -f *.o
  cleanlib:

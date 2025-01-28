@@ -290,7 +290,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup tgsen
 *
 *> \par Further Details:
 *  =====================
@@ -339,7 +339,7 @@
 *>            [ kron(In2, B11)  -kron(B22**H, In1) ].
 *>
 *>  Here, Inx is the identity matrix of size nx and A22**H is the
-*>  conjuguate transpose of A22. kron(X, Y) is the Kronecker product between
+*>  conjugate transpose of A22. kron(X, Y) is the Kronecker product between
 *>  the matrices X and Y.
 *>
 *>  When DIF(2) is small, small changes in (A, B) can cause large changes
@@ -427,7 +427,8 @@
 *>      1996.
 *>
 *  =====================================================================
-      SUBROUTINE CTGSEN( IJOB, WANTQ, WANTZ, SELECT, N, A, LDA, B, LDB,
+      SUBROUTINE CTGSEN( IJOB, WANTQ, WANTZ, SELECT, N, A, LDA, B,
+     $                   LDB,
      $                   ALPHA, BETA, Q, LDQ, Z, LDZ, M, PL, PR, DIF,
      $                   WORK, LWORK, IWORK, LIWORK, INFO )
 *
@@ -467,9 +468,14 @@
 *     .. Local Arrays ..
       INTEGER            ISAVE( 3 )
 *     ..
+*     .. External Functions ..
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
+*     ..
 *     .. External Subroutines ..
       REAL               SLAMCH
-      EXTERNAL           CLACN2, CLACPY, CLASSQ, CSCAL, CTGEXC, CTGSYL,
+      EXTERNAL           CLACN2, CLACPY, CLASSQ, CSCAL, CTGEXC,
+     $                   CTGSYL,
      $                   SLAMCH, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -537,7 +543,7 @@
          LIWMIN = 1
       END IF
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) =  SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
 *
       IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -589,7 +595,8 @@
 *           and Z that will swap adjacent diagonal blocks in (A, B).
 *
             IF( K.NE.KS )
-     $         CALL CTGEXC( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z,
+     $         CALL CTGEXC( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ,
+     $                      Z,
      $                      LDZ, K, KS, IERR )
 *
             IF( IERR.GT.0 ) THEN
@@ -619,7 +626,8 @@
          N2 = N - M
          I = N1 + 1
          CALL CLACPY( 'Full', N1, N2, A( 1, I ), LDA, WORK, N1 )
-         CALL CLACPY( 'Full', N1, N2, B( 1, I ), LDB, WORK( N1*N2+1 ),
+         CALL CLACPY( 'Full', N1, N2, B( 1, I ), LDB,
+     $                WORK( N1*N2+1 ),
      $                N1 )
          IJB = 0
          CALL CTGSYL( 'N', IJB, N1, N2, A, LDA, A( I, I ), LDA, WORK,
@@ -661,14 +669,16 @@
 *
 *           Frobenius norm-based Difu estimate.
 *
-            CALL CTGSYL( 'N', IJB, N1, N2, A, LDA, A( I, I ), LDA, WORK,
+            CALL CTGSYL( 'N', IJB, N1, N2, A, LDA, A( I, I ), LDA,
+     $                   WORK,
      $                   N1, B, LDB, B( I, I ), LDB, WORK( N1*N2+1 ),
      $                   N1, DSCALE, DIF( 1 ), WORK( N1*N2*2+1 ),
      $                   LWORK-2*N1*N2, IWORK, IERR )
 *
 *           Frobenius norm-based Difl estimate.
 *
-            CALL CTGSYL( 'N', IJB, N2, N1, A( I, I ), LDA, A, LDA, WORK,
+            CALL CTGSYL( 'N', IJB, N2, N1, A( I, I ), LDA, A, LDA,
+     $                   WORK,
      $                   N2, B( I, I ), LDB, B, LDB, WORK( N1*N2+1 ),
      $                   N2, DSCALE, DIF( 2 ), WORK( N1*N2*2+1 ),
      $                   LWORK-2*N1*N2, IWORK, IERR )
@@ -696,7 +706,8 @@
 *
 *                 Solve generalized Sylvester equation
 *
-                  CALL CTGSYL( 'N', IJB, N1, N2, A, LDA, A( I, I ), LDA,
+                  CALL CTGSYL( 'N', IJB, N1, N2, A, LDA, A( I, I ),
+     $                         LDA,
      $                         WORK, N1, B, LDB, B( I, I ), LDB,
      $                         WORK( N1*N2+1 ), N1, DSCALE, DIF( 1 ),
      $                         WORK( N1*N2*2+1 ), LWORK-2*N1*N2, IWORK,
@@ -705,7 +716,8 @@
 *
 *                 Solve the transposed variant.
 *
-                  CALL CTGSYL( 'C', IJB, N1, N2, A, LDA, A( I, I ), LDA,
+                  CALL CTGSYL( 'C', IJB, N1, N2, A, LDA, A( I, I ),
+     $                         LDA,
      $                         WORK, N1, B, LDB, B( I, I ), LDB,
      $                         WORK( N1*N2+1 ), N1, DSCALE, DIF( 1 ),
      $                         WORK( N1*N2*2+1 ), LWORK-2*N1*N2, IWORK,
@@ -725,7 +737,8 @@
 *
 *                 Solve generalized Sylvester equation
 *
-                  CALL CTGSYL( 'N', IJB, N2, N1, A( I, I ), LDA, A, LDA,
+                  CALL CTGSYL( 'N', IJB, N2, N1, A( I, I ), LDA, A,
+     $                         LDA,
      $                         WORK, N2, B( I, I ), LDB, B, LDB,
      $                         WORK( N1*N2+1 ), N2, DSCALE, DIF( 2 ),
      $                         WORK( N1*N2*2+1 ), LWORK-2*N1*N2, IWORK,
@@ -734,7 +747,8 @@
 *
 *                 Solve the transposed variant.
 *
-                  CALL CTGSYL( 'C', IJB, N2, N1, A( I, I ), LDA, A, LDA,
+                  CALL CTGSYL( 'C', IJB, N2, N1, A( I, I ), LDA, A,
+     $                         LDA,
      $                         WORK, N2, B, LDB, B( I, I ), LDB,
      $                         WORK( N1*N2+1 ), N2, DSCALE, DIF( 2 ),
      $                         WORK( N1*N2*2+1 ), LWORK-2*N1*N2, IWORK,
@@ -771,7 +785,7 @@
 *
    70 CONTINUE
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) =  SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
 *
       RETURN

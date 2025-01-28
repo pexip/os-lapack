@@ -121,7 +121,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERauxiliary
+*> \ingroup larf
 *
 *  =====================================================================
       SUBROUTINE ZLARF( SIDE, M, N, V, INCV, TAU, C, LDC, WORK )
@@ -204,7 +204,8 @@
 *
 *           C(1:lastv,1:lastc) := C(...) - v(1:lastv,1) * w(1:lastc,1)**H
 *
-            CALL ZGERC( LASTV, LASTC, -TAU, V, INCV, WORK, 1, C, LDC )
+            CALL ZGERC( LASTV, LASTC, -TAU, V, INCV, WORK, 1, C,
+     $                  LDC )
          END IF
       ELSE
 *
@@ -219,7 +220,8 @@
 *
 *           C(1:lastc,1:lastv) := C(...) - w(1:lastc,1) * v(1:lastv,1)**H
 *
-            CALL ZGERC( LASTC, LASTV, -TAU, WORK, 1, V, INCV, C, LDC )
+            CALL ZGERC( LASTC, LASTV, -TAU, WORK, 1, V, INCV, C,
+     $                  LDC )
          END IF
       END IF
       RETURN

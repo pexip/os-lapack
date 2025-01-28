@@ -41,9 +41,8 @@
 *> with respect to the columns of
 *>      Q = [ Q1 ] .
 *>          [ Q2 ]
-*> The Euclidean norm of X must be one and the columns of Q must be
-*> orthonormal. The orthogonalized vector will be zero if and only if it
-*> lies entirely in the range of Q.
+*> The columns of Q must be orthonormal. The orthogonalized vector will
+*> be zero if and only if it lies entirely in the range of Q.
 *>
 *> The projection is computed with at most two iterations of the
 *> classical Gram-Schmidt algorithm, see
@@ -152,10 +151,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unbdb6
 *
 *  =====================================================================
-      SUBROUTINE SORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
+      SUBROUTINE SORBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1,
+     $                    Q2,
      $                    LDQ2, WORK, LWORK, INFO )
 *
 *  -- LAPACK computational routine --
@@ -174,7 +174,7 @@
 *
 *     .. Parameters ..
       REAL               ALPHA, REALONE, REALZERO
-      PARAMETER          ( ALPHA = 0.01E0, REALONE = 1.0E0,
+      PARAMETER          ( ALPHA = 0.83E0, REALONE = 1.0E0,
      $                     REALZERO = 0.0E0 )
       REAL               NEGONE, ONE, ZERO
       PARAMETER          ( NEGONE = -1.0E0, ONE = 1.0E0, ZERO = 0.0E0 )
@@ -222,25 +222,29 @@
 *
       EPS = SLAMCH( 'Precision' )
 *
+*     Compute the Euclidean norm of X
+*
+      SCL = REALZERO
+      SSQ = REALZERO
+      CALL SLASSQ( M1, X1, INCX1, SCL, SSQ )
+      CALL SLASSQ( M2, X2, INCX2, SCL, SSQ )
+      NORM = SCL * SQRT( SSQ )
+*
 *     First, project X onto the orthogonal complement of Q's column
 *     space
-*
-*     Christoph Conrads: In debugging mode the norm should be computed
-*     and an assertion added comparing the norm with one. Alas, Fortran
-*     never made it into 1989 when assert() was introduced into the C
-*     programming language.
-      NORM = REALONE
 *
       IF( M1 .EQ. 0 ) THEN
          DO I = 1, N
             WORK(I) = ZERO
          END DO
       ELSE
-         CALL SGEMV( 'C', M1, N, ONE, Q1, LDQ1, X1, INCX1, ZERO, WORK,
+         CALL SGEMV( 'C', M1, N, ONE, Q1, LDQ1, X1, INCX1, ZERO,
+     $               WORK,
      $               1 )
       END IF
 *
-      CALL SGEMV( 'C', M2, N, ONE, Q2, LDQ2, X2, INCX2, ONE, WORK, 1 )
+      CALL SGEMV( 'C', M2, N, ONE, Q2, LDQ2, X2, INCX2, ONE, WORK,
+     $            1 )
 *
       CALL SGEMV( 'N', M1, N, NEGONE, Q1, LDQ1, WORK, 1, ONE, X1,
      $            INCX1 )
@@ -261,7 +265,7 @@
          RETURN
       END IF
 *
-      IF( NORM_NEW .LE. N * EPS * NORM ) THEN
+      IF( NORM_NEW .LE. REAL( N ) * EPS * NORM ) THEN
          DO IX = 1, 1 + (M1-1)*INCX1, INCX1
            X1( IX ) = ZERO
          END DO
@@ -282,11 +286,13 @@
             WORK(I) = ZERO
          END DO
       ELSE
-         CALL SGEMV( 'C', M1, N, ONE, Q1, LDQ1, X1, INCX1, ZERO, WORK,
+         CALL SGEMV( 'C', M1, N, ONE, Q1, LDQ1, X1, INCX1, ZERO,
+     $               WORK,
      $               1 )
       END IF
 *
-      CALL SGEMV( 'C', M2, N, ONE, Q2, LDQ2, X2, INCX2, ONE, WORK, 1 )
+      CALL SGEMV( 'C', M2, N, ONE, Q2, LDQ2, X2, INCX2, ONE, WORK,
+     $            1 )
 *
       CALL SGEMV( 'N', M1, N, NEGONE, Q1, LDQ1, WORK, 1, ONE, X1,
      $            INCX1 )

@@ -107,7 +107,7 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of WORK.  LWORK >=1.  For best performance
+*>          The length of WORK. LWORK >= 1. For best performance
 *>          LWORK >= N*NB, where NB is the block size returned by ILAENV.
 *> \endverbatim
 *>
@@ -130,7 +130,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEcomputational
+*> \ingroup hetrf
 *
 *> \par Further Details:
 *  =====================
@@ -197,7 +197,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           LSAME, ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           CHETF2, CLAHEF, XERBLA
@@ -227,8 +228,8 @@
 *        Determine the block size
 *
          NB = ILAENV( 1, 'CHETRF', UPLO, N, -1, -1, -1 )
-         LWKOPT = N*NB
-         WORK( 1 ) = LWKOPT
+         LWKOPT = MAX( 1, N*NB )
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -244,7 +245,8 @@
          IWS = LDWORK*NB
          IF( LWORK.LT.IWS ) THEN
             NB = MAX( LWORK / LDWORK, 1 )
-            NBMIN = MAX( 2, ILAENV( 2, 'CHETRF', UPLO, N, -1, -1, -1 ) )
+            NBMIN = MAX( 2, ILAENV( 2, 'CHETRF', UPLO, N, -1, -1,
+     $                   -1 ) )
          END IF
       ELSE
          IWS = 1
@@ -273,7 +275,8 @@
 *           Factorize columns k-kb+1:k of A and use blocked code to
 *           update columns 1:k-kb
 *
-            CALL CLAHEF( UPLO, K, NB, KB, A, LDA, IPIV, WORK, N, IINFO )
+            CALL CLAHEF( UPLO, K, NB, KB, A, LDA, IPIV, WORK, N,
+     $                   IINFO )
          ELSE
 *
 *           Use unblocked code to factorize columns 1:k of A
@@ -313,13 +316,15 @@
 *           Factorize columns k:k+kb-1 of A and use blocked code to
 *           update columns k+kb:n
 *
-            CALL CLAHEF( UPLO, N-K+1, NB, KB, A( K, K ), LDA, IPIV( K ),
+            CALL CLAHEF( UPLO, N-K+1, NB, KB, A( K, K ), LDA,
+     $                   IPIV( K ),
      $                   WORK, N, IINFO )
          ELSE
 *
 *           Use unblocked code to factorize columns k:n of A
 *
-            CALL CHETF2( UPLO, N-K+1, A( K, K ), LDA, IPIV( K ), IINFO )
+            CALL CHETF2( UPLO, N-K+1, A( K, K ), LDA, IPIV( K ),
+     $                   IINFO )
             KB = N - K + 1
          END IF
 *
@@ -346,7 +351,7 @@
       END IF
 *
    40 CONTINUE
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
       RETURN
 *
 *     End of CHETRF

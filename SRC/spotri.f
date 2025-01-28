@@ -88,7 +88,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realPOcomputational
+*> \ingroup potri
 *
 *  =====================================================================
       SUBROUTINE SPOTRI( UPLO, N, A, LDA, INFO )
@@ -122,7 +122,8 @@
 *     Test the input parameters.
 *
       INFO = 0
-      IF( .NOT.LSAME( UPLO, 'U' ) .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+      IF( .NOT.LSAME( UPLO, 'U' ) .AND.
+     $    .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2

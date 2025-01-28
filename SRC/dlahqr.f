@@ -183,7 +183,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERauxiliary
+*> \ingroup lahqr
 *
 *> \par Further Details:
 *  =====================
@@ -244,7 +244,7 @@
       EXTERNAL           DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLABAD, DLANV2, DLARFG, DROT
+      EXTERNAL           DCOPY, DLANV2, DLARFG, DROT
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, MAX, MIN, SQRT
@@ -278,7 +278,6 @@
 *
       SAFMIN = DLAMCH( 'SAFE MINIMUM' )
       SAFMAX = ONE / SAFMIN
-      CALL DLABAD( SAFMIN, SAFMAX )
       ULP = DLAMCH( 'PRECISION' )
       SMLNUM = SAFMIN*( DBLE( NH ) / ULP )
 *
@@ -596,13 +595,15 @@
             IF( I2.GT.I )
      $         CALL DROT( I2-I, H( I-1, I+1 ), LDH, H( I, I+1 ), LDH,
      $                    CS, SN )
-            CALL DROT( I-I1-1, H( I1, I-1 ), 1, H( I1, I ), 1, CS, SN )
+            CALL DROT( I-I1-1, H( I1, I-1 ), 1, H( I1, I ), 1, CS,
+     $                 SN )
          END IF
          IF( WANTZ ) THEN
 *
 *           Apply the transformation to Z.
 *
-            CALL DROT( NZ, Z( ILOZ, I-1 ), 1, Z( ILOZ, I ), 1, CS, SN )
+            CALL DROT( NZ, Z( ILOZ, I-1 ), 1, Z( ILOZ, I ), 1, CS,
+     $                 SN )
          END IF
       END IF
 *     reset deflation counter

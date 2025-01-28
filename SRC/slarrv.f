@@ -272,7 +272,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup larrv
 *
 *> \par Contributors:
 *  ==================
@@ -337,7 +337,8 @@
       EXTERNAL           SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLAR1V, SLARRB, SLARRF, SLASET,
+      EXTERNAL           SCOPY, SLAR1V, SLARRB, SLARRF,
+     $                   SLASET,
      $                   SSCAL
 *     ..
 *     .. Intrinsic Functions ..

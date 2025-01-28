@@ -146,10 +146,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GBcomputational
+*> \ingroup gbequ
 *
 *  =====================================================================
-      SUBROUTINE ZGBEQU( M, N, KL, KU, AB, LDAB, R, C, ROWCND, COLCND,
+      SUBROUTINE ZGBEQU( M, N, KL, KU, AB, LDAB, R, C, ROWCND,
+     $                   COLCND,
      $                   AMAX, INFO )
 *
 *  -- LAPACK computational routine --

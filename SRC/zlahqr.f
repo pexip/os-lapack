@@ -171,7 +171,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERauxiliary
+*> \ingroup lahqr
 *
 *> \par Contributors:
 *  ==================
@@ -236,7 +236,7 @@
       EXTERNAL           ZLADIV, DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, ZCOPY, ZLARFG, ZSCAL
+      EXTERNAL           ZCOPY, ZLARFG, ZSCAL
 *     ..
 *     .. Statement Functions ..
       DOUBLE PRECISION   CABS1
@@ -287,7 +287,8 @@
             CALL ZSCAL( MIN( JHI, I+1 )-JLO+1, DCONJG( SC ),
      $                  H( JLO, I ), 1 )
             IF( WANTZ )
-     $         CALL ZSCAL( IHIZ-ILOZ+1, DCONJG( SC ), Z( ILOZ, I ), 1 )
+     $         CALL ZSCAL( IHIZ-ILOZ+1, DCONJG( SC ), Z( ILOZ, I ),
+     $                     1 )
          END IF
    20 CONTINUE
 *
@@ -298,7 +299,6 @@
 *
       SAFMIN = DLAMCH( 'SAFE MINIMUM' )
       SAFMAX = RONE / SAFMIN
-      CALL DLABAD( SAFMIN, SAFMAX )
       ULP = DLAMCH( 'PRECISION' )
       SMLNUM = SAFMIN*( DBLE( NH ) / ULP )
 *
@@ -525,7 +525,8 @@
                   IF( J.NE.M+1 ) THEN
                      IF( I2.GT.J )
      $                  CALL ZSCAL( I2-J, TEMP, H( J, J+1 ), LDH )
-                     CALL ZSCAL( J-I1, DCONJG( TEMP ), H( I1, J ), 1 )
+                     CALL ZSCAL( J-I1, DCONJG( TEMP ), H( I1, J ),
+     $                           1 )
                      IF( WANTZ ) THEN
                         CALL ZSCAL( NZ, DCONJG( TEMP ), Z( ILOZ, J ),
      $                              1 )

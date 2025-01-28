@@ -101,7 +101,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERauxiliary
+*> \ingroup lanhs
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION DLANHS( NORM, N, A, LDA, WORK )
@@ -182,7 +182,8 @@
             SUM = WORK( I )
             IF( VALUE .LT. SUM .OR. DISNAN( SUM ) ) VALUE = SUM
    80    CONTINUE
-      ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
+      ELSE IF( ( LSAME( NORM, 'F' ) ) .OR.
+     $         ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
 *

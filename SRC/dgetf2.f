@@ -101,7 +101,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGEcomputational
+*> \ingroup getf2
 *
 *  =====================================================================
       SUBROUTINE DGETF2( M, N, A, LDA, IPIV, INFO )
@@ -199,7 +199,8 @@
 *
 *           Update trailing submatrix.
 *
-            CALL DGER( M-J, N-J, -ONE, A( J+1, J ), 1, A( J, J+1 ), LDA,
+            CALL DGER( M-J, N-J, -ONE, A( J+1, J ), 1, A( J, J+1 ),
+     $                 LDA,
      $                 A( J+1, J+1 ), LDA )
          END IF
    10 CONTINUE

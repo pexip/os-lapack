@@ -171,7 +171,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unmhr
 *
 *  =====================================================================
       SUBROUTINE SORMHR( SIDE, TRANS, M, N, ILO, IHI, A, LDA, TAU, C,
@@ -199,7 +199,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           ILAENV, LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SORMQR, XERBLA
@@ -227,7 +228,8 @@
       END IF
       IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
          INFO = -1
-      ELSE IF( .NOT.LSAME( TRANS, 'N' ) .AND. .NOT.LSAME( TRANS, 'T' ) )
+      ELSE IF( .NOT.LSAME( TRANS, 'N' ) .AND.
+     $         .NOT.LSAME( TRANS, 'T' ) )
      $          THEN
          INFO = -2
       ELSE IF( M.LT.0 ) THEN
@@ -253,7 +255,7 @@
             NB = ILAENV( 1, 'SORMQR', SIDE // TRANS, M, NH, NH, -1 )
          END IF
          LWKOPT = NW*NB
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -285,7 +287,7 @@
       CALL SORMQR( SIDE, TRANS, MI, NI, NH, A( ILO+1, ILO ), LDA,
      $             TAU( ILO ), C( I1, I2 ), LDC, WORK, LWORK, IINFO )
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       RETURN
 *
 *     End of SORMHR

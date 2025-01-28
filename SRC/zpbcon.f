@@ -125,7 +125,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup pbcon
 *
 *  =====================================================================
       SUBROUTINE ZPBCON( UPLO, N, KD, AB, LDAB, ANORM, RCOND, WORK,
@@ -231,13 +231,15 @@
 *
 *           Multiply by inv(U).
 *
-            CALL ZLATBS( 'Upper', 'No transpose', 'Non-unit', NORMIN, N,
+            CALL ZLATBS( 'Upper', 'No transpose', 'Non-unit', NORMIN,
+     $                   N,
      $                   KD, AB, LDAB, WORK, SCALEU, RWORK, INFO )
          ELSE
 *
 *           Multiply by inv(L).
 *
-            CALL ZLATBS( 'Lower', 'No transpose', 'Non-unit', NORMIN, N,
+            CALL ZLATBS( 'Lower', 'No transpose', 'Non-unit', NORMIN,
+     $                   N,
      $                   KD, AB, LDAB, WORK, SCALEL, RWORK, INFO )
             NORMIN = 'Y'
 *

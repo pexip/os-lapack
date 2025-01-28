@@ -40,12 +40,6 @@
 *> of a real symmetric matrix A in packed storage. If eigenvectors are
 *> desired, it uses a divide and conquer algorithm.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -170,7 +164,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHEReigen
+*> \ingroup hpevd
 *
 *  =====================================================================
       SUBROUTINE DSPEVD( JOBZ, UPLO, N, AP, W, Z, LDZ, WORK, LWORK,
@@ -208,7 +202,8 @@
       EXTERNAL           LSAME, DLAMCH, DLANSP
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DOPMTR, DSCAL, DSPTRD, DSTEDC, DSTERF, XERBLA
+      EXTERNAL           DOPMTR, DSCAL, DSPTRD, DSTEDC, DSTERF,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          SQRT
@@ -223,7 +218,8 @@
       INFO = 0
       IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
          INFO = -1
-      ELSE IF( .NOT.( LSAME( UPLO, 'U' ) .OR. LSAME( UPLO, 'L' ) ) )
+      ELSE IF( .NOT.( LSAME( UPLO, 'U' ) .OR.
+     $         LSAME( UPLO, 'L' ) ) )
      $          THEN
          INFO = -2
       ELSE IF( N.LT.0 ) THEN
@@ -302,7 +298,8 @@
 *
       INDE = 1
       INDTAU = INDE + N
-      CALL DSPTRD( UPLO, N, AP, W, WORK( INDE ), WORK( INDTAU ), IINFO )
+      CALL DSPTRD( UPLO, N, AP, W, WORK( INDE ), WORK( INDTAU ),
+     $             IINFO )
 *
 *     For eigenvalues only, call DSTERF.  For eigenvectors, first call
 *     DSTEDC to generate the eigenvector matrix, WORK(INDWRK), of the
@@ -314,9 +311,11 @@
       ELSE
          INDWRK = INDTAU + N
          LLWORK = LWORK - INDWRK + 1
-         CALL DSTEDC( 'I', N, W, WORK( INDE ), Z, LDZ, WORK( INDWRK ),
+         CALL DSTEDC( 'I', N, W, WORK( INDE ), Z, LDZ,
+     $                WORK( INDWRK ),
      $                LLWORK, IWORK, LIWORK, INFO )
-         CALL DOPMTR( 'L', UPLO, 'N', N, N, AP, WORK( INDTAU ), Z, LDZ,
+         CALL DOPMTR( 'L', UPLO, 'N', N, N, AP, WORK( INDTAU ), Z,
+     $                LDZ,
      $                WORK( INDWRK ), IINFO )
       END IF
 *

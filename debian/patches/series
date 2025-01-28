@@ -2,4 +2,4 @@ icamax-izamax-extended-precision.patch
 doxygen-downsize.patch
 makefile-blas-remove-dep.patch
 verbose-tests.patch
-cblas64-test.patch
+disable-b1nrm2-tests.patch

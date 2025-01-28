@@ -2,8 +2,10 @@ Description: remove the target dependency in order to avoid unnecessary rebuild
  that would incur FTBFS.
 Author: Mo Zhou
 Last-Update: 2019-08-28
---- a/BLAS/Makefile
-+++ b/BLAS/Makefile
+Index: lapack/BLAS/Makefile
+===================================================================
+--- lapack.orig/BLAS/Makefile
++++ lapack/BLAS/Makefile
 @@ -9,7 +9,7 @@ blas:
  	$(MAKE) -C SRC
  

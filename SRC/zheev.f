@@ -132,7 +132,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEeigen
+*> \ingroup heev
 *
 *  =====================================================================
       SUBROUTINE ZHEEV( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, RWORK,
@@ -173,7 +173,8 @@
       EXTERNAL           LSAME, ILAENV, DLAMCH, ZLANHE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DSCAL, DSTERF, XERBLA, ZHETRD, ZLASCL, ZSTEQR,
+      EXTERNAL           DSCAL, DSTERF, XERBLA, ZHETRD, ZLASCL,
+     $                   ZSTEQR,
      $                   ZUNGTR
 *     ..
 *     .. Intrinsic Functions ..
@@ -266,7 +267,8 @@
       IF( .NOT.WANTZ ) THEN
          CALL DSTERF( N, W, RWORK( INDE ), INFO )
       ELSE
-         CALL ZUNGTR( UPLO, N, A, LDA, WORK( INDTAU ), WORK( INDWRK ),
+         CALL ZUNGTR( UPLO, N, A, LDA, WORK( INDTAU ),
+     $                WORK( INDWRK ),
      $                LLWORK, IINFO )
          INDWRK = INDE + N
          CALL ZSTEQR( JOBZ, N, W, RWORK( INDE ), A, LDA,

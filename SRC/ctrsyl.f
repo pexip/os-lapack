@@ -149,7 +149,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYcomputational
+*> \ingroup trsyl
 *
 *  =====================================================================
       SUBROUTINE CTRSYL( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB, C,
@@ -188,10 +188,11 @@
       LOGICAL            LSAME
       REAL               CLANGE, SLAMCH
       COMPLEX            CDOTC, CDOTU, CLADIV
-      EXTERNAL           LSAME, CLANGE, SLAMCH, CDOTC, CDOTU, CLADIV
+      EXTERNAL           LSAME, CLANGE, SLAMCH, CDOTC, CDOTU,
+     $                   CLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CSSCAL, SLABAD, XERBLA
+      EXTERNAL           CSSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, CMPLX, CONJG, MAX, MIN, REAL
@@ -237,12 +238,11 @@
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
       SMLNUM = SMLNUM*REAL( M*N ) / EPS
       BIGNUM = ONE / SMLNUM
       SMIN = MAX( SMLNUM, EPS*CLANGE( 'M', M, M, A, LDA, DUM ),
      $       EPS*CLANGE( 'M', N, N, B, LDB, DUM ) )
-      SGN = ISGN
+      SGN = REAL( ISGN )
 *
       IF( NOTRNA .AND. NOTRNB ) THEN
 *

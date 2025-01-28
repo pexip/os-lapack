@@ -1,3 +1,60 @@
+lapack (3.12.1-2) unstable; urgency=medium
+
+  * Upload to unstable.
+
+ -- Mo Zhou <lumin@debian.org>  Mon, 27 Jan 2025 19:54:31 -0500
+
+lapack (3.12.1-1) experimental; urgency=medium
+
+  * New upstream version 3.12.1 (Jan 2025)
+  * Remove patches that were merged to upstream, and refresh remaining ones.
+  * d/rules: real.3 and imag.3 no longer exists.
+  * Upload to experimental.
+
+ -- Mo Zhou <lumin@debian.org>  Tue, 14 Jan 2025 11:19:47 -0500
+
+lapack (3.12.0-4) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * Fix FTCBFS
+    + Translate gfortran dependency to gfortran-for-host.
+    + Annotate test dependency python3 with the nocheck profile.
+    (Closes: #1086680)
+
+  [ Sébastien Villemot ]
+  * Bump Standards-Version to 4.7.0
+
+ -- Sébastien Villemot <sebastien@debian.org>  Wed, 20 Nov 2024 11:13:36 +0100
+
+lapack (3.12.0-3) unstable; urgency=medium
+
+  * Add Breaks of liblapacke against older liblapack.so.3 flavours.
+    This prevents incorrect combinations where liblapacke needs symbols that
+    were added in LAPACK 3.12, but where liblapack.so.3 flavours (liblapack3,
+    libopenblas0-*, libatlas3-base) were compiled with an older LAPACK version.
+
+ -- Sébastien Villemot <sebastien@debian.org>  Wed, 07 Feb 2024 12:30:40 +0100
+
+lapack (3.12.0-2) unstable; urgency=medium
+
+  * disable-b1nrm2-tests.patch: new patch, disables new tests that fail on i386
+  * Drop isnan.3 manpage that conflicts with manpages-dev (Closes: #1058459)
+  * d/rules: simplify the logic for getting buildflags
+  * d/rules: build BLAS testsuite with -frecursive, for consistency
+  * Set upstream metadata fields: Security-Contact.
+  * Update standards version to 4.6.2, no changes needed.
+
+ -- Sébastien Villemot <sebastien@debian.org>  Wed, 31 Jan 2024 11:32:02 +0100
+
+lapack (3.12.0-1) experimental; urgency=medium
+
+  * New upstream version 3.12.0 (Nov 2023)
+  * Remove patches merged upstream, and quilt refresh the remaining ones.
+  * Cherry-pick upstream fix for search phrase in lapack_testing.py
+  * Upload to experimental.
+
+ -- Mo Zhou <lumin@debian.org>  Sat, 09 Dec 2023 16:42:18 -0500
+
 lapack (3.11.0-2) unstable; urgency=medium
 
   * cblas64-test.patch: new patch, fixes test failure on 64-bit big endian archs

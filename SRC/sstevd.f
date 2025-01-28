@@ -40,12 +40,6 @@
 *> real symmetric tridiagonal matrix. If eigenvectors are desired, it
 *> uses a divide and conquer algorithm.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -155,7 +149,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHEReigen
+*> \ingroup stevd
 *
 *  =====================================================================
       SUBROUTINE SSTEVD( JOBZ, N, D, E, Z, LDZ, WORK, LWORK, IWORK,
@@ -188,8 +182,9 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      REAL               SLAMCH, SLANST
-      EXTERNAL           LSAME, SLAMCH, SLANST
+      REAL               SLAMCH, SLANST, SROUNDUP_LWORK
+      EXTERNAL           LSAME, SLAMCH, SLANST,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SSCAL, SSTEDC, SSTERF, XERBLA
@@ -221,7 +216,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
          IWORK( 1 ) = LIWMIN
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -280,7 +275,8 @@
       IF( .NOT.WANTZ ) THEN
          CALL SSTERF( N, D, E, INFO )
       ELSE
-         CALL SSTEDC( 'I', N, D, E, Z, LDZ, WORK, LWORK, IWORK, LIWORK,
+         CALL SSTEDC( 'I', N, D, E, Z, LDZ, WORK, LWORK, IWORK,
+     $                LIWORK,
      $                INFO )
       END IF
 *
@@ -289,7 +285,7 @@
       IF( ISCALE.EQ.1 )
      $   CALL SSCAL( N, ONE / SIGMA, D, 1 )
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
 *
       RETURN

@@ -224,7 +224,7 @@
 *>
 *> \param[out] U
 *> \verbatim
-*>          U is REAL array, dimension ( LDU, N )
+*>          U is REAL array, dimension ( LDU, N ) or ( LDU, M )
 *>          If JOBU = 'U', then U contains on exit the M-by-N matrix of
 *>                         the left singular vectors.
 *>          If JOBU = 'F', then U contains on exit the M-by-M matrix of
@@ -253,7 +253,7 @@
 *>          If JOBV = 'V', 'J' then V contains on exit the N-by-N matrix of
 *>                         the right singular vectors;
 *>          If JOBV = 'W', AND (JOBU = 'U' AND JOBT = 'T' AND M = N),
-*>                         then V is used as workspace if the pprocedure
+*>                         then V is used as workspace if the procedure
 *>                         replaces A with A^t. In that case, [U] is computed
 *>                         in V as right singular vectors of A^t and then
 *>                         copied back to the U array. This 'W' option is just
@@ -271,7 +271,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array, dimension (LWORK)
+*>          WORK is REAL array, dimension (MAX(7,LWORK))
 *>          On exit,
 *>          WORK(1) = SCALE = WORK(2) / WORK(1) is the scaling factor such
 *>                    that SCALE*SVA(1:N) are the computed singular values
@@ -318,36 +318,36 @@
 *>               LWORK >= max(2*M+N,4*N+1,7). This is the minimal requirement.
 *>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= max(2*M+N,3*N+(N+1)*NB,7). Here NB is the optimal
-*>               block size for DGEQP3 and DGEQRF.
+*>               block size for SGEQP3 and SGEQRF.
 *>               In general, optimal LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF), 7).
+*>               LWORK >= max(2*M+N,N+LWORK(SGEQP3),N+LWORK(SGEQRF), 7).
 *>            -> .. an estimate of the scaled condition number of A is
 *>               required (JOBA='E', 'G'). In this case, LWORK is the maximum
 *>               of the above and N*N+4*N, i.e. LWORK >= max(2*M+N,N*N+4*N,7).
 *>               ->> For optimal performance (blocked code) the optimal value
 *>               is LWORK >= max(2*M+N,3*N+(N+1)*NB, N*N+4*N, 7).
 *>               In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DGEQRF),
-*>                                                     N+N*N+LWORK(DPOCON),7).
+*>               LWORK >= max(2*M+N,N+LWORK(SGEQP3),N+LWORK(SGEQRF),
+*>                                                     N+N*N+LWORK(SPOCON),7).
 *>
 *>          If SIGMA and the right singular vectors are needed (JOBV = 'V'),
 *>            -> the minimal requirement is LWORK >= max(2*M+N,4*N+1,7).
 *>            -> For optimal performance, LWORK >= max(2*M+N,3*N+(N+1)*NB,7),
-*>               where NB is the optimal block size for DGEQP3, DGEQRF, DGELQ,
-*>               DORMLQ. In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3), N+LWORK(DPOCON),
-*>                       N+LWORK(DGELQ), 2*N+LWORK(DGEQRF), N+LWORK(DORMLQ)).
+*>               where NB is the optimal block size for SGEQP3, SGEQRF, SGELQF,
+*>               SORMLQ. In general, the optimal length LWORK is computed as
+*>               LWORK >= max(2*M+N,N+LWORK(SGEQP3), N+LWORK(SPOCON),
+*>                       N+LWORK(SGELQF), 2*N+LWORK(SGEQRF), N+LWORK(SORMLQ)).
 *>
 *>          If SIGMA and the left singular vectors are needed
 *>            -> the minimal requirement is LWORK >= max(2*M+N,4*N+1,7).
 *>            -> For optimal performance:
 *>               if JOBU = 'U' :: LWORK >= max(2*M+N,3*N+(N+1)*NB,7),
 *>               if JOBU = 'F' :: LWORK >= max(2*M+N,3*N+(N+1)*NB,N+M*NB,7),
-*>               where NB is the optimal block size for DGEQP3, DGEQRF, DORMQR.
+*>               where NB is the optimal block size for SGEQP3, SGEQRF, SORMQR.
 *>               In general, the optimal length LWORK is computed as
-*>               LWORK >= max(2*M+N,N+LWORK(DGEQP3),N+LWORK(DPOCON),
-*>                        2*N+LWORK(DGEQRF), N+LWORK(DORMQR)).
-*>               Here LWORK(DORMQR) equals N*NB (for JOBU = 'U') or
+*>               LWORK >= max(2*M+N,N+LWORK(SGEQP3),N+LWORK(SPOCON),
+*>                        2*N+LWORK(SGEQRF), N+LWORK(SORMQR)).
+*>               Here LWORK(SORMQR) equals N*NB (for JOBU = 'U') or
 *>               M*NB (for JOBU = 'F').
 *>
 *>          If the full SVD is needed: (JOBU = 'U' or JOBU = 'F') and
@@ -357,12 +357,12 @@
 *>               LWORK >= max(2*M+N, 4*N+N*N,2*N+N*N+6).
 *>            -> For optimal performance, LWORK should be additionally
 *>               larger than N+M*NB, where NB is the optimal block size
-*>               for DORMQR.
+*>               for SORMQR.
 *> \endverbatim
 *>
 *> \param[out] IWORK
 *> \verbatim
-*>          IWORK is INTEGER array, dimension (M+3*N).
+*>          IWORK is INTEGER array, dimension (MAX(3,M+3*N)).
 *>          On exit,
 *>          IWORK(1) = the numerical rank determined after the initial
 *>                     QR factorization with pivoting. See the descriptions
@@ -391,7 +391,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEsing
+*> \ingroup gejsv
 *
 *> \par Further Details:
 *  =====================
@@ -514,7 +514,8 @@
       EXTERNAL  ISAMAX, LSAME, SLAMCH, SNRM2
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL  SCOPY,  SGELQF, SGEQP3, SGEQRF, SLACPY, SLASCL,
+      EXTERNAL  SCOPY,  SGELQF, SGEQP3, SGEQRF, SLACPY,
+     $                   SLASCL,
      $          SLASET, SLASSQ, SLASWP, SORGQR, SORMLQ,
      $          SORMQR, SPOCON, SSCAL,  SSWAP,  STRSM,  XERBLA
 *
@@ -692,8 +693,10 @@
             CALL SLACPY( 'A', M, 1, A, LDA, U, LDU )
 *           computing all M left singular vectors of the M x 1 matrix
             IF ( N1 .NE. N  ) THEN
-               CALL SGEQRF( M, N, U,LDU, WORK, WORK(N+1),LWORK-N,IERR )
-               CALL SORGQR( M,N1,1, U,LDU,WORK,WORK(N+1),LWORK-N,IERR )
+               CALL SGEQRF( M, N, U,LDU, WORK, WORK(N+1),LWORK-N,
+     $                      IERR )
+               CALL SORGQR( M,N1,1, U,LDU,WORK,WORK(N+1),LWORK-N,
+     $                      IERR )
                CALL SCOPY( M, A(1,1), 1, U(1,1), 1 )
             END IF
          END IF
@@ -1115,7 +1118,8 @@
  1949             CONTINUE
  1947          CONTINUE
             ELSE
-               CALL SLASET( 'U', NR-1, NR-1, ZERO, ZERO, A(1,2), LDA )
+               CALL SLASET( 'U', NR-1, NR-1, ZERO, ZERO, A(1,2),
+     $                      LDA )
             END IF
 *
 *           .. and one-sided Jacobi rotations are started on a lower
@@ -1139,7 +1143,8 @@
             DO 1998 p = 1, NR
                CALL SCOPY( N-p+1, A(p,p), LDA, V(p,p), 1 )
  1998       CONTINUE
-            CALL SLASET( 'Upper', NR-1, NR-1, ZERO, ZERO, V(1,2), LDV )
+            CALL SLASET( 'Upper', NR-1, NR-1, ZERO, ZERO, V(1,2),
+     $                   LDV )
 *
             CALL SGESVJ( 'L','U','N', N, NR, V,LDV, SVA, NR, A,LDA,
      $                  WORK, LWORK, INFO )
@@ -1151,25 +1156,32 @@
 *        .. two more QR factorizations ( one QRF is not enough, two require
 *        accumulated product of Jacobi rotations, three are perfect )
 *
-            CALL SLASET( 'Lower', NR-1, NR-1, ZERO, ZERO, A(2,1), LDA )
-            CALL SGELQF( NR, N, A, LDA, WORK, WORK(N+1), LWORK-N, IERR)
+            CALL SLASET( 'Lower', NR-1, NR-1, ZERO, ZERO, A(2,1),
+     $                   LDA )
+            CALL SGELQF( NR, N, A, LDA, WORK, WORK(N+1), LWORK-N,
+     $                   IERR)
             CALL SLACPY( 'Lower', NR, NR, A, LDA, V, LDV )
-            CALL SLASET( 'Upper', NR-1, NR-1, ZERO, ZERO, V(1,2), LDV )
+            CALL SLASET( 'Upper', NR-1, NR-1, ZERO, ZERO, V(1,2),
+     $                   LDV )
             CALL SGEQRF( NR, NR, V, LDV, WORK(N+1), WORK(2*N+1),
      $                   LWORK-2*N, IERR )
             DO 8998 p = 1, NR
                CALL SCOPY( NR-p+1, V(p,p), LDV, V(p,p), 1 )
  8998       CONTINUE
-            CALL SLASET( 'Upper', NR-1, NR-1, ZERO, ZERO, V(1,2), LDV )
+            CALL SLASET( 'Upper', NR-1, NR-1, ZERO, ZERO, V(1,2),
+     $                   LDV )
 *
             CALL SGESVJ( 'Lower', 'U','N', NR, NR, V,LDV, SVA, NR, U,
      $                  LDU, WORK(N+1), LWORK-N, INFO )
             SCALEM  = WORK(N+1)
             NUMRANK = NINT(WORK(N+2))
             IF ( NR .LT. N ) THEN
-               CALL SLASET( 'A',N-NR, NR, ZERO,ZERO, V(NR+1,1),   LDV )
-               CALL SLASET( 'A',NR, N-NR, ZERO,ZERO, V(1,NR+1),   LDV )
-               CALL SLASET( 'A',N-NR,N-NR,ZERO,ONE, V(NR+1,NR+1), LDV )
+               CALL SLASET( 'A',N-NR, NR, ZERO,ZERO, V(NR+1,1),
+     $                      LDV )
+               CALL SLASET( 'A',NR, N-NR, ZERO,ZERO, V(1,NR+1),
+     $                      LDV )
+               CALL SLASET( 'A',N-NR,N-NR,ZERO,ONE, V(NR+1,NR+1),
+     $                      LDV )
             END IF
 *
          CALL SORMLQ( 'Left', 'Transpose', N, N, NR, A, LDA, WORK,
@@ -1213,8 +1225,10 @@
          IF ( NR .LT. M ) THEN
             CALL SLASET( 'A',  M-NR, NR,ZERO, ZERO, U(NR+1,1), LDU )
             IF ( NR .LT. N1 ) THEN
-               CALL SLASET( 'A',NR, N1-NR, ZERO, ZERO, U(1,NR+1), LDU )
-               CALL SLASET( 'A',M-NR,N1-NR,ZERO,ONE,U(NR+1,NR+1), LDU )
+               CALL SLASET( 'A',NR, N1-NR, ZERO, ZERO, U(1,NR+1),
+     $                      LDU )
+               CALL SLASET( 'A',M-NR,N1-NR,ZERO,ONE,U(NR+1,NR+1),
+     $                      LDU )
             END IF
          END IF
 *
@@ -1276,7 +1290,8 @@
  2968             CONTINUE
  2969          CONTINUE
             ELSE
-               CALL SLASET( 'U', NR-1, NR-1, ZERO, ZERO, V(1,2), LDV )
+               CALL SLASET( 'U', NR-1, NR-1, ZERO, ZERO, V(1,2),
+     $                      LDV )
             END IF
 *
 *           Estimate the row scaled condition number of R1
@@ -1386,7 +1401,7 @@
                IF ( CONDR2 .GE. COND_OK ) THEN
 *                 .. save the Householder vectors used for Q3
 *                 (this overwrites the copy of R2, as it will not be
-*                 needed in this branch, but it does not overwritte the
+*                 needed in this branch, but it does not overwrite the
 *                 Huseholder vectors of Q2.).
                   CALL SLACPY( 'U', NR, NR, V, LDV, WORK(2*N+1), N )
 *                 .. and the rest of the information on Q3 is in
@@ -1409,7 +1424,7 @@
             END IF
 *
 *        Second preconditioning finished; continue with Jacobi SVD
-*        The input matrix is lower trinagular.
+*        The input matrix is lower triangular.
 *
 *        Recover the right singular vectors as solution of a well
 *        conditioned triangular matrix equation.
@@ -1432,7 +1447,8 @@
 *                 equation is Q2*V2 = the product of the Jacobi rotations
 *                 used in SGESVJ, premultiplied with the orthogonal matrix
 *                 from the second QR factorization.
-                  CALL STRSM( 'L','U','N','N', NR,NR,ONE, A,LDA, V,LDV )
+                  CALL STRSM( 'L','U','N','N', NR,NR,ONE, A,LDA, V,
+     $                        LDV )
                ELSE
 *                 .. R1 is well conditioned, but non-square. Transpose(R2)
 *                 is inverted to get the product of the Jacobi rotations
@@ -1443,7 +1459,8 @@
                   IF ( NR .LT. N ) THEN
                     CALL SLASET('A',N-NR,NR,ZERO,ZERO,V(NR+1,1),LDV)
                     CALL SLASET('A',NR,N-NR,ZERO,ZERO,V(1,NR+1),LDV)
-                    CALL SLASET('A',N-NR,N-NR,ZERO,ONE,V(NR+1,NR+1),LDV)
+                    CALL SLASET('A',N-NR,N-NR,ZERO,ONE,V(NR+1,NR+1),
+     $                           LDV)
                   END IF
                   CALL SORMQR('L','N',N,N,NR,WORK(2*N+1),N,WORK(N+1),
      $                 V,LDV,WORK(2*N+N*NR+NR+1),LWORK-2*N-N*NR-NR,IERR)
@@ -1454,10 +1471,11 @@
 * :)           .. the input matrix A is very likely a relative of
 *              the Kahan matrix :)
 *              The matrix R2 is inverted. The solution of the matrix equation
-*              is Q3^T*V3 = the product of the Jacobi rotations (appplied to
+*              is Q3^T*V3 = the product of the Jacobi rotations (applied to
 *              the lower triangular L3 from the LQ factorization of
 *              R2=L3*Q3), pre-multiplied with the transposed Q3.
-               CALL SGESVJ( 'L', 'U', 'N', NR, NR, V, LDV, SVA, NR, U,
+               CALL SGESVJ( 'L', 'U', 'N', NR, NR, V, LDV, SVA, NR,
+     $                      U,
      $              LDU, WORK(2*N+N*NR+NR+1), LWORK-2*N-N*NR-NR, INFO )
                SCALEM  = WORK(2*N+N*NR+NR+1)
                NUMRANK = NINT(WORK(2*N+N*NR+NR+2))
@@ -1465,7 +1483,8 @@
                   CALL SCOPY( NR, V(1,p), 1, U(1,p), 1 )
                   CALL SSCAL( NR, SVA(p),    U(1,p), 1 )
  3870          CONTINUE
-               CALL STRSM('L','U','N','N',NR,NR,ONE,WORK(2*N+1),N,U,LDU)
+               CALL STRSM('L','U','N','N',NR,NR,ONE,WORK(2*N+1),N,U,
+     $                     LDU)
 *              .. apply the permutation from the second QR factorization
                DO 873 q = 1, NR
                   DO 872 p = 1, NR
@@ -1478,7 +1497,8 @@
                IF ( NR .LT. N ) THEN
                   CALL SLASET( 'A',N-NR,NR,ZERO,ZERO,V(NR+1,1),LDV )
                   CALL SLASET( 'A',NR,N-NR,ZERO,ZERO,V(1,NR+1),LDV )
-                  CALL SLASET( 'A',N-NR,N-NR,ZERO,ONE,V(NR+1,NR+1),LDV )
+                  CALL SLASET( 'A',N-NR,N-NR,ZERO,ONE,V(NR+1,NR+1),
+     $                         LDV )
                END IF
                CALL SORMQR( 'L','N',N,N,NR,WORK(2*N+1),N,WORK(N+1),
      $              V,LDV,WORK(2*N+N*NR+NR+1),LWORK-2*N-N*NR-NR,IERR )
@@ -1494,14 +1514,16 @@
 *              defense ensures that SGEJSV completes the task.
 *              Compute the full SVD of L3 using SGESVJ with explicit
 *              accumulation of Jacobi rotations.
-               CALL SGESVJ( 'L', 'U', 'V', NR, NR, V, LDV, SVA, NR, U,
+               CALL SGESVJ( 'L', 'U', 'V', NR, NR, V, LDV, SVA, NR,
+     $                      U,
      $              LDU, WORK(2*N+N*NR+NR+1), LWORK-2*N-N*NR-NR, INFO )
                SCALEM  = WORK(2*N+N*NR+NR+1)
                NUMRANK = NINT(WORK(2*N+N*NR+NR+2))
                IF ( NR .LT. N ) THEN
                   CALL SLASET( 'A',N-NR,NR,ZERO,ZERO,V(NR+1,1),LDV )
                   CALL SLASET( 'A',NR,N-NR,ZERO,ZERO,V(1,NR+1),LDV )
-                  CALL SLASET( 'A',N-NR,N-NR,ZERO,ONE,V(NR+1,NR+1),LDV )
+                  CALL SLASET( 'A',N-NR,N-NR,ZERO,ONE,V(NR+1,NR+1),
+     $                         LDV )
                END IF
                CALL SORMQR( 'L','N',N,N,NR,WORK(2*N+1),N,WORK(N+1),
      $              V,LDV,WORK(2*N+N*NR+NR+1),LWORK-2*N-N*NR-NR,IERR )
@@ -1539,10 +1561,12 @@
 *           At this moment, V contains the right singular vectors of A.
 *           Next, assemble the left singular vector matrix U (M x N).
             IF ( NR .LT. M ) THEN
-               CALL SLASET( 'A', M-NR, NR, ZERO, ZERO, U(NR+1,1), LDU )
+               CALL SLASET( 'A', M-NR, NR, ZERO, ZERO, U(NR+1,1),
+     $                      LDU )
                IF ( NR .LT. N1 ) THEN
                   CALL SLASET('A',NR,N1-NR,ZERO,ZERO,U(1,NR+1),LDU)
-                  CALL SLASET('A',M-NR,N1-NR,ZERO,ONE,U(NR+1,NR+1),LDU)
+                  CALL SLASET('A',M-NR,N1-NR,ZERO,ONE,U(NR+1,NR+1),
+     $                         LDU)
                END IF
             END IF
 *
@@ -1611,8 +1635,10 @@
             IF ( N .LT. M ) THEN
                CALL SLASET( 'A',  M-N, N, ZERO, ZERO, U(N+1,1), LDU )
                IF ( N .LT. N1 ) THEN
-                  CALL SLASET( 'A',N,  N1-N, ZERO, ZERO,  U(1,N+1),LDU )
-                  CALL SLASET( 'A',M-N,N1-N, ZERO, ONE,U(N+1,N+1),LDU )
+                  CALL SLASET( 'A',N,  N1-N, ZERO, ZERO,  U(1,N+1),
+     $                         LDU )
+                  CALL SLASET( 'A',M-N,N1-N, ZERO, ONE,U(N+1,N+1),
+     $                         LDU )
                END IF
             END IF
             CALL SORMQR( 'Left', 'No Tr', M, N1, N, A, LDA, WORK, U,
@@ -1719,8 +1745,10 @@
          IF ( NR .LT. M ) THEN
             CALL SLASET( 'A',  M-NR, NR, ZERO, ZERO, U(NR+1,1), LDU )
             IF ( NR .LT. N1 ) THEN
-               CALL SLASET( 'A',NR,  N1-NR, ZERO, ZERO,  U(1,NR+1),LDU )
-               CALL SLASET( 'A',M-NR,N1-NR, ZERO, ONE,U(NR+1,NR+1),LDU )
+               CALL SLASET( 'A',NR,  N1-NR, ZERO, ZERO,  U(1,NR+1),
+     $                      LDU )
+               CALL SLASET( 'A',M-NR,N1-NR, ZERO, ONE,U(NR+1,NR+1),
+     $                      LDU )
             END IF
          END IF
 *
@@ -1745,7 +1773,8 @@
 *     Undo scaling, if necessary (and possible)
 *
       IF ( USCAL2 .LE. (BIG/SVA(1))*USCAL1 ) THEN
-         CALL SLASCL( 'G', 0, 0, USCAL1, USCAL2, NR, 1, SVA, N, IERR )
+         CALL SLASCL( 'G', 0, 0, USCAL1, USCAL2, NR, 1, SVA, N,
+     $                IERR )
          USCAL1 = ONE
          USCAL2 = ONE
       END IF

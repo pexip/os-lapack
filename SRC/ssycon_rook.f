@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realSYcomputational
+*> \ingroup hecon_rook
 *
 *> \par Contributors:
 *  ==================
@@ -139,7 +139,8 @@
 *> \endverbatim
 *
 *  =====================================================================
-      SUBROUTINE SSYCON_ROOK( UPLO, N, A, LDA, IPIV, ANORM, RCOND, WORK,
+      SUBROUTINE SSYCON_ROOK( UPLO, N, A, LDA, IPIV, ANORM, RCOND,
+     $                        WORK,
      $                   IWORK, INFO )
 *
 *  -- LAPACK computational routine --

@@ -115,7 +115,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGBcomputational
+*> \ingroup gbtf2
 *
 *> \par Further Details:
 *  =====================
@@ -249,7 +249,8 @@
 *
 *              Compute multipliers.
 *
-               CALL CSCAL( KM, ONE / AB( KV+1, J ), AB( KV+2, J ), 1 )
+               CALL CSCAL( KM, ONE / AB( KV+1, J ), AB( KV+2, J ),
+     $                     1 )
 *
 *              Update trailing submatrix within the band.
 *

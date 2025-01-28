@@ -184,7 +184,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEsolve
+*> \ingroup hesv_rook
 *>
 *> \verbatim
 *>
@@ -200,7 +200,8 @@
 *
 *
 *  =====================================================================
-      SUBROUTINE CHESV_ROOK( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, WORK,
+      SUBROUTINE CHESV_ROOK( UPLO, N, NRHS, A, LDA, IPIV, B, LDB,
+     $                       WORK,
      $                       LWORK, INFO )
 *
 *  -- LAPACK driver routine --
@@ -225,7 +226,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           LSAME, ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           XERBLA, CHETRF_ROOK, CHETRS_ROOK
@@ -239,7 +241,8 @@
 *
       INFO = 0
       LQUERY = ( LWORK.EQ.-1 )
-      IF( .NOT.LSAME( UPLO, 'U' ) .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
+      IF( .NOT.LSAME( UPLO, 'U' ) .AND.
+     $    .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -1
       ELSE IF( N.LT.0 ) THEN
          INFO = -2
@@ -260,7 +263,7 @@
             NB = ILAENV( 1, 'CHETRF_ROOK', UPLO, N, -1, -1, -1 )
             LWKOPT = N*NB
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -279,11 +282,12 @@
 *
 *        Solve with TRS ( Use Level BLAS 2)
 *
-         CALL CHETRS_ROOK( UPLO, N, NRHS, A, LDA, IPIV, B, LDB, INFO )
+         CALL CHETRS_ROOK( UPLO, N, NRHS, A, LDA, IPIV, B, LDB,
+     $                     INFO )
 *
       END IF
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
       RETURN
 *

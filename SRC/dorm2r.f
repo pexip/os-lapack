@@ -98,7 +98,6 @@
 *>          The i-th column must contain the vector which defines the
 *>          elementary reflector H(i), for i = 1,2,...,k, as returned by
 *>          DGEQRF in the first k columns of its array argument A.
-*>          A is modified by the routine but restored on exit.
 *> \endverbatim
 *>
 *> \param[in] LDA
@@ -151,7 +150,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup unm2r
 *
 *  =====================================================================
       SUBROUTINE DORM2R( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
@@ -178,14 +177,13 @@
 *     .. Local Scalars ..
       LOGICAL            LEFT, NOTRAN
       INTEGER            I, I1, I2, I3, IC, JC, MI, NI, NQ
-      DOUBLE PRECISION   AII
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLARF, XERBLA
+      EXTERNAL            XERBLA, DLARF1F
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
@@ -266,11 +264,9 @@
 *
 *        Apply H(i)
 *
-         AII = A( I, I )
-         A( I, I ) = ONE
-         CALL DLARF( SIDE, MI, NI, A( I, I ), 1, TAU( I ), C( IC, JC ),
+         CALL DLARF1F( SIDE, MI, NI, A( I, I ), 1, TAU( I ), C( IC,
+     $               JC ),
      $               LDC, WORK )
-         A( I, I ) = AII
    10 CONTINUE
       RETURN
 *

@@ -103,7 +103,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realPOcomputational
+*> \ingroup potrs
 *
 *  =====================================================================
       SUBROUTINE SPOTRS( UPLO, N, NRHS, A, LDA, B, LDB, INFO )
@@ -172,7 +172,8 @@
 *
 *        Solve U**T *X = B, overwriting B with X.
 *
-         CALL STRSM( 'Left', 'Upper', 'Transpose', 'Non-unit', N, NRHS,
+         CALL STRSM( 'Left', 'Upper', 'Transpose', 'Non-unit', N,
+     $               NRHS,
      $               ONE, A, LDA, B, LDB )
 *
 *        Solve U*X = B, overwriting B with X.
@@ -190,7 +191,8 @@
 *
 *        Solve L**T *X = B, overwriting B with X.
 *
-         CALL STRSM( 'Left', 'Lower', 'Transpose', 'Non-unit', N, NRHS,
+         CALL STRSM( 'Left', 'Lower', 'Transpose', 'Non-unit', N,
+     $               NRHS,
      $               ONE, A, LDA, B, LDB )
       END IF
 *

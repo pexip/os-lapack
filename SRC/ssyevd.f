@@ -40,13 +40,6 @@
 *> real symmetric matrix A. If eigenvectors are desired, it uses a
 *> divide and conquer algorithm.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
-*>
 *> Because of large use of BLAS of level 3, SSYEVD needs N**2 more
 *> workspace than SSYEVX.
 *> \endverbatim
@@ -103,8 +96,7 @@
 *>
 *> \param[out] WORK
 *> \verbatim
-*>          WORK is REAL array,
-*>                                         dimension (LWORK)
+*>          WORK is REAL array, dimension (MAX(1,LWORK))
 *>          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *> \endverbatim
 *>
@@ -167,7 +159,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realSYeigen
+*> \ingroup heevd
 *
 *> \par Contributors:
 *  ==================
@@ -178,7 +170,8 @@
 *>  Modified description of INFO. Sven, 16 Feb 05. \n
 *>
 *  =====================================================================
-      SUBROUTINE SSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, IWORK,
+      SUBROUTINE SSYEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK,
+     $                   IWORK,
      $                   LIWORK, INFO )
 *
 *  -- LAPACK driver routine --
@@ -211,11 +204,13 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, SLANSY
-      EXTERNAL           ILAENV, LSAME, SLAMCH, SLANSY
+      REAL               SLAMCH, SLANSY, SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, SLAMCH,
+     $                   SLANSY, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLACPY, SLASCL, SORMTR, SSCAL, SSTEDC, SSTERF,
+      EXTERNAL           SLACPY, SLASCL, SORMTR, SSCAL, SSTEDC,
+     $                   SSTERF,
      $                   SSYTRD, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -255,10 +250,11 @@
                LWMIN = 2*N + 1
             END IF
             LOPT = MAX( LWMIN, 2*N +
-     $                  N*ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 ) )
+     $                  N*ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1,
+     $                            -1 ) )
             LIOPT = LIWMIN
          END IF
-         WORK( 1 ) = LOPT
+         WORK( 1 ) = SROUNDUP_LWORK( LOPT )
          IWORK( 1 ) = LIOPT
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -342,7 +338,7 @@
       IF( ISCALE.EQ.1 )
      $   CALL SSCAL( N, ONE / SIGMA, W, 1 )
 *
-      WORK( 1 ) = LOPT
+      WORK( 1 ) = SROUNDUP_LWORK( LOPT )
       IWORK( 1 ) = LIOPT
 *
       RETURN

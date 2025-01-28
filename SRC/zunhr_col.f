@@ -241,7 +241,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup unhr_col
 *
 *> \par Contributors:
 *  ==================
@@ -281,7 +281,8 @@
      $                   NPLUSONE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZCOPY, ZLAUNHR_COL_GETRFNP, ZSCAL, ZTRSM,
+      EXTERNAL           ZCOPY, ZLAUNHR_COL_GETRFNP, ZSCAL,
+     $                   ZTRSM,
      $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -420,7 +421,7 @@
 *
          JBTEMP2 = JB - 2
          DO J = JB, JB+JNB-2
-            DO I = J-JBTEMP2, NB
+            DO I = J-JBTEMP2, MIN( NB, N )
                T( I, J ) = CZERO
             END DO
          END DO

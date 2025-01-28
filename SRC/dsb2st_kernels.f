@@ -163,6 +163,8 @@
 *>
 *> \endverbatim
 *>
+*> \ingroup hb2st_kernels
+*>
 *  =====================================================================
       SUBROUTINE  DSB2ST_KERNELS( UPLO, WANTZ, TTYPE,
      $                            ST, ED, SWEEP, N, NB, IB,
@@ -285,7 +287,8 @@
                       A( DPOS-NB-I, J1+I ) = ZERO
    30             CONTINUE
                   CTMP = ( A( DPOS-NB, J1 ) )
-                  CALL DLARFG( LM, CTMP, V( VPOS+1 ), 1, TAU( TAUPOS ) )
+                  CALL DLARFG( LM, CTMP, V( VPOS+1 ), 1,
+     $                         TAU( TAUPOS ) )
                   A( DPOS-NB, J1 ) = CTMP
 *
                   CALL DLARFX( 'Right', LN-1, LM, V( VPOS ),
