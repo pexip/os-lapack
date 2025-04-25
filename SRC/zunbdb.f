@@ -255,7 +255,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup unbdb
 *
 *> \par Further Details:
 *  =====================
@@ -281,7 +281,8 @@
 *>      Algorithms, 50(1):33-65, 2009.
 *>
 *  =====================================================================
-      SUBROUTINE ZUNBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12, LDX12,
+      SUBROUTINE ZUNBDB( TRANS, SIGNS, M, P, Q, X11, LDX11, X12,
+     $                   LDX12,
      $                   X21, LDX21, X22, LDX22, THETA, PHI, TAUP1,
      $                   TAUP2, TAUQ1, TAUQ2, WORK, LWORK, INFO )
 *
@@ -315,7 +316,8 @@
       DOUBLE PRECISION   Z1, Z2, Z3, Z4
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZAXPY, ZLARF, ZLARFGP, ZSCAL, XERBLA
+      EXTERNAL           ZAXPY, ZLARF1F, ZLARFGP, ZSCAL,
+     $                   XERBLA
       EXTERNAL           ZLACGV
 *
 *     ..
@@ -406,9 +408,11 @@
      $                     0.0D0 ), X12(I,I-1), 1, X11(I,I), 1 )
             END IF
             IF( I .EQ. 1 ) THEN
-               CALL ZSCAL( M-P-I+1, DCMPLX( Z2, 0.0D0 ), X21(I,I), 1 )
+               CALL ZSCAL( M-P-I+1, DCMPLX( Z2, 0.0D0 ), X21(I,I),
+     $                     1 )
             ELSE
-               CALL ZSCAL( M-P-I+1, DCMPLX( Z2*COS(PHI(I-1)), 0.0D0 ),
+               CALL ZSCAL( M-P-I+1, DCMPLX( Z2*COS(PHI(I-1)),
+     $                     0.0D0 ),
      $                     X21(I,I), 1 )
                CALL ZAXPY( M-P-I+1, DCMPLX( -Z2*Z3*Z4*SIN(PHI(I-1)),
      $                     0.0D0 ), X22(I,I-1), 1, X21(I,I), 1 )
@@ -418,11 +422,11 @@
      $                 DZNRM2( P-I+1, X11(I,I), 1 ) )
 *
             IF( P .GT. I ) THEN
-               CALL ZLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1, TAUP1(I) )
+               CALL ZLARFGP( P-I+1, X11(I,I), X11(I+1,I), 1,
+     $                       TAUP1(I) )
             ELSE IF ( P .EQ. I ) THEN
                CALL ZLARFGP( P-I+1, X11(I,I), X11(I,I), 1, TAUP1(I) )
             END IF
-            X11(I,I) = ONE
             IF ( M-P .GT. I ) THEN
                CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I+1,I), 1,
      $                       TAUP2(I) )
@@ -430,30 +434,34 @@
                CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I,I), 1,
      $                       TAUP2(I) )
             END IF
-            X21(I,I) = ONE
 *
             IF ( Q .GT. I ) THEN
-               CALL ZLARF( 'L', P-I+1, Q-I, X11(I,I), 1,
-     $                     DCONJG(TAUP1(I)), X11(I,I+1), LDX11, WORK )
-               CALL ZLARF( 'L', M-P-I+1, Q-I, X21(I,I), 1,
-     $                     DCONJG(TAUP2(I)), X21(I,I+1), LDX21, WORK )
+               CALL ZLARF1F( 'L', P-I+1, Q-I, X11(I,I), 1,
+     $                       CONJG(TAUP1(I)), X11(I,I+1), LDX11,
+     $                       WORK )
+               CALL ZLARF1F( 'L', M-P-I+1, Q-I, X21(I,I), 1,
+     $                       CONJG(TAUP2(I)), X21(I,I+1), LDX21,
+     $                       WORK )
             END IF
             IF ( M-Q+1 .GT. I ) THEN
-               CALL ZLARF( 'L', P-I+1, M-Q-I+1, X11(I,I), 1,
-     $                     DCONJG(TAUP1(I)), X12(I,I), LDX12, WORK )
-               CALL ZLARF( 'L', M-P-I+1, M-Q-I+1, X21(I,I), 1,
-     $                     DCONJG(TAUP2(I)), X22(I,I), LDX22, WORK )
+               CALL ZLARF1F( 'L', P-I+1, M-Q-I+1, X11(I,I), 1,
+     $                       CONJG(TAUP1(I)), X12(I,I), LDX12, WORK )
+               CALL ZLARF1F( 'L', M-P-I+1, M-Q-I+1, X21(I,I), 1,
+     $                       CONJG(TAUP2(I)), X22(I,I), LDX22, WORK )
             END IF
 *
             IF( I .LT. Q ) THEN
-               CALL ZSCAL( Q-I, DCMPLX( -Z1*Z3*SIN(THETA(I)), 0.0D0 ),
+               CALL ZSCAL( Q-I, DCMPLX( -Z1*Z3*SIN(THETA(I)),
+     $                     0.0D0 ),
      $                     X11(I,I+1), LDX11 )
                CALL ZAXPY( Q-I, DCMPLX( Z2*Z3*COS(THETA(I)), 0.0D0 ),
      $                     X21(I,I+1), LDX21, X11(I,I+1), LDX11 )
             END IF
-            CALL ZSCAL( M-Q-I+1, DCMPLX( -Z1*Z4*SIN(THETA(I)), 0.0D0 ),
+            CALL ZSCAL( M-Q-I+1, DCMPLX( -Z1*Z4*SIN(THETA(I)),
+     $                  0.0D0 ),
      $                  X12(I,I), LDX12 )
-            CALL ZAXPY( M-Q-I+1, DCMPLX( Z2*Z4*COS(THETA(I)), 0.0D0 ),
+            CALL ZAXPY( M-Q-I+1, DCMPLX( Z2*Z4*COS(THETA(I)),
+     $                  0.0D0 ),
      $                  X22(I,I), LDX22, X12(I,I), LDX12 )
 *
             IF( I .LT. Q )
@@ -469,7 +477,6 @@
                   CALL ZLARFGP( Q-I, X11(I,I+1), X11(I,I+2), LDX11,
      $                          TAUQ1(I) )
                END IF
-               X11(I,I+1) = ONE
             END IF
             IF ( M-Q+1 .GT. I ) THEN
                CALL ZLACGV( M-Q-I+1, X12(I,I), LDX12 )
@@ -481,21 +488,23 @@
      $                          TAUQ2(I) )
                END IF
             END IF
-            X12(I,I) = ONE
 *
             IF( I .LT. Q ) THEN
-               CALL ZLARF( 'R', P-I, Q-I, X11(I,I+1), LDX11, TAUQ1(I),
-     $                     X11(I+1,I+1), LDX11, WORK )
-               CALL ZLARF( 'R', M-P-I, Q-I, X11(I,I+1), LDX11, TAUQ1(I),
-     $                     X21(I+1,I+1), LDX21, WORK )
+               CALL ZLARF1F( 'R', P-I, Q-I, X11(I,I+1), LDX11,
+     $                       TAUQ1(I),
+     $                       X11(I+1,I+1), LDX11, WORK )
+               CALL ZLARF1F( 'R', M-P-I, Q-I, X11(I,I+1), LDX11,
+     $                       TAUQ1(I),
+     $                       X21(I+1,I+1), LDX21, WORK )
             END IF
             IF ( P .GT. I ) THEN
-               CALL ZLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
-     $                     X12(I+1,I), LDX12, WORK )
+               CALL ZLARF1F( 'R', P-I, M-Q-I+1, X12(I,I), LDX12,
+     $                       TAUQ2(I),
+     $                       X12(I+1,I), LDX12, WORK )
             END IF
             IF ( M-P .GT. I ) THEN
-               CALL ZLARF( 'R', M-P-I, M-Q-I+1, X12(I,I), LDX12,
-     $                     TAUQ2(I), X22(I+1,I), LDX22, WORK )
+               CALL ZLARF1F( 'R', M-P-I, M-Q-I+1, X12(I,I), LDX12,
+     $                       TAUQ2(I), X22(I+1,I), LDX22, WORK )
             END IF
 *
             IF( I .LT. Q )
@@ -518,15 +527,15 @@
                CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I,I+1), LDX12,
      $                       TAUQ2(I) )
             END IF
-            X12(I,I) = ONE
 *
             IF ( P .GT. I ) THEN
-               CALL ZLARF( 'R', P-I, M-Q-I+1, X12(I,I), LDX12, TAUQ2(I),
-     $                     X12(I+1,I), LDX12, WORK )
+               CALL ZLARF1F( 'R', P-I, M-Q-I+1, X12(I,I), LDX12,
+     $                       TAUQ2(I),
+     $                       X12(I+1,I), LDX12, WORK )
             END IF
             IF( M-P-Q .GE. 1 )
-     $         CALL ZLARF( 'R', M-P-Q, M-Q-I+1, X12(I,I), LDX12,
-     $                     TAUQ2(I), X22(Q+1,I), LDX22, WORK )
+     $         CALL ZLARF1F( 'R', M-P-Q, M-Q-I+1, X12(I,I), LDX12,
+     $                       TAUQ2(I), X22(Q+1,I), LDX22, WORK )
 *
             CALL ZLACGV( M-Q-I+1, X12(I,I), LDX12 )
 *
@@ -541,9 +550,9 @@
             CALL ZLACGV( M-P-Q-I+1, X22(Q+I,P+I), LDX22 )
             CALL ZLARFGP( M-P-Q-I+1, X22(Q+I,P+I), X22(Q+I,P+I+1),
      $                    LDX22, TAUQ2(P+I) )
-            X22(Q+I,P+I) = ONE
-            CALL ZLARF( 'R', M-P-Q-I, M-P-Q-I+1, X22(Q+I,P+I), LDX22,
-     $                  TAUQ2(P+I), X22(Q+I+1,P+I), LDX22, WORK )
+            CALL ZLARF1F( 'R', M-P-Q-I, M-P-Q-I+1, X22(Q+I,P+I),
+     $                    LDX22, TAUQ2(P+I), X22(Q+I+1,P+I), LDX22,
+     $                    WORK )
 *
             CALL ZLACGV( M-P-Q-I+1, X22(Q+I,P+I), LDX22 )
 *
@@ -568,7 +577,8 @@
                CALL ZSCAL( M-P-I+1, DCMPLX( Z2, 0.0D0 ), X21(I,I),
      $                     LDX21 )
             ELSE
-               CALL ZSCAL( M-P-I+1, DCMPLX( Z2*COS(PHI(I-1)), 0.0D0 ),
+               CALL ZSCAL( M-P-I+1, DCMPLX( Z2*COS(PHI(I-1)),
+     $                     0.0D0 ),
      $                     X21(I,I), LDX21 )
                CALL ZAXPY( M-P-I+1, DCMPLX( -Z2*Z3*Z4*SIN(PHI(I-1)),
      $                     0.0D0 ), X22(I-1,I), LDX22, X21(I,I), LDX21 )
@@ -580,8 +590,8 @@
             CALL ZLACGV( P-I+1, X11(I,I), LDX11 )
             CALL ZLACGV( M-P-I+1, X21(I,I), LDX21 )
 *
-            CALL ZLARFGP( P-I+1, X11(I,I), X11(I,I+1), LDX11, TAUP1(I) )
-            X11(I,I) = ONE
+            CALL ZLARFGP( P-I+1, X11(I,I), X11(I,I+1), LDX11,
+     $                    TAUP1(I) )
             IF ( I .EQ. M-P ) THEN
                CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I,I), LDX21,
      $                       TAUP2(I) )
@@ -589,29 +599,32 @@
                CALL ZLARFGP( M-P-I+1, X21(I,I), X21(I,I+1), LDX21,
      $                       TAUP2(I) )
             END IF
-            X21(I,I) = ONE
 *
-            CALL ZLARF( 'R', Q-I, P-I+1, X11(I,I), LDX11, TAUP1(I),
-     $                  X11(I+1,I), LDX11, WORK )
-            CALL ZLARF( 'R', M-Q-I+1, P-I+1, X11(I,I), LDX11, TAUP1(I),
-     $                  X12(I,I), LDX12, WORK )
-            CALL ZLARF( 'R', Q-I, M-P-I+1, X21(I,I), LDX21, TAUP2(I),
-     $                  X21(I+1,I), LDX21, WORK )
-            CALL ZLARF( 'R', M-Q-I+1, M-P-I+1, X21(I,I), LDX21,
-     $                  TAUP2(I), X22(I,I), LDX22, WORK )
+            CALL ZLARF1F( 'R', Q-I, P-I+1, X11(I,I), LDX11, TAUP1(I),
+     $                    X11(I+1,I), LDX11, WORK )
+            CALL ZLARF1F( 'R', M-Q-I+1, P-I+1, X11(I,I), LDX11,
+     $                    TAUP1(I),
+     $                    X12(I,I), LDX12, WORK )
+            CALL ZLARF1F( 'R', Q-I, M-P-I+1, X21(I,I), LDX21,
+     $                    TAUP2(I), X21(I+1,I), LDX21, WORK )
+            CALL ZLARF1F( 'R', M-Q-I+1, M-P-I+1, X21(I,I), LDX21,
+     $                    TAUP2(I), X22(I,I), LDX22, WORK )
 *
             CALL ZLACGV( P-I+1, X11(I,I), LDX11 )
             CALL ZLACGV( M-P-I+1, X21(I,I), LDX21 )
 *
             IF( I .LT. Q ) THEN
-               CALL ZSCAL( Q-I, DCMPLX( -Z1*Z3*SIN(THETA(I)), 0.0D0 ),
+               CALL ZSCAL( Q-I, DCMPLX( -Z1*Z3*SIN(THETA(I)),
+     $                     0.0D0 ),
      $                     X11(I+1,I), 1 )
                CALL ZAXPY( Q-I, DCMPLX( Z2*Z3*COS(THETA(I)), 0.0D0 ),
      $                     X21(I+1,I), 1, X11(I+1,I), 1 )
             END IF
-            CALL ZSCAL( M-Q-I+1, DCMPLX( -Z1*Z4*SIN(THETA(I)), 0.0D0 ),
+            CALL ZSCAL( M-Q-I+1, DCMPLX( -Z1*Z4*SIN(THETA(I)),
+     $                  0.0D0 ),
      $                  X12(I,I), 1 )
-            CALL ZAXPY( M-Q-I+1, DCMPLX( Z2*Z4*COS(THETA(I)), 0.0D0 ),
+            CALL ZAXPY( M-Q-I+1, DCMPLX( Z2*Z4*COS(THETA(I)),
+     $                  0.0D0 ),
      $                  X22(I,I), 1, X12(I,I), 1 )
 *
             IF( I .LT. Q )
@@ -619,23 +632,28 @@
      $                  DZNRM2( M-Q-I+1, X12(I,I), 1 ) )
 *
             IF( I .LT. Q ) THEN
-               CALL ZLARFGP( Q-I, X11(I+1,I), X11(I+2,I), 1, TAUQ1(I) )
-               X11(I+1,I) = ONE
+               CALL ZLARFGP( Q-I, X11(I+1,I), X11(I+2,I), 1,
+     $                       TAUQ1(I) )
             END IF
-            CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1, TAUQ2(I) )
-            X12(I,I) = ONE
+            CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1,
+     $                    TAUQ2(I) )
 *
             IF( I .LT. Q ) THEN
-               CALL ZLARF( 'L', Q-I, P-I, X11(I+1,I), 1,
-     $                     DCONJG(TAUQ1(I)), X11(I+1,I+1), LDX11, WORK )
-               CALL ZLARF( 'L', Q-I, M-P-I, X11(I+1,I), 1,
-     $                     DCONJG(TAUQ1(I)), X21(I+1,I+1), LDX21, WORK )
+               CALL ZLARF1F( 'L', Q-I, P-I, X11(I+1,I), 1,
+     $                       CONJG(TAUQ1(I)), X11(I+1,I+1), LDX11,
+     $                       WORK )
+               CALL ZLARF1F( 'L', Q-I, M-P-I, X11(I+1,I), 1,
+     $                       CONJG(TAUQ1(I)), X21(I+1,I+1), LDX21,
+     $                       WORK )
             END IF
-            CALL ZLARF( 'L', M-Q-I+1, P-I, X12(I,I), 1,
-     $                  DCONJG(TAUQ2(I)), X12(I,I+1), LDX12, WORK )
+            CALL ZLARF1F( 'L', M-Q-I+1, P-I, X12(I,I), 1,
+     $                    CONJG(TAUQ2(I)),
+     $                    X12(I,I+1), LDX12, WORK )
+
             IF ( M-P .GT. I ) THEN
-               CALL ZLARF( 'L', M-Q-I+1, M-P-I, X12(I,I), 1,
-     $                     DCONJG(TAUQ2(I)), X22(I,I+1), LDX22, WORK )
+               CALL ZLARF1F( 'L', M-Q-I+1, M-P-I, X12(I,I), 1,
+     $                       CONJG(TAUQ2(I)), X22(I,I+1), LDX22,
+     $                       WORK )
             END IF
 *
          END DO
@@ -644,17 +662,20 @@
 *
          DO I = Q + 1, P
 *
-            CALL ZSCAL( M-Q-I+1, DCMPLX( -Z1*Z4, 0.0D0 ), X12(I,I), 1 )
-            CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1, TAUQ2(I) )
-            X12(I,I) = ONE
+            CALL ZSCAL( M-Q-I+1, DCMPLX( -Z1*Z4, 0.0D0 ), X12(I,I),
+     $                  1 )
+            CALL ZLARFGP( M-Q-I+1, X12(I,I), X12(I+1,I), 1,
+     $                    TAUQ2(I) )
 *
             IF ( P .GT. I ) THEN
-               CALL ZLARF( 'L', M-Q-I+1, P-I, X12(I,I), 1,
-     $                     DCONJG(TAUQ2(I)), X12(I,I+1), LDX12, WORK )
+               CALL ZLARF1F( 'L', M-Q-I+1, P-I, X12(I,I), 1,
+     $                       CONJG(TAUQ2(I)), X12(I,I+1), LDX12,
+     $                       WORK )
             END IF
             IF( M-P-Q .GE. 1 )
-     $         CALL ZLARF( 'L', M-Q-I+1, M-P-Q, X12(I,I), 1,
-     $                     DCONJG(TAUQ2(I)), X22(I,Q+1), LDX22, WORK )
+     $         CALL ZLARF1F( 'L', M-Q-I+1, M-P-Q, X12(I,I), 1,
+     $                       CONJG(TAUQ2(I)), X22(I,Q+1), LDX22,
+     $                       WORK )
 *
          END DO
 *
@@ -666,12 +687,10 @@
      $                  X22(P+I,Q+I), 1 )
             CALL ZLARFGP( M-P-Q-I+1, X22(P+I,Q+I), X22(P+I+1,Q+I), 1,
      $                    TAUQ2(P+I) )
-            X22(P+I,Q+I) = ONE
-*
             IF ( M-P-Q .NE. I ) THEN
-               CALL ZLARF( 'L', M-P-Q-I+1, M-P-Q-I, X22(P+I,Q+I), 1,
-     $                     DCONJG(TAUQ2(P+I)), X22(P+I,Q+I+1), LDX22,
-     $                     WORK )
+               CALL ZLARF1F( 'L', M-P-Q-I+1, M-P-Q-I, X22(P+I,Q+I),
+     $                       1, CONJG(TAUQ2(P+I)), X22(P+I,Q+I+1),
+     $                       LDX22, WORK )
             END IF
 *
          END DO

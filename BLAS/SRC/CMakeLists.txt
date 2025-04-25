@@ -82,15 +82,15 @@ set(ZBLAS2 zgemv.f zgbmv.f zhemv.f zhbmv.f zhpmv.f
 #---------------------------------------------------------
 #  Level 3 BLAS
 #---------------------------------------------------------
-set(SBLAS3 sgemm.f ssymm.f ssyrk.f ssyr2k.f strmm.f strsm.f)
+set(SBLAS3 sgemm.f ssymm.f ssyrk.f ssyr2k.f strmm.f strsm.f sgemmtr.f)
 
 set(CBLAS3 cgemm.f csymm.f csyrk.f csyr2k.f ctrmm.f ctrsm.f
-	chemm.f cherk.f cher2k.f)
+	chemm.f cherk.f cher2k.f cgemmtr.f)
 
-set(DBLAS3 dgemm.f dsymm.f dsyrk.f dsyr2k.f dtrmm.f dtrsm.f)
+set(DBLAS3 dgemm.f dsymm.f dsyrk.f dsyr2k.f dtrmm.f dtrsm.f dgemmtr.f)
 
 set(ZBLAS3 zgemm.f zsymm.f zsyrk.f zsyr2k.f ztrmm.f ztrsm.f
-	zhemm.f zherk.f zher2k.f)
+	zhemm.f zherk.f zher2k.f zgemmtr.f)
 
 
 set(SOURCES)
@@ -109,11 +109,50 @@ if(BUILD_COMPLEX16)
 endif()
 list(REMOVE_DUPLICATES SOURCES)
 
-add_library(${BLASLIB} ${SOURCES})
+add_library(${BLASLIB}_obj OBJECT ${SOURCES})
+set_target_properties(${BLASLIB}_obj PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+if(BUILD_INDEX64_EXT_API)
+  set(SOURCES_64_F)
+  # Copy files so we can set source property specific to /${BLASLIB}_64_obj target
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${BLASLIB}_64_obj)
+  file(COPY ${SOURCES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${BLASLIB}_64_obj)
+  file(GLOB SOURCES_64_F ${CMAKE_CURRENT_BINARY_DIR}/${BLASLIB}_64_obj/*.f*)
+  add_library(${BLASLIB}_64_obj OBJECT ${SOURCES_64_F})
+  target_compile_options(${BLASLIB}_64_obj PRIVATE ${FOPT_ILP64})
+  set_target_properties(${BLASLIB}_64_obj PROPERTIES POSITION_INDEPENDENT_CODE ON)
+  #Add _64 suffix to all Fortran functions via macros
+  foreach(F IN LISTS SOURCES_64_F)
+    if(CMAKE_Fortran_COMPILER_ID STREQUAL "NAG")
+      set_source_files_properties(${F} PROPERTIES COMPILE_FLAGS "-fpp")
+    else()
+      set_source_files_properties(${F} PROPERTIES COMPILE_FLAGS "-cpp")
+    endif()
+    file(STRINGS ${F} ${F}.lst)
+    list(FILTER ${F}.lst INCLUDE REGEX "subroutine|SUBROUTINE|external|EXTERNAL|function|FUNCTION")
+    list(FILTER ${F}.lst EXCLUDE REGEX "^!.*")
+    list(FILTER ${F}.lst EXCLUDE REGEX "^[*].*")
+    list(FILTER ${F}.lst EXCLUDE REGEX "end|END")
+    foreach(FUNC IN LISTS ${F}.lst)
+      string(REGEX REPLACE "^[a-zA-Z0-9_ *]*(subroutine|SUBROUTINE|external|EXTERNAL|function|FUNCTION)[ ]*[*]?" "" FUNC ${FUNC})
+      string(REGEX REPLACE "[(][a-zA-Z0-9_, )]*$" "" FUNC ${FUNC})
+      string(STRIP ${FUNC} FUNC)
+      list(APPEND COPT_64_F "${FUNC}=${FUNC}_64")
+    endforeach()
+    list(REMOVE_DUPLICATES COPT_64_F)
+    set_source_files_properties(${F} PROPERTIES COMPILE_DEFINITIONS "${COPT_64_F}")
+  endforeach()
+endif()
+
+add_library(${BLASLIB}
+        $<TARGET_OBJECTS:${BLASLIB}_obj>
+        $<$<BOOL:${BUILD_INDEX64_EXT_API}>: $<TARGET_OBJECTS:${BLASLIB}_64_obj>>)
+
 set_target_properties(
   ${BLASLIB} PROPERTIES
   VERSION ${LAPACK_VERSION}
   SOVERSION ${LAPACK_MAJOR_VERSION}
+  POSITION_INDEPENDENT_CODE ON
   )
 lapack_install_library(${BLASLIB})
 

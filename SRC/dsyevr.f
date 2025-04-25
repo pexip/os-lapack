@@ -39,9 +39,16 @@
 *> \verbatim
 *>
 *> DSYEVR computes selected eigenvalues and, optionally, eigenvectors
-*> of a real symmetric matrix A.  Eigenvalues and eigenvectors can be
-*> selected by specifying either a range of values or a range of
-*> indices for the desired eigenvalues.
+*> of a real symmetric matrix A. Eigenvalues and eigenvectors can be
+*> selected by specifying either a range of values or a range of indices
+*> for the desired eigenvalues. Invocations with different choices for
+*> these parameters may result in the computation of slightly different
+*> eigenvalues and/or eigenvectors for the same matrix. The reason for
+*> this behavior is that there exists a variety of algorithms (each
+*> performing best for a particular set of options) with DSYEVR
+*> attempting to select the best based on the various parameters. In all
+*> cases, the computed values are accurate within the limits of finite
+*> precision arithmetic.
 *>
 *> DSYEVR first reduces the matrix A to tridiagonal form T with a call
 *> to DSYTRD.  Then, whenever possible, DSYEVR calls DSTEMR to compute
@@ -105,6 +112,9 @@
 *>          JOBZ is CHARACTER*1
 *>          = 'N':  Compute eigenvalues only;
 *>          = 'V':  Compute eigenvalues and eigenvectors.
+*>
+*>          This parameter influences the choice of the algorithm and
+*>          may alter the computed values.
 *> \endverbatim
 *>
 *> \param[in] RANGE
@@ -116,6 +126,9 @@
 *>          = 'I': the IL-th through IU-th eigenvalues will be found.
 *>          For RANGE = 'V' or 'I' and IU - IL < N - 1, DSTEBZ and
 *>          DSTEIN are called
+*>
+*>          This parameter influences the choice of the algorithm and
+*>          may alter the computed values.
 *> \endverbatim
 *>
 *> \param[in] UPLO
@@ -271,7 +284,8 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The dimension of the array WORK.  LWORK >= max(1,26*N).
+*>          The dimension of the array WORK.
+*>          If N <= 1, LWORK >= 1, else LWORK >= 26*N.
 *>          For optimal efficiency, LWORK >= (NB+6)*N,
 *>          where NB is the max of the blocksize for DSYTRD and DORMTR
 *>          returned by ILAENV.
@@ -285,13 +299,14 @@
 *> \param[out] IWORK
 *> \verbatim
 *>          IWORK is INTEGER array, dimension (MAX(1,LIWORK))
-*>          On exit, if INFO = 0, IWORK(1) returns the optimal LWORK.
+*>          On exit, if INFO = 0, IWORK(1) returns the optimal LIWORK.
 *> \endverbatim
 *>
 *> \param[in] LIWORK
 *> \verbatim
 *>          LIWORK is INTEGER
-*>          The dimension of the array IWORK.  LIWORK >= max(1,10*N).
+*>          The dimension of the array IWORK.
+*>          If N <= 1, LIWORK >= 1, else LIWORK >= 10*N.
 *>
 *>          If LIWORK = -1, then a workspace query is assumed; the
 *>          routine only calculates the optimal size of the IWORK array,
@@ -315,7 +330,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleSYeigen
+*> \ingroup heevr
 *
 *> \par Contributors:
 *  ==================
@@ -328,7 +343,8 @@
 *>       California at Berkeley, USA \n
 *>
 *  =====================================================================
-      SUBROUTINE DSYEVR( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
+      SUBROUTINE DSYEVR( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL,
+     $                   IU,
      $                   ABSTOL, M, W, Z, LDZ, ISUPPZ, WORK, LWORK,
      $                   IWORK, LIWORK, INFO )
 *
@@ -370,7 +386,8 @@
       EXTERNAL           LSAME, ILAENV, DLAMCH, DLANSY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DORMTR, DSCAL, DSTEBZ, DSTEMR, DSTEIN,
+      EXTERNAL           DCOPY, DORMTR, DSCAL, DSTEBZ, DSTEMR,
+     $                   DSTEIN,
      $                   DSTERF, DSWAP, DSYTRD, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -390,8 +407,13 @@
 *
       LQUERY = ( ( LWORK.EQ.-1 ) .OR. ( LIWORK.EQ.-1 ) )
 *
-      LWMIN = MAX( 1, 26*N )
-      LIWMIN = MAX( 1, 10*N )
+      IF( N.LE.1 ) THEN
+         LWMIN  = 1
+         LIWMIN = 1
+      ELSE
+         LWMIN  = 26*N
+         LIWMIN = 10*N
+      END IF
 *
       INFO = 0
       IF( .NOT.( WANTZ .OR. LSAME( JOBZ, 'N' ) ) ) THEN
@@ -450,7 +472,7 @@
       END IF
 *
       IF( N.EQ.1 ) THEN
-         WORK( 1 ) = 7
+         WORK( 1 ) = 1
          IF( ALLEIG .OR. INDEIG ) THEN
             M = 1
             W( 1 ) = A( 1, 1 )
@@ -625,7 +647,8 @@
 *
          INDWKN = INDE
          LLWRKN = LWORK - INDWKN + 1
-         CALL DORMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ), Z,
+         CALL DORMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ),
+     $                Z,
      $                LDZ, WORK( INDWKN ), LLWRKN, IINFO )
       END IF
 *

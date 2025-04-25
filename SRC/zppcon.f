@@ -111,10 +111,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup ppcon
 *
 *  =====================================================================
-      SUBROUTINE ZPPCON( UPLO, N, AP, ANORM, RCOND, WORK, RWORK, INFO )
+      SUBROUTINE ZPPCON( UPLO, N, AP, ANORM, RCOND, WORK, RWORK,
+     $                   INFO )
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -211,13 +212,15 @@
 *
 *           Multiply by inv(U).
 *
-            CALL ZLATPS( 'Upper', 'No transpose', 'Non-unit', NORMIN, N,
+            CALL ZLATPS( 'Upper', 'No transpose', 'Non-unit', NORMIN,
+     $                   N,
      $                   AP, WORK, SCALEU, RWORK, INFO )
          ELSE
 *
 *           Multiply by inv(L).
 *
-            CALL ZLATPS( 'Lower', 'No transpose', 'Non-unit', NORMIN, N,
+            CALL ZLATPS( 'Lower', 'No transpose', 'Non-unit', NORMIN,
+     $                   N,
      $                   AP, WORK, SCALEL, RWORK, INFO )
             NORMIN = 'Y'
 *

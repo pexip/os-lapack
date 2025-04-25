@@ -105,7 +105,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup pftrs
 *
 *> \par Further Details:
 *  =====================
@@ -280,14 +280,18 @@
 *     start execution: there are two triangular solves
 *
       IF( LOWER ) THEN
-         CALL CTFSM( TRANSR, 'L', UPLO, 'N', 'N', N, NRHS, CONE, A, B,
+         CALL CTFSM( TRANSR, 'L', UPLO, 'N', 'N', N, NRHS, CONE, A,
+     $               B,
      $               LDB )
-         CALL CTFSM( TRANSR, 'L', UPLO, 'C', 'N', N, NRHS, CONE, A, B,
+         CALL CTFSM( TRANSR, 'L', UPLO, 'C', 'N', N, NRHS, CONE, A,
+     $               B,
      $               LDB )
       ELSE
-         CALL CTFSM( TRANSR, 'L', UPLO, 'C', 'N', N, NRHS, CONE, A, B,
+         CALL CTFSM( TRANSR, 'L', UPLO, 'C', 'N', N, NRHS, CONE, A,
+     $               B,
      $               LDB )
-         CALL CTFSM( TRANSR, 'L', UPLO, 'N', 'N', N, NRHS, CONE, A, B,
+         CALL CTFSM( TRANSR, 'L', UPLO, 'N', 'N', N, NRHS, CONE, A,
+     $               B,
      $               LDB )
       END IF
 *

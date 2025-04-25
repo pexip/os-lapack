@@ -136,7 +136,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYcomputational
+*> \ingroup lahef_aa
 *
 *  =====================================================================
       SUBROUTINE CLAHEF_AA( UPLO, J1, M, NB, A, LDA, IPIV,
@@ -172,8 +172,8 @@
       EXTERNAL     LSAME, ILAENV, ICAMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL     CLACGV, CGEMV, CSCAL, CAXPY, CCOPY, CSWAP, CLASET,
-     $             XERBLA
+      EXTERNAL     CLACGV, CGEMV, CSCAL, CAXPY, CCOPY, CSWAP,
+     $             CLASET, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC    REAL, CONJG, MAX

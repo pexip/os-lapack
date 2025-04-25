@@ -187,7 +187,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGEsolve
+*> \ingroup gesv_mixed
 *
 *  =====================================================================
       SUBROUTINE DSGESV( N, NRHS, A, LDA, IPIV, B, LDB, X, LDX, WORK,
@@ -227,7 +227,8 @@
       DOUBLE PRECISION   ANRM, CTE, EPS, RNRM, XNRM
 *
 *     .. External Subroutines ..
-      EXTERNAL           DAXPY, DGEMM, DLACPY, DLAG2S, DGETRF, DGETRS,
+      EXTERNAL           DAXPY, DGEMM, DLACPY, DLAG2S, DGETRF,
+     $                   DGETRS,
      $                   SGETRF, SGETRS, SLAG2D, XERBLA
 *     ..
 *     .. External Functions ..
@@ -327,7 +328,8 @@
 *
       CALL DLACPY( 'All', N, NRHS, B, LDB, WORK, N )
 *
-      CALL DGEMM( 'No Transpose', 'No Transpose', N, NRHS, N, NEGONE, A,
+      CALL DGEMM( 'No Transpose', 'No Transpose', N, NRHS, N, NEGONE,
+     $            A,
      $            LDA, X, LDX, ONE, WORK, N )
 *
 *     Check whether the NRHS normwise backward errors satisfy the
@@ -362,7 +364,8 @@
 *
 *        Solve the system SA*SX = SR.
 *
-         CALL SGETRS( 'No transpose', N, NRHS, SWORK( PTSA ), N, IPIV,
+         CALL SGETRS( 'No transpose', N, NRHS, SWORK( PTSA ), N,
+     $                IPIV,
      $                SWORK( PTSX ), N, INFO )
 *
 *        Convert SX back to double precision and update the current
@@ -378,7 +381,8 @@
 *
          CALL DLACPY( 'All', N, NRHS, B, LDB, WORK, N )
 *
-         CALL DGEMM( 'No Transpose', 'No Transpose', N, NRHS, N, NEGONE,
+         CALL DGEMM( 'No Transpose', 'No Transpose', N, NRHS, N,
+     $               NEGONE,
      $               A, LDA, X, LDX, ONE, WORK, N )
 *
 *        Check whether the NRHS normwise backward errors satisfy the

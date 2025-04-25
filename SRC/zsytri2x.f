@@ -113,7 +113,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16SYcomputational
+*> \ingroup hetri2x
 *
 *  =====================================================================
       SUBROUTINE ZSYTRI2X( UPLO, N, A, LDA, IPIV, WORK, NB, INFO )
@@ -382,8 +382,10 @@
             DO WHILE ( I .LE. N )
                IF( IPIV(I) .GT. 0 ) THEN
                   IP=IPIV(I)
-                 IF (I .LT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, I ,IP )
-                 IF (I .GT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, IP ,I )
+                 IF (I .LT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, I ,
+     $                IP )
+                 IF (I .GT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, IP ,
+     $                I )
                ELSE
                  IP=-IPIV(I)
                  I=I+1
@@ -566,12 +568,16 @@
             DO WHILE ( I .GE. 1 )
                IF( IPIV(I) .GT. 0 ) THEN
                   IP=IPIV(I)
-                 IF (I .LT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, I ,IP  )
-                 IF (I .GT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, IP ,I )
+                 IF (I .LT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, I ,
+     $                IP  )
+                 IF (I .GT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, IP ,
+     $                I )
                ELSE
                  IP=-IPIV(I)
-                 IF ( I .LT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, I ,IP )
-                 IF ( I .GT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, IP ,I )
+                 IF ( I .LT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, I ,
+     $                IP )
+                 IF ( I .GT. IP) CALL ZSYSWAPR( UPLO, N, A, LDA, IP ,
+     $                I )
                  I=I-1
                ENDIF
                I=I-1

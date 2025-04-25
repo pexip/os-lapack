@@ -7,12 +7,12 @@ Section: libs
 Priority: optional
 Build-Depends: debhelper-compat (= 13),
                dh-exec
-Build-Depends-Arch: gfortran,
-                    python3
+Build-Depends-Arch: gfortran-for-host,
+                    python3 <!nocheck>
 Build-Depends-Indep: doxygen,
                      graphviz,
                      rename
-Standards-Version: 4.6.1
+Standards-Version: 4.7.0
 Vcs-Browser: https://salsa.debian.org/science-team/lapack
 Vcs-Git: https://salsa.debian.org/science-team/lapack.git
 Homepage: https://www.netlib.org/lapack/
@@ -58,6 +58,17 @@ Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends}
 Provides: liblapacke.so.3
+# liblapack3 3.12 added new symbols, which are needed by liblapacke 3.12 at dynamic linking.
+# Because of the alternatives mechanism for liblapack.so.3, it is impossible to express this
+# relationship using versioned dependencies (the dependency may be satisfied by a flavour, but
+# the alternative may point to some other flavour not satisfying the version restriction).
+# Only a breaks relationship can ensure that there is no broken combination, even if it does
+# not correctly express the intent.
+Breaks: liblapack3 (<< 3.12),
+        libopenblas0-serial (<< 0.3.25+ds-2),
+        libopenblas0-pthread (<< 0.3.25+ds-2),
+        libopenblas0-openmp (<< 0.3.25+ds-2),
+        libatlas3-base (<< 3.10.3-14)
 Description: Library of linear algebra routines 3 - C lib shared version
  LAPACK version 3.X is a comprehensive FORTRAN library that does
  linear algebra operations including matrix inversions, least

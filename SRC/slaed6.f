@@ -115,7 +115,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup auxOTHERcomputational
+*> \ingroup laed6
 *
 *> \par Further Details:
 *  =====================
@@ -136,7 +136,8 @@
 *>     at Berkeley, USA
 *>
 *  =====================================================================
-      SUBROUTINE SLAED6( KNITER, ORGATI, RHO, D, Z, FINIT, TAU, INFO )
+      SUBROUTINE SLAED6( KNITER, ORGATI, RHO, D, Z, FINIT, TAU,
+     $                   INFO )
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --

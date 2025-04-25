@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup laqp2
 *
 *> \par Contributors:
 *  ==================
@@ -168,10 +168,10 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, ITEMP, J, MN, OFFPI, PVT
-      REAL               AII, TEMP, TEMP2, TOL3Z
+      REAL               TEMP, TEMP2, TOL3Z
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLARF, SLARFG, SSWAP
+      EXTERNAL           SLARF1F, SLARFG, SSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, MAX, MIN, SQRT
@@ -208,7 +208,8 @@
 *        Generate elementary reflector H(i).
 *
          IF( OFFPI.LT.M ) THEN
-            CALL SLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ), 1,
+            CALL SLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ),
+     $                   1,
      $                   TAU( I ) )
          ELSE
             CALL SLARFG( 1, A( M, I ), A( M, I ), 1, TAU( I ) )
@@ -218,11 +219,8 @@
 *
 *           Apply H(i)**T to A(offset+i:m,i+1:n) from the left.
 *
-            AII = A( OFFPI, I )
-            A( OFFPI, I ) = ONE
-            CALL SLARF( 'Left', M-OFFPI+1, N-I, A( OFFPI, I ), 1,
-     $                  TAU( I ), A( OFFPI, I+1 ), LDA, WORK( 1 ) )
-            A( OFFPI, I ) = AII
+            CALL SLARF1F( 'Left', M-OFFPI+1, N-I, A( OFFPI, I ), 1,
+     $                    TAU( I ), A( OFFPI, I+1 ), LDA, WORK( 1 ) )
          END IF
 *
 *        Update partial column norms.

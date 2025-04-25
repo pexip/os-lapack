@@ -166,7 +166,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realSYauxiliary
+*> \ingroup lasy2
 *
 *  =====================================================================
       SUBROUTINE SLASY2( LTRANL, LTRANR, ISGN, N1, N2, TL, LDTL, TR,
@@ -238,7 +238,7 @@
 *
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' ) / EPS
-      SGN = ISGN
+      SGN = REAL( ISGN )
 *
       K = N1 + N1 + N2 - 2
       GO TO ( 10, 20, 30, 50 )K

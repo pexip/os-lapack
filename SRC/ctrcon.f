@@ -129,7 +129,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup trcon
 *
 *  =====================================================================
       SUBROUTINE CTRCON( NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK,
@@ -249,7 +249,8 @@
 *
 *              Multiply by inv(A**H).
 *
-               CALL CLATRS( UPLO, 'Conjugate transpose', DIAG, NORMIN,
+               CALL CLATRS( UPLO, 'Conjugate transpose', DIAG,
+     $                      NORMIN,
      $                      N, A, LDA, WORK, SCALE, RWORK, INFO )
             END IF
             NORMIN = 'Y'

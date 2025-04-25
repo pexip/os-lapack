@@ -252,7 +252,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup lals0
 *
 *> \par Contributors:
 *  ==================
@@ -262,7 +262,8 @@
 *>     Osni Marques, LBNL/NERSC, USA \n
 *
 *  =====================================================================
-      SUBROUTINE DLALS0( ICOMPQ, NL, NR, SQRE, NRHS, B, LDB, BX, LDBX,
+      SUBROUTINE DLALS0( ICOMPQ, NL, NR, SQRE, NRHS, B, LDB, BX,
+     $                   LDBX,
      $                   PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM, LDGNUM,
      $                   POLES, DIFL, DIFR, Z, K, C, S, WORK, INFO )
 *
@@ -293,7 +294,8 @@
       DOUBLE PRECISION   DIFLJ, DIFRJ, DJ, DSIGJ, DSIGJP, TEMP
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DGEMV, DLACPY, DLASCL, DROT, DSCAL,
+      EXTERNAL           DCOPY, DGEMV, DLACPY, DLASCL, DROT,
+     $                   DSCAL,
      $                   XERBLA
 *     ..
 *     .. External Functions ..
@@ -357,7 +359,8 @@
 *
          CALL DCOPY( NRHS, B( NLP1, 1 ), LDB, BX( 1, 1 ), LDBX )
          DO 20 I = 2, N
-            CALL DCOPY( NRHS, B( PERM( I ), 1 ), LDB, BX( I, 1 ), LDBX )
+            CALL DCOPY( NRHS, B( PERM( I ), 1 ), LDB, BX( I, 1 ),
+     $                  LDBX )
    20    CONTINUE
 *
 *        Step (3L): apply the inverse of the left singular vector
@@ -389,6 +392,11 @@
      $                ( POLES( I, 2 ).EQ.ZERO ) ) THEN
                      WORK( I ) = ZERO
                   ELSE
+*
+*                    Use calls to the subroutine DLAMC3 to enforce the
+*                    parentheses (x+y)+z. The goal is to prevent
+*                    optimizing compilers from doing x+(y+z).
+*
                      WORK( I ) = POLES( I, 2 )*Z( I ) /
      $                           ( DLAMC3( POLES( I, 2 ), DSIGJ )-
      $                           DIFLJ ) / ( POLES( I, 2 )+DJ )
@@ -406,7 +414,8 @@
    40          CONTINUE
                WORK( 1 ) = NEGONE
                TEMP = DNRM2( K, WORK, 1 )
-               CALL DGEMV( 'T', K, NRHS, ONE, BX, LDBX, WORK, 1, ZERO,
+               CALL DGEMV( 'T', K, NRHS, ONE, BX, LDBX, WORK, 1,
+     $                     ZERO,
      $                     B( J, 1 ), LDB )
                CALL DLASCL( 'G', 0, 0, TEMP, ONE, 1, NRHS, B( J, 1 ),
      $                      LDB, INFO )
@@ -440,7 +449,13 @@
                   IF( Z( J ).EQ.ZERO ) THEN
                      WORK( I ) = ZERO
                   ELSE
-                     WORK( I ) = Z( J ) / ( DLAMC3( DSIGJ, -POLES( I+1,
+*
+*                    Use calls to the subroutine DLAMC3 to enforce the
+*                    parentheses (x+y)+z. The goal is to prevent
+*                    optimizing compilers from doing x+(y+z).
+*
+                     WORK( I ) = Z( J ) / ( DLAMC3( DSIGJ,
+     $                     -POLES( I+1,
      $                           2 ) )-DIFR( I, 1 ) ) /
      $                           ( DSIGJ+POLES( I, 1 ) ) / DIFR( I, 2 )
                   END IF
@@ -464,10 +479,12 @@
 *
          IF( SQRE.EQ.1 ) THEN
             CALL DCOPY( NRHS, B( M, 1 ), LDB, BX( M, 1 ), LDBX )
-            CALL DROT( NRHS, BX( 1, 1 ), LDBX, BX( M, 1 ), LDBX, C, S )
+            CALL DROT( NRHS, BX( 1, 1 ), LDBX, BX( M, 1 ), LDBX, C,
+     $                 S )
          END IF
          IF( K.LT.MAX( M, N ) )
-     $      CALL DLACPY( 'A', N-K, NRHS, B( K+1, 1 ), LDB, BX( K+1, 1 ),
+     $      CALL DLACPY( 'A', N-K, NRHS, B( K+1, 1 ), LDB, BX( K+1,
+     $                   1 ),
      $                   LDBX )
 *
 *        Step (3R): permute rows of B.
@@ -477,7 +494,8 @@
             CALL DCOPY( NRHS, BX( M, 1 ), LDBX, B( M, 1 ), LDB )
          END IF
          DO 90 I = 2, N
-            CALL DCOPY( NRHS, BX( I, 1 ), LDBX, B( PERM( I ), 1 ), LDB )
+            CALL DCOPY( NRHS, BX( I, 1 ), LDBX, B( PERM( I ), 1 ),
+     $                  LDB )
    90    CONTINUE
 *
 *        Step (4R): apply back the Givens rotations performed.

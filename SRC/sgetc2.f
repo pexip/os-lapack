@@ -98,7 +98,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEauxiliary
+*> \ingroup getc2
 *
 *> \par Contributors:
 *  ==================
@@ -132,7 +132,7 @@
       REAL               BIGNUM, EPS, SMIN, SMLNUM, XMAX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGER, SLABAD, SSWAP
+      EXTERNAL           SGER, SSWAP
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH
@@ -155,7 +155,6 @@
       EPS = SLAMCH( 'P' )
       SMLNUM = SLAMCH( 'S' ) / EPS
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Handle the case N=1 by itself
 *
@@ -177,8 +176,8 @@
 *        Find max element in matrix A
 *
          XMAX = ZERO
-         DO 20 IP = I, N
-            DO 10 JP = I, N
+         DO 20 JP = I, N
+            DO 10 IP = I, N
                IF( ABS( A( IP, JP ) ).GE.XMAX ) THEN
                   XMAX = ABS( A( IP, JP ) )
                   IPV = IP

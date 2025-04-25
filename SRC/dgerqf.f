@@ -114,7 +114,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGEcomputational
+*> \ingroup gerqf
 *
 *> \par Further Details:
 *  =====================
@@ -189,7 +189,7 @@
          END IF
          WORK( 1 ) = LWKOPT
 *
-         IF ( .NOT.LQUERY ) THEN
+         IF( .NOT.LQUERY ) THEN
             IF( LWORK.LE.0 .OR. ( N.GT.0 .AND. LWORK.LT.MAX( 1, M ) ) )
      $         INFO = -7
          END IF
@@ -248,7 +248,8 @@
 *           Compute the RQ factorization of the current block
 *           A(m-k+i:m-k+i+ib-1,1:n-k+i+ib-1)
 *
-            CALL DGERQ2( IB, N-K+I+IB-1, A( M-K+I, 1 ), LDA, TAU( I ),
+            CALL DGERQ2( IB, N-K+I+IB-1, A( M-K+I, 1 ), LDA,
+     $                   TAU( I ),
      $                   WORK, IINFO )
             IF( M-K+I.GT.1 ) THEN
 *

@@ -43,12 +43,6 @@
 *> be found if CHETRD or CHPTRD or CHBTRD has been used to reduce this
 *> matrix to tridiagonal form.
 *>
-*> This code makes very mild assumptions about floating point
-*> arithmetic. It will work on machines with a guard digit in
-*> add/subtract, or on those binary machines without guard digits
-*> which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or Cray-2.
-*> It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.  See SLAED3 for details.
 *> \endverbatim
 *
 *  Arguments:
@@ -198,7 +192,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup stedc
 *
 *> \par Contributors:
 *  ==================
@@ -239,11 +233,13 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, SLANST
-      EXTERNAL           ILAENV, LSAME, SLAMCH, SLANST
+      REAL               SLAMCH, SLANST, SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, SLAMCH, SLANST,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, CLACPY, CLACRM, CLAED0, CSTEQR, CSWAP,
+      EXTERNAL           XERBLA, CLACPY, CLACRM, CLAED0, CSTEQR,
+     $                   CSWAP,
      $                   SLASCL, SLASET, SSTEDC, SSTEQR, SSTERF
 *     ..
 *     .. Intrinsic Functions ..
@@ -301,8 +297,8 @@
             LRWMIN = 1 + 4*N + 2*N**2
             LIWMIN = 3 + 5*N
          END IF
-         WORK( 1 ) = LWMIN
-         RWORK( 1 ) = LRWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
+         RWORK( 1 ) = REAL( LRWMIN )
          IWORK( 1 ) = LIWMIN
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -414,12 +410,15 @@
 *              Scale.
 *
                ORGNRM = SLANST( 'M', M, D( START ), E( START ) )
-               CALL SLASCL( 'G', 0, 0, ORGNRM, ONE, M, 1, D( START ), M,
+               CALL SLASCL( 'G', 0, 0, ORGNRM, ONE, M, 1, D( START ),
+     $                      M,
      $                      INFO )
-               CALL SLASCL( 'G', 0, 0, ORGNRM, ONE, M-1, 1, E( START ),
+               CALL SLASCL( 'G', 0, 0, ORGNRM, ONE, M-1, 1,
+     $                      E( START ),
      $                      M-1, INFO )
 *
-               CALL CLAED0( N, M, D( START ), E( START ), Z( 1, START ),
+               CALL CLAED0( N, M, D( START ), E( START ), Z( 1,
+     $                      START ),
      $                      LDZ, WORK, N, RWORK, IWORK, INFO )
                IF( INFO.GT.0 ) THEN
                   INFO = ( INFO / ( M+1 )+START-1 )*( N+1 ) +
@@ -429,13 +428,15 @@
 *
 *              Scale back.
 *
-               CALL SLASCL( 'G', 0, 0, ONE, ORGNRM, M, 1, D( START ), M,
+               CALL SLASCL( 'G', 0, 0, ONE, ORGNRM, M, 1, D( START ),
+     $                      M,
      $                      INFO )
 *
             ELSE
                CALL SSTEQR( 'I', M, D( START ), E( START ), RWORK, M,
      $                      RWORK( M*M+1 ), INFO )
-               CALL CLACRM( N, M, Z( 1, START ), LDZ, RWORK, M, WORK, N,
+               CALL CLACRM( N, M, Z( 1, START ), LDZ, RWORK, M, WORK,
+     $                      N,
      $                      RWORK( M*M+1 ) )
                CALL CLACPY( 'A', N, M, WORK, N, Z( 1, START ), LDZ )
                IF( INFO.GT.0 ) THEN
@@ -472,8 +473,8 @@
       END IF
 *
    70 CONTINUE
-      WORK( 1 ) = LWMIN
-      RWORK( 1 ) = LRWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
+      RWORK( 1 ) = REAL( LRWMIN )
       IWORK( 1 ) = LIWMIN
 *
       RETURN

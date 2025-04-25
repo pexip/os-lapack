@@ -137,7 +137,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup OTHERauxiliary
+*> \ingroup larrk
 *
 *  =====================================================================
       SUBROUTINE SLARRK( N, IW, GL, GU,
@@ -195,8 +195,8 @@
 
       INFO = -1
 
-      LEFT = GL - FUDGE*TNORM*EPS*N - FUDGE*TWO*PIVMIN
-      RIGHT = GU + FUDGE*TNORM*EPS*N + FUDGE*TWO*PIVMIN
+      LEFT = GL - FUDGE*TNORM*EPS*REAL( N ) - FUDGE*TWO*PIVMIN
+      RIGHT = GU + FUDGE*TNORM*EPS*REAL( N ) + FUDGE*TWO*PIVMIN
       IT = 0
 
  10   CONTINUE

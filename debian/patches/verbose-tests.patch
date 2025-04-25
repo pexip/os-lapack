@@ -4,9 +4,11 @@ Description: sed -i -e 's#\(>\)\s*\($@\)\s*\(2>&1\)#\3 | tee \2#g' TESTING/Makef
 Author: Mo Zhou
 Last-Update: 2019-09-13
 Forwarded: not-needed
---- a/TESTING/Makefile
-+++ b/TESTING/Makefile
-@@ -158,61 +158,61 @@ complex16proto: $(ZLINTSTPROTO)
+Index: lapack/TESTING/Makefile
+===================================================================
+--- lapack.orig/TESTING/Makefile
++++ lapack/TESTING/Makefile
+@@ -165,61 +165,61 @@ complex16proto: $(ZLINTSTPROTO)
  
  stest.out: stest.in LIN/xlintsts
  	@echo Testing REAL LAPACK linear equation routines
@@ -78,7 +80,7 @@ Forwarded: not-needed
  #
  #
  # ======== SINGLE EIG TESTS ===========================
-@@ -220,329 +220,329 @@ ztest_rfp.out: ztest_rfp.in LIN/xlintstr
+@@ -227,345 +227,345 @@ ztest_rfp.out: ztest_rfp.in LIN/xlintstr
  
  snep.out: nep.in EIG/xeigtsts
  	@echo NEP: Testing Nonsymmetric Eigenvalue Problem routines
@@ -179,6 +181,11 @@ Forwarded: not-needed
  	@echo LSE: Testing Constrained Linear Least Squares routines
 -	./EIG/xeigtsts < lse.in > $@ 2>&1
 +	./EIG/xeigtsts < lse.in 2>&1 | tee $@
+ 
+ sdmd.out: sdmd.in EIG/xdmdeigtsts
+ 	@echo DMD: Testing Dynamic Mode Decomposition routines
+-	./EIG/xdmdeigtsts < sdmd.in > $@ 2>&1
++	./EIG/xdmdeigtsts < sdmd.in 2>&1 | tee $@
  #
  # ======== COMPLEX EIG TESTS ===========================
  
@@ -281,6 +288,11 @@ Forwarded: not-needed
  	@echo LSE: Testing Constrained Linear Least Squares routines
 -	./EIG/xeigtstc < lse.in > $@ 2>&1
 +	./EIG/xeigtstc < lse.in 2>&1 | tee $@
+ 
+ cdmd.out: cdmd.in EIG/xdmdeigtstc
+ 	@echo DMD: Testing Dynamic Mode Decomposition routines
+-	./EIG/xdmdeigtstc < cdmd.in > $@ 2>&1
++	./EIG/xdmdeigtstc < cdmd.in 2>&1 | tee $@
  #
  # ======== DOUBLE EIG TESTS ===========================
  
@@ -383,6 +395,11 @@ Forwarded: not-needed
  	@echo LSE: Testing Constrained Linear Least Squares routines
 -	./EIG/xeigtstd < lse.in > $@ 2>&1
 +	./EIG/xeigtstd < lse.in 2>&1 | tee $@
+ 
+ ddmd.out: ddmd.in EIG/xdmdeigtstd
+ 	@echo DMD: Testing Dynamic Mode Decomposition routines
+-	./EIG/xdmdeigtstd < ddmd.in > $@ 2>&1
++	./EIG/xdmdeigtstd < ddmd.in 2>&1 | tee $@
  #
  # ======== COMPLEX16 EIG TESTS ===========================
  
@@ -485,6 +502,11 @@ Forwarded: not-needed
  	@echo LSE: Testing Constrained Linear Least Squares routines
 -	./EIG/xeigtstz < lse.in > $@ 2>&1
 +	./EIG/xeigtstz < lse.in 2>&1 | tee $@
+ 
+ zdmd.out: zdmd.in EIG/xdmdeigtstz
+ 	@echo DMD: Testing Dynamic Mode Decomposition routines
+-	./EIG/xdmdeigtstz < zdmd.in > $@ 2>&1
++	./EIG/xdmdeigtstz < zdmd.in 2>&1 | tee $@
  # ==============================================================================
  
  LIN/xlintsts: $(FRCLIN) $(FRC)

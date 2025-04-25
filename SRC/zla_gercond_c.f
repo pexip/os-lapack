@@ -134,7 +134,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GEcomputational
+*> \ingroup la_gercond
 *
 *  =====================================================================
       DOUBLE PRECISION FUNCTION ZLA_GERCOND_C( TRANS, N, A, LDA, AF,
@@ -267,7 +267,8 @@
                CALL ZGETRS( 'No transpose', N, 1, AF, LDAF, IPIV,
      $            WORK, N, INFO )
             ELSE
-               CALL ZGETRS( 'Conjugate transpose', N, 1, AF, LDAF, IPIV,
+               CALL ZGETRS( 'Conjugate transpose', N, 1, AF, LDAF,
+     $                      IPIV,
      $            WORK, N, INFO )
             ENDIF
 *
@@ -289,7 +290,8 @@
             END IF
 *
             IF ( NOTRANS ) THEN
-               CALL ZGETRS( 'Conjugate transpose', N, 1, AF, LDAF, IPIV,
+               CALL ZGETRS( 'Conjugate transpose', N, 1, AF, LDAF,
+     $                      IPIV,
      $            WORK, N, INFO )
             ELSE
                CALL ZGETRS( 'No transpose', N, 1, AF, LDAF, IPIV,

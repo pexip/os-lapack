@@ -163,7 +163,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GEcomputational
+*> \ingroup tgexc
 *
 *> \par Contributors:
 *  ==================
@@ -261,7 +261,8 @@
 *
 *        Swap with next one below
 *
-         CALL ZTGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z, LDZ,
+         CALL ZTGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z,
+     $                LDZ,
      $                HERE, INFO )
          IF( INFO.NE.0 ) THEN
             ILST = HERE
@@ -278,7 +279,8 @@
 *
 *        Swap with next one above
 *
-         CALL ZTGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z, LDZ,
+         CALL ZTGEX2( WANTQ, WANTZ, N, A, LDA, B, LDB, Q, LDQ, Z,
+     $                LDZ,
      $                HERE, INFO )
          IF( INFO.NE.0 ) THEN
             ILST = HERE

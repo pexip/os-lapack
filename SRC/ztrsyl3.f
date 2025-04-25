@@ -1,10 +1,23 @@
 *> \brief \b ZTRSYL3
 *
-* Definition:
-* ===========
+*  Definition:
+*  ===========
+*
+*       SUBROUTINE ZTRSYL3( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB,
+*                           C, LDC, SCALE, SWORK, LDSWORK, INFO )
+*
+*       .. Scalar Arguments ..
+*       CHARACTER          TRANA, TRANB
+*       INTEGER            INFO, ISGN, LDA, LDB, LDC, LDSWORK, M, N
+*       DOUBLE PRECISION   SCALE
+*       ..
+*       .. Array Arguments ..
+*       COMPLEX*16         A( LDA, * ), B( LDB, * ), C( LDC, * )
+*       DOUBLE PRECISION   SWORK( LDSWORK, * )
+*       ..
 *
 *
-*>  \par Purpose
+*> \par Purpose:
 *  =============
 *>
 *> \verbatim
@@ -22,8 +35,8 @@
 *>  This is the block version of the algorithm.
 *> \endverbatim
 *
-*  Arguments
-*  =========
+*  Arguments:
+*  ==========
 *
 *> \param[in] TRANA
 *> \verbatim
@@ -136,7 +149,7 @@
 *>               A and B are unchanged).
 *> \endverbatim
 *
-*> \ingroup complex16SYcomputational
+*> \ingroup trsyl3
 *
 *  =====================================================================
 *  References:
@@ -152,8 +165,8 @@
 *   Angelika Schwarz, Umea University, Sweden.
 *
 *  =====================================================================
-      SUBROUTINE ZTRSYL3( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB, C,
-     $                    LDC, SCALE, SWORK, LDSWORK, INFO )
+      SUBROUTINE ZTRSYL3( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB,
+     $                    C, LDC, SCALE, SWORK, LDSWORK, INFO )
       IMPLICIT NONE
 *
 *     .. Scalar Arguments ..
@@ -186,10 +199,12 @@
       LOGICAL            LSAME
       INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH, DLARMM, ZLANGE
-      EXTERNAL           DLAMCH, DLARMM, ILAENV, LSAME, ZLANGE
+      EXTERNAL           DLAMCH, DLARMM, ILAENV, LSAME,
+     $                   ZLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZDSCAL, ZGEMM, ZLASCL, ZTRSYL
+      EXTERNAL           XERBLA, ZDSCAL, ZGEMM, ZLASCL,
+     $                   ZTRSYL
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DBLE, DIMAG, EXPONENT, MAX, MIN

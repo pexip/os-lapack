@@ -120,7 +120,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYcomputational
+*> \ingroup hetri2
 *
 *  =====================================================================
       SUBROUTINE CSYTRI2( UPLO, N, A, LDA, IPIV, WORK, LWORK, INFO )
@@ -184,7 +184,7 @@
          CALL XERBLA( 'CSYTRI2', -INFO )
          RETURN
       ELSE IF( LQUERY ) THEN
-         WORK(1)=MINSIZE
+         WORK(1)=CMPLX( MINSIZE )
          RETURN
       END IF
       IF( N.EQ.0 )

@@ -101,7 +101,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup auxOTHERcomputational
+*> \ingroup lasq1
 *
 *  =====================================================================
       SUBROUTINE SLASQ1( N, D, E, WORK, INFO )
@@ -128,7 +128,8 @@
       REAL               EPS, SCALE, SAFMIN, SIGMN, SIGMX
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLAS2, SLASCL, SLASQ2, SLASRT, XERBLA
+      EXTERNAL           SCOPY, SLAS2, SLASCL, SLASQ2, SLASRT,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       REAL               SLAMCH

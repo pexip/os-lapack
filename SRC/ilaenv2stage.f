@@ -66,8 +66,8 @@
 *>          = 2: the optimal blocksize ib for the eigenvectors
 *>               singular vectors update routine
 *>
-*>          = 3: The length of the array that store the Housholder 
-*>               representation for the second stage 
+*>          = 3: The length of the array that store the Housholder
+*>               representation for the second stage
 *>               Band to Tridiagonal or Bidiagonal
 *>
 *>          = 4: The workspace needed for the routine in input.
@@ -122,7 +122,7 @@
 *> \author NAG Ltd.
 *> \author Nick R. Papior
 *
-*> \ingroup OTHERauxiliary
+*> \ingroup ilaenv2stage
 *
 *> \par Further Details:
 *  =====================
@@ -141,11 +141,12 @@
 *>      passed a value of -1.
 *>  3)  The parameter value returned by ILAENV2STAGE is checked for validity in
 *>      the calling subroutine.
-*>     
+*>
 *> \endverbatim
 *>
 *  =====================================================================
-      INTEGER FUNCTION ILAENV2STAGE( ISPEC, NAME, OPTS, N1, N2, N3, N4 )
+      INTEGER FUNCTION ILAENV2STAGE( ISPEC, NAME, OPTS, N1, N2, N3,
+     $                               N4 )
 *
 *  -- LAPACK auxiliary routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --

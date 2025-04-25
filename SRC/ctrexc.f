@@ -40,7 +40,7 @@
 *>
 *> The Schur form T is reordered by a unitary similarity transformation
 *> Z**H*T*Z, and optionally the matrix Q of Schur vectors is updated by
-*> postmultplying it with Z.
+*> postmultiplying it with Z.
 *> \endverbatim
 *
 *  Arguments:
@@ -119,7 +119,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup trexc
 *
 *  =====================================================================
       SUBROUTINE CTREXC( COMPQ, N, T, LDT, Q, LDQ, IFST, ILST, INFO )
@@ -213,9 +213,11 @@
 *        Apply transformation to the matrix T.
 *
          IF( K+2.LE.N )
-     $      CALL CROT( N-K-1, T( K, K+2 ), LDT, T( K+1, K+2 ), LDT, CS,
+     $      CALL CROT( N-K-1, T( K, K+2 ), LDT, T( K+1, K+2 ), LDT,
+     $                 CS,
      $                 SN )
-         CALL CROT( K-1, T( 1, K ), 1, T( 1, K+1 ), 1, CS, CONJG( SN ) )
+         CALL CROT( K-1, T( 1, K ), 1, T( 1, K+1 ), 1, CS,
+     $              CONJG( SN ) )
 *
          T( K, K ) = T22
          T( K+1, K+1 ) = T11

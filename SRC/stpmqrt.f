@@ -175,7 +175,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup tpmqrt
 *
 *> \par Further Details:
 *  =====================
@@ -211,7 +211,8 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE STPMQRT( SIDE, TRANS, M, N, K, L, NB, V, LDV, T, LDT,
+      SUBROUTINE STPMQRT( SIDE, TRANS, M, N, K, L, NB, V, LDV, T,
+     $                    LDT,
      $                    A, LDA, B, LDB, WORK, INFO )
 *
 *  -- LAPACK computational routine --

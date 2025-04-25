@@ -38,7 +38,16 @@
 *> ZGELST solves overdetermined or underdetermined real linear systems
 *> involving an M-by-N matrix A, or its conjugate-transpose, using a QR
 *> or LQ factorization of A with compact WY representation of Q.
-*> It is assumed that A has full rank.
+*>
+*> It is assumed that A has full rank, and only a rudimentary protection
+*> against rank-deficient matrices is provided. This subroutine only detects
+*> exact rank-deficiency, where a diagonal element of the triangular factor
+*> of A is exactly zero.
+*>
+*> It is conceivable for one (or more) of the diagonal elements of the triangular
+*> factor of A to be subnormally tiny numbers without this subroutine signalling
+*> an error. The solutions computed for such almost-rank-deficient matrices may
+*> be less accurate due to a loss of numerical precision.
 *>
 *> The following options are provided:
 *>
@@ -163,7 +172,7 @@
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
 *>          > 0:  if INFO =  i, the i-th diagonal element of the
-*>                triangular factor of A is zero, so that A does not have
+*>                triangular factor of A is exactly zero, so that A does not have
 *>                full rank; the least squares solution could not be
 *>                computed.
 *> \endverbatim
@@ -176,7 +185,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GEsolve
+*> \ingroup gelst
 *
 *> \par Contributors:
 *  ==================
@@ -189,7 +198,8 @@
 *> \endverbatim
 *
 *  =====================================================================
-      SUBROUTINE ZGELST( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,
+      SUBROUTINE ZGELST( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK,
+     $                   LWORK,
      $                   INFO )
 *
 *  -- LAPACK driver routine --
@@ -228,8 +238,9 @@
       EXTERNAL           LSAME, ILAENV, DLAMCH, ZLANGE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZGELQT, ZGEQRT, ZGEMLQT, ZGEMQRT, DLABAD,
-     $                   ZLASCL, ZLASET, ZTRTRS, XERBLA
+      EXTERNAL           ZGELQT, ZGEQRT, ZGEMLQT, ZGEMQRT,
+     $                   ZLASCL,
+     $                   ZLASET, ZTRTRS, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          DBLE, MAX, MIN
@@ -241,7 +252,8 @@
       INFO = 0
       MN = MIN( M, N )
       LQUERY = ( LWORK.EQ.-1 )
-      IF( .NOT.( LSAME( TRANS, 'N' ) .OR. LSAME( TRANS, 'C' ) ) ) THEN
+      IF( .NOT.( LSAME( TRANS, 'N' ) .OR.
+     $    LSAME( TRANS, 'C' ) ) ) THEN
          INFO = -1
       ELSE IF( M.LT.0 ) THEN
          INFO = -2
@@ -284,7 +296,8 @@
 *     Quick return if possible
 *
       IF( MIN( M, N, NRHS ).EQ.0 ) THEN
-         CALL ZLASET( 'Full', MAX( M, N ), NRHS, CZERO, CZERO, B, LDB )
+         CALL ZLASET( 'Full', MAX( M, N ), NRHS, CZERO, CZERO, B,
+     $                LDB )
          WORK( 1 ) = DBLE( LWOPT )
          RETURN
       END IF
@@ -311,7 +324,6 @@
 *
       SMLNUM = DLAMCH( 'S' ) / DLAMCH( 'P' )
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A, B if max element outside range [SMLNUM,BIGNUM]
 *
@@ -333,7 +345,8 @@
 *
 *        Matrix all zero. Return zero solution.
 *
-         CALL ZLASET( 'Full', MAX( M, N ), NRHS, CZERO, CZERO, B, LDB )
+         CALL ZLASET( 'Full', MAX( M, N ), NRHS, CZERO, CZERO, B,
+     $                LDB )
          WORK( 1 ) = DBLE( LWOPT )
          RETURN
       END IF
@@ -379,13 +392,15 @@
 *           using the compact WY representation of Q,
 *           workspace at least NRHS, optimally NRHS*NB.
 *
-            CALL ZGEMQRT( 'Left', 'Conjugate transpose', M, NRHS, N, NB,
+            CALL ZGEMQRT( 'Left', 'Conjugate transpose', M, NRHS, N,
+     $                    NB,
      $                    A, LDA, WORK( 1 ), NB, B, LDB,
      $                    WORK( MN*NB+1 ), INFO )
 *
 *           Compute B(1:N,1:NRHS) := inv(R) * B(1:N,1:NRHS)
 *
-            CALL ZTRTRS( 'Upper', 'No transpose', 'Non-unit', N, NRHS,
+            CALL ZTRTRS( 'Upper', 'No transpose', 'Non-unit', N,
+     $                   NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
             IF( INFO.GT.0 ) THEN
@@ -452,7 +467,8 @@
 *
 *           Block 1: B(1:M,1:NRHS) := inv(L) * B(1:M,1:NRHS)
 *
-            CALL ZTRTRS( 'Lower', 'No transpose', 'Non-unit', M, NRHS,
+            CALL ZTRTRS( 'Lower', 'No transpose', 'Non-unit', M,
+     $                   NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
             IF( INFO.GT.0 ) THEN
@@ -472,7 +488,8 @@
 *           using the compact WY representation of Q,
 *           workspace at least NRHS, optimally NRHS*NB.
 *
-            CALL ZGEMLQT( 'Left', 'Conjugate transpose', N, NRHS, M, NB,
+            CALL ZGEMLQT( 'Left', 'Conjugate transpose', N, NRHS, M,
+     $                    NB,
      $                   A, LDA, WORK( 1 ), NB, B, LDB,
      $                   WORK( MN*NB+1 ), INFO )
 *

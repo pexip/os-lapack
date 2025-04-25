@@ -151,7 +151,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup unml2
 *
 *  =====================================================================
       SUBROUTINE ZUNML2( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
@@ -178,14 +178,14 @@
 *     .. Local Scalars ..
       LOGICAL            LEFT, NOTRAN
       INTEGER            I, I1, I2, I3, IC, JC, MI, NI, NQ
-      COMPLEX*16         AII, TAUI
+      COMPLEX*16         TAUI
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZLACGV, ZLARF
+      EXTERNAL           XERBLA, ZLACGV, ZLARF1F
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          DCONJG, MAX
@@ -272,11 +272,8 @@
          END IF
          IF( I.LT.NQ )
      $      CALL ZLACGV( NQ-I, A( I, I+1 ), LDA )
-         AII = A( I, I )
-         A( I, I ) = ONE
-         CALL ZLARF( SIDE, MI, NI, A( I, I ), LDA, TAUI, C( IC, JC ),
-     $               LDC, WORK )
-         A( I, I ) = AII
+         CALL ZLARF1F( SIDE, MI, NI, A( I, I ), LDA, TAUI, C( IC,
+     $                 JC ), LDC, WORK )
          IF( I.LT.NQ )
      $      CALL ZLACGV( NQ-I, A( I, I+1 ), LDA )
    10 CONTINUE

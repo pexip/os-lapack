@@ -175,10 +175,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHEReigen
+*> \ingroup hbgv
 *
 *  =====================================================================
-      SUBROUTINE ZHBGV( JOBZ, UPLO, N, KA, KB, AB, LDAB, BB, LDBB, W, Z,
+      SUBROUTINE ZHBGV( JOBZ, UPLO, N, KA, KB, AB, LDAB, BB, LDBB, W,
+     $                  Z,
      $                  LDZ, WORK, RWORK, INFO )
 *
 *  -- LAPACK driver routine --
@@ -207,7 +208,8 @@
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DSTERF, XERBLA, ZHBGST, ZHBTRD, ZPBSTF, ZSTEQR
+      EXTERNAL           DSTERF, XERBLA, ZHBGST, ZHBTRD, ZPBSTF,
+     $                   ZSTEQR
 *     ..
 *     .. Executable Statements ..
 *
@@ -235,7 +237,7 @@
          INFO = -12
       END IF
       IF( INFO.NE.0 ) THEN
-         CALL XERBLA( 'ZHBGV ', -INFO )
+         CALL XERBLA( 'ZHBGV', -INFO )
          RETURN
       END IF
 *

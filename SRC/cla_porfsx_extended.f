@@ -374,10 +374,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexPOcomputational
+*> \ingroup la_porfsx_extended
 *
 *  =====================================================================
-      SUBROUTINE CLA_PORFSX_EXTENDED( PREC_TYPE, UPLO, N, NRHS, A, LDA,
+      SUBROUTINE CLA_PORFSX_EXTENDED( PREC_TYPE, UPLO, N, NRHS, A,
+     $                                LDA,
      $                                AF, LDAF, COLEQU, C, B, LDB, Y,
      $                                LDY, BERR_OUT, N_NORMS,
      $                                ERR_BNDS_NORM, ERR_BNDS_COMP, RES,
@@ -448,7 +449,8 @@
       INTEGER            ILAUPLO
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CCOPY, CPOTRS, CHEMV, BLAS_CHEMV_X,
+      EXTERNAL           CAXPY, CCOPY, CPOTRS, CHEMV,
+     $                   BLAS_CHEMV_X,
      $                   BLAS_CHEMV2_X, CLA_HEAMV, CLA_WWADDW,
      $                   CLA_LIN_BERR, SLAMCH
       REAL               SLAMCH
@@ -625,7 +627,7 @@
             PREVNORMDX = NORMDX
             PREV_DZ_Z = DZ_Z
 *
-*           Update soluton.
+*           Update solution.
 *
             IF (Y_PREC_STATE .LT. EXTRA_Y) THEN
                CALL CAXPY( N, CMPLX(1.0), DY, 1, Y(1,J), 1 )
@@ -662,7 +664,8 @@
 *            op(A) = A, A**T, or A**H depending on TRANS (and type).
 *
          CALL CCOPY( N, B( 1, J ), 1, RES, 1 )
-         CALL CHEMV(UPLO, N, CMPLX(-1.0), A, LDA, Y(1,J), 1, CMPLX(1.0),
+         CALL CHEMV(UPLO, N, CMPLX(-1.0), A, LDA, Y(1,J), 1,
+     $               CMPLX(1.0),
      $        RES, 1)
 
          DO I = 1, N

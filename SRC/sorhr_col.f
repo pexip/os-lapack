@@ -241,7 +241,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup singleOTHERcomputational
+*> \ingroup unhr_col
 *
 *> \par Contributors:
 *  ==================
@@ -280,7 +280,8 @@
      $                   NPLUSONE
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLAORHR_COL_GETRFNP, SSCAL, STRSM,
+      EXTERNAL           SCOPY, SLAORHR_COL_GETRFNP, SSCAL,
+     $                   STRSM,
      $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -419,7 +420,7 @@
 *
          JBTEMP2 = JB - 2
          DO J = JB, JB+JNB-2
-            DO I = J-JBTEMP2, NB
+            DO I = J-JBTEMP2, MIN( NB, N )
                T( I, J ) = ZERO
             END DO
          END DO

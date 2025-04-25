@@ -230,7 +230,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup tgsna
 *
 *> \par Further Details:
 *  =====================
@@ -416,11 +416,15 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      REAL               SDOT, SLAMCH, SLAPY2, SNRM2
-      EXTERNAL           LSAME, SDOT, SLAMCH, SLAPY2, SNRM2
+      REAL               SDOT, SLAMCH, SLAPY2,
+     $                   SNRM2, SROUNDUP_LWORK
+      EXTERNAL           LSAME, SDOT, SLAMCH,
+     $                   SLAPY2, SNRM2,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGEMV, SLACPY, SLAG2, STGEXC, STGSYL, XERBLA
+      EXTERNAL           SGEMV, SLACPY, SLAG2,
+     $                   STGEXC, STGSYL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN, SQRT
@@ -490,7 +494,7 @@
          ELSE
             LWMIN = N
          END IF
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
 *
          IF( MM.LT.M ) THEN
             INFO = -15
@@ -558,7 +562,8 @@
      $                SNRM2( N, VR( 1, KS+1 ), 1 ) )
                LNRM = SLAPY2( SNRM2( N, VL( 1, KS ), 1 ),
      $                SNRM2( N, VL( 1, KS+1 ), 1 ) )
-               CALL SGEMV( 'N', N, N, ONE, A, LDA, VR( 1, KS ), 1, ZERO,
+               CALL SGEMV( 'N', N, N, ONE, A, LDA, VR( 1, KS ), 1,
+     $                     ZERO,
      $                     WORK, 1 )
                TMPRR = SDOT( N, WORK, 1, VL( 1, KS ), 1 )
                TMPRI = SDOT( N, WORK, 1, VL( 1, KS+1 ), 1 )
@@ -568,7 +573,8 @@
                TMPIR = SDOT( N, WORK, 1, VL( 1, KS ), 1 )
                UHAV = TMPRR + TMPII
                UHAVI = TMPIR - TMPRI
-               CALL SGEMV( 'N', N, N, ONE, B, LDB, VR( 1, KS ), 1, ZERO,
+               CALL SGEMV( 'N', N, N, ONE, B, LDB, VR( 1, KS ), 1,
+     $                     ZERO,
      $                     WORK, 1 )
                TMPRR = SDOT( N, WORK, 1, VL( 1, KS ), 1 )
                TMPRI = SDOT( N, WORK, 1, VL( 1, KS+1 ), 1 )
@@ -590,10 +596,12 @@
 *
                RNRM = SNRM2( N, VR( 1, KS ), 1 )
                LNRM = SNRM2( N, VL( 1, KS ), 1 )
-               CALL SGEMV( 'N', N, N, ONE, A, LDA, VR( 1, KS ), 1, ZERO,
+               CALL SGEMV( 'N', N, N, ONE, A, LDA, VR( 1, KS ), 1,
+     $                     ZERO,
      $                     WORK, 1 )
                UHAV = SDOT( N, WORK, 1, VL( 1, KS ), 1 )
-               CALL SGEMV( 'N', N, N, ONE, B, LDB, VR( 1, KS ), 1, ZERO,
+               CALL SGEMV( 'N', N, N, ONE, B, LDB, VR( 1, KS ), 1,
+     $                     ZERO,
      $                     WORK, 1 )
                UHBV = SDOT( N, WORK, 1, VL( 1, KS ), 1 )
                COND = SLAPY2( UHAV, UHBV )
@@ -632,8 +640,8 @@
                C1 = TWO*( ALPHAR*ALPHAR+ALPHAI*ALPHAI+BETA*BETA )
                C2 = FOUR*BETA*BETA*ALPHAI*ALPHAI
                ROOT1 = C1 + SQRT( C1*C1-4.0*C2 )
-               ROOT2 = C2 / ROOT1
                ROOT1 = ROOT1 / TWO
+               ROOT2 = C2 / ROOT1
                COND = MIN( SQRT( ROOT1 ), SQRT( ROOT2 ) )
             END IF
 *
@@ -645,7 +653,8 @@
             IFST = K
             ILST = 1
 *
-            CALL STGEXC( .FALSE., .FALSE., N, WORK, N, WORK( N*N+1 ), N,
+            CALL STGEXC( .FALSE., .FALSE., N, WORK, N, WORK( N*N+1 ),
+     $                   N,
      $                   DUMMY, 1, DUMMY1, 1, IFST, ILST,
      $                   WORK( N*N*2+1 ), LWORK-2*N*N, IERR )
 *
@@ -671,7 +680,8 @@
                ELSE
                   I = N*N + 1
                   IZ = 2*N*N + 1
-                  CALL STGSYL( 'N', DIFDRI, N2, N1, WORK( N*N1+N1+1 ),
+                  CALL STGSYL( 'N', DIFDRI, N2, N1,
+     $                         WORK( N*N1+N1+1 ),
      $                         N, WORK, N, WORK( N1+1 ), N,
      $                         WORK( N*N1+N1+I ), N, WORK( I ), N,
      $                         WORK( N1+I ), N, SCALE, DIF( KS ),
@@ -689,7 +699,7 @@
      $      KS = KS + 1
 *
    20 CONTINUE
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       RETURN
 *
 *     End of STGSNA
