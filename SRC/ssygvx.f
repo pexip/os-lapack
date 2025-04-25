@@ -270,7 +270,7 @@
 *>                    i eigenvectors failed to converge.  Their indices
 *>                    are stored in array IFAIL.
 *>             > N:   if INFO = N + i, for 1 <= i <= N, then the leading
-*>                    minor of order i of B is not positive definite.
+*>                    principal minor of order i of B is not positive.
 *>                    The factorization of B could not be completed and
 *>                    no eigenvalues or eigenvectors were computed.
 *> \endverbatim
@@ -283,7 +283,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realSYeigen
+*> \ingroup hegvx
 *
 *> \par Contributors:
 *  ==================
@@ -324,10 +324,12 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           ILAENV, LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SPOTRF, SSYEVX, SSYGST, STRMM, STRSM, XERBLA
+      EXTERNAL           SPOTRF, SSYEVX, SSYGST, STRMM, STRSM,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -380,7 +382,7 @@
          LWKMIN = MAX( 1, 8*N )
          NB = ILAENV( 1, 'SSYTRD', UPLO, N, -1, -1, -1 )
          LWKOPT = MAX( LWKMIN, ( NB + 3 )*N )
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
             INFO = -20
@@ -412,7 +414,8 @@
 *     Transform problem to standard eigenvalue problem and solve.
 *
       CALL SSYGST( ITYPE, UPLO, N, A, LDA, B, LDB, INFO )
-      CALL SSYEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU, ABSTOL,
+      CALL SSYEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
+     $             ABSTOL,
      $             M, W, Z, LDZ, WORK, LWORK, IWORK, IFAIL, INFO )
 *
       IF( WANTZ ) THEN
@@ -432,7 +435,8 @@
                TRANS = 'T'
             END IF
 *
-            CALL STRSM( 'Left', UPLO, TRANS, 'Non-unit', N, M, ONE, B,
+            CALL STRSM( 'Left', UPLO, TRANS, 'Non-unit', N, M, ONE,
+     $                  B,
      $                  LDB, Z, LDZ )
 *
          ELSE IF( ITYPE.EQ.3 ) THEN
@@ -446,14 +450,15 @@
                TRANS = 'N'
             END IF
 *
-            CALL STRMM( 'Left', UPLO, TRANS, 'Non-unit', N, M, ONE, B,
+            CALL STRMM( 'Left', UPLO, TRANS, 'Non-unit', N, M, ONE,
+     $                  B,
      $                  LDB, Z, LDZ )
          END IF
       END IF
 *
 *     Set WORK(1) to optimal workspace size.
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
       RETURN
 *

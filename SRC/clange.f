@@ -108,7 +108,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEauxiliary
+*> \ingroup lange
 *
 *  =====================================================================
       REAL             FUNCTION CLANGE( NORM, M, N, A, LDA, WORK )
@@ -190,7 +190,8 @@
             TEMP = WORK( I )
             IF( VALUE.LT.TEMP .OR. SISNAN( TEMP ) ) VALUE = TEMP
    80    CONTINUE
-      ELSE IF( ( LSAME( NORM, 'F' ) ) .OR. ( LSAME( NORM, 'E' ) ) ) THEN
+      ELSE IF( ( LSAME( NORM, 'F' ) ) .OR.
+     $         ( LSAME( NORM, 'E' ) ) ) THEN
 *
 *        Find normF(A).
 *

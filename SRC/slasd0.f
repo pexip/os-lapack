@@ -79,10 +79,11 @@
 *>         On exit, E has been destroyed.
 *> \endverbatim
 *>
-*> \param[out] U
+*> \param[in,out] U
 *> \verbatim
 *>          U is REAL array, dimension (LDU, N)
-*>         On exit, U contains the left singular vectors.
+*>         On exit, U contains the left singular vectors,
+*>          if U passed in as (N, N) Identity.
 *> \endverbatim
 *>
 *> \param[in] LDU
@@ -91,10 +92,11 @@
 *>         On entry, leading dimension of U.
 *> \endverbatim
 *>
-*> \param[out] VT
+*> \param[in,out] VT
 *> \verbatim
 *>          VT is REAL array, dimension (LDVT, M)
-*>         On exit, VT**T contains the right singular vectors.
+*>         On exit, VT**T contains the right singular vectors,
+*>          if VT passed in as (M, M) Identity.
 *> \endverbatim
 *>
 *> \param[in] LDVT
@@ -136,7 +138,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup OTHERauxiliary
+*> \ingroup lasd0
 *
 *> \par Contributors:
 *  ==================
@@ -145,7 +147,8 @@
 *>     California at Berkeley, USA
 *>
 *  =====================================================================
-      SUBROUTINE SLASD0( N, SQRE, D, E, U, LDU, VT, LDVT, SMLSIZ, IWORK,
+      SUBROUTINE SLASD0( N, SQRE, D, E, U, LDU, VT, LDVT, SMLSIZ,
+     $                   IWORK,
      $                   WORK, INFO )
 *
 *  -- LAPACK auxiliary routine --
@@ -201,7 +204,8 @@
 *     If the input matrix is too small, call SLASDQ to find the SVD.
 *
       IF( N.LE.SMLSIZ ) THEN
-         CALL SLASDQ( 'U', SQRE, N, M, N, 0, D, E, VT, LDVT, U, LDU, U,
+         CALL SLASDQ( 'U', SQRE, N, M, N, 0, D, E, VT, LDVT, U, LDU,
+     $                U,
      $                LDU, WORK, INFO )
          RETURN
       END IF
@@ -238,7 +242,8 @@
          NLF = IC - NL
          NRF = IC + 1
          SQREI = 1
-         CALL SLASDQ( 'U', SQREI, NL, NLP1, NL, NCC, D( NLF ), E( NLF ),
+         CALL SLASDQ( 'U', SQREI, NL, NLP1, NL, NCC, D( NLF ),
+     $                E( NLF ),
      $                VT( NLF, NLF ), LDVT, U( NLF, NLF ), LDU,
      $                U( NLF, NLF ), LDU, WORK, INFO )
          IF( INFO.NE.0 ) THEN
@@ -254,7 +259,8 @@
             SQREI = 1
          END IF
          NRP1 = NR + SQREI
-         CALL SLASDQ( 'U', SQREI, NR, NRP1, NR, NCC, D( NRF ), E( NRF ),
+         CALL SLASDQ( 'U', SQREI, NR, NRP1, NR, NCC, D( NRF ),
+     $                E( NRF ),
      $                VT( NRF, NRF ), LDVT, U( NRF, NRF ), LDU,
      $                U( NRF, NRF ), LDU, WORK, INFO )
          IF( INFO.NE.0 ) THEN

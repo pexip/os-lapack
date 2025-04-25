@@ -154,7 +154,7 @@
 *>                    i off-diagonal elements of an intermediate
 *>                    tridiagonal form did not converge to zero;
 *>             > N:   if INFO = N + i, for 1 <= i <= N, then the leading
-*>                    minor of order i of B is not positive definite.
+*>                    principal minor of order i of B is not positive.
 *>                    The factorization of B could not be completed and
 *>                    no eigenvalues or eigenvectors were computed.
 *> \endverbatim
@@ -167,10 +167,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleSYeigen
+*> \ingroup hegv
 *
 *  =====================================================================
-      SUBROUTINE DSYGV( ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W, WORK,
+      SUBROUTINE DSYGV( ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W,
+     $                  WORK,
      $                  LWORK, INFO )
 *
 *  -- LAPACK driver routine --
@@ -202,7 +203,8 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DPOTRF, DSYEV, DSYGST, DTRMM, DTRSM, XERBLA
+      EXTERNAL           DPOTRF, DSYEV, DSYGST, DTRMM, DTRSM,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX
@@ -284,7 +286,8 @@
                TRANS = 'T'
             END IF
 *
-            CALL DTRSM( 'Left', UPLO, TRANS, 'Non-unit', N, NEIG, ONE,
+            CALL DTRSM( 'Left', UPLO, TRANS, 'Non-unit', N, NEIG,
+     $                  ONE,
      $                  B, LDB, A, LDA )
 *
          ELSE IF( ITYPE.EQ.3 ) THEN
@@ -298,7 +301,8 @@
                TRANS = 'N'
             END IF
 *
-            CALL DTRMM( 'Left', UPLO, TRANS, 'Non-unit', N, NEIG, ONE,
+            CALL DTRMM( 'Left', UPLO, TRANS, 'Non-unit', N, NEIG,
+     $                  ONE,
      $                  B, LDB, A, LDA )
          END IF
       END IF

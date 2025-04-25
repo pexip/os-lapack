@@ -107,7 +107,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup getri
 *
 *  =====================================================================
       SUBROUTINE SGETRI( N, A, LDA, IPIV, WORK, LWORK, INFO )
@@ -138,9 +138,12 @@
 *     .. External Functions ..
       INTEGER            ILAENV
       EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGEMM, SGEMV, SSWAP, STRSM, STRTRI, XERBLA
+      EXTERNAL           SGEMM, SGEMV, SSWAP, STRSM, STRTRI,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -151,8 +154,9 @@
 *
       INFO = 0
       NB = ILAENV( 1, 'SGETRI', ' ', N, -1, -1, -1 )
-      LWKOPT = N*NB
-      WORK( 1 ) = LWKOPT
+      LWKOPT = MAX( 1, N*NB )
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
+*
       LQUERY = ( LWORK.EQ.-1 )
       IF( N.LT.0 ) THEN
          INFO = -1
@@ -186,7 +190,8 @@
          IWS = MAX( LDWORK*NB, 1 )
          IF( LWORK.LT.IWS ) THEN
             NB = LWORK / LDWORK
-            NBMIN = MAX( 2, ILAENV( 2, 'SGETRI', ' ', N, -1, -1, -1 ) )
+            NBMIN = MAX( 2, ILAENV( 2, 'SGETRI', ' ', N, -1, -1,
+     $                   -1 ) )
          END IF
       ELSE
          IWS = N
@@ -237,7 +242,8 @@
      $         CALL SGEMM( 'No transpose', 'No transpose', N, JB,
      $                     N-J-JB+1, -ONE, A( 1, J+JB ), LDA,
      $                     WORK( J+JB ), LDWORK, ONE, A( 1, J ), LDA )
-            CALL STRSM( 'Right', 'Lower', 'No transpose', 'Unit', N, JB,
+            CALL STRSM( 'Right', 'Lower', 'No transpose', 'Unit', N,
+     $                  JB,
      $                  ONE, WORK( J ), LDWORK, A( 1, J ), LDA )
    50    CONTINUE
       END IF
@@ -250,7 +256,7 @@
      $      CALL SSWAP( N, A( 1, J ), 1, A( 1, JP ), 1 )
    60 CONTINUE
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = SROUNDUP_LWORK( IWS )
       RETURN
 *
 *     End of SGETRI

@@ -43,12 +43,6 @@
 *> B are assumed to be Hermitian and B is also positive definite.
 *> If eigenvectors are desired, it uses a divide and conquer algorithm.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -212,7 +206,7 @@
 *>                    the submatrix lying in rows and columns INFO/(N+1)
 *>                    through mod(INFO,N+1);
 *>             > N:   if INFO = N + i, for 1 <= i <= N, then the leading
-*>                    minor of order i of B is not positive definite.
+*>                    principal minor of order i of B is not positive.
 *>                    The factorization of B could not be completed and
 *>                    no eigenvalues or eigenvectors were computed.
 *> \endverbatim
@@ -225,7 +219,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEeigen
+*> \ingroup hegvd
 *
 *> \par Further Details:
 *  =====================
@@ -244,7 +238,8 @@
 *>     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA
 *>
 *  =====================================================================
-      SUBROUTINE CHEGVD( ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W, WORK,
+      SUBROUTINE CHEGVD( ITYPE, JOBZ, UPLO, N, A, LDA, B, LDB, W,
+     $                   WORK,
      $                   LWORK, RWORK, LRWORK, IWORK, LIWORK, INFO )
 *
 *  -- LAPACK driver routine --
@@ -274,10 +269,12 @@
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
-      EXTERNAL           LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHEEVD, CHEGST, CPOTRF, CTRMM, CTRSM, XERBLA
+      EXTERNAL           CHEEVD, CHEGST, CPOTRF, CTRMM, CTRSM,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, REAL
@@ -322,8 +319,8 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LOPT
-         RWORK( 1 ) = LROPT
+         WORK( 1 ) = SROUNDUP_LWORK(LOPT)
+         RWORK( 1 ) = REAL( LROPT )
          IWORK( 1 ) = LIOPT
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -358,7 +355,8 @@
 *     Transform problem to standard eigenvalue problem and solve.
 *
       CALL CHEGST( ITYPE, UPLO, N, A, LDA, B, LDB, INFO )
-      CALL CHEEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, RWORK, LRWORK,
+      CALL CHEEVD( JOBZ, UPLO, N, A, LDA, W, WORK, LWORK, RWORK,
+     $             LRWORK,
      $             IWORK, LIWORK, INFO )
       LOPT = INT( MAX( REAL( LOPT ), REAL( WORK( 1 ) ) ) )
       LROPT = INT( MAX( REAL( LROPT ), REAL( RWORK( 1 ) ) ) )
@@ -398,8 +396,8 @@
          END IF
       END IF
 *
-      WORK( 1 ) = LOPT
-      RWORK( 1 ) = LROPT
+      WORK( 1 ) = SROUNDUP_LWORK(LOPT)
+      RWORK( 1 ) = REAL( LROPT )
       IWORK( 1 ) = LIOPT
 *
       RETURN

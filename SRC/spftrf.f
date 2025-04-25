@@ -91,8 +91,8 @@
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
-*>          > 0:  if INFO = i, the leading minor of order i is not
-*>                positive definite, and the factorization could not be
+*>          > 0:  if INFO = i, the leading principal minor of order i
+*>                is not positive, and the factorization could not be
 *>                completed.
 *> \endverbatim
 *
@@ -104,7 +104,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup pftrf
 *
 *> \par Further Details:
 *  =====================
@@ -290,7 +290,8 @@
                CALL SPOTRF( 'L', N1, A( 0 ), N, INFO )
                IF( INFO.GT.0 )
      $            RETURN
-               CALL STRSM( 'R', 'L', 'T', 'N', N2, N1, ONE, A( 0 ), N,
+               CALL STRSM( 'R', 'L', 'T', 'N', N2, N1, ONE, A( 0 ),
+     $                     N,
      $                     A( N1 ), N )
                CALL SSYRK( 'U', 'N', N2, N1, -ONE, A( N1 ), N, ONE,
      $                     A( N ), N )
@@ -307,7 +308,8 @@
                CALL SPOTRF( 'L', N1, A( N2 ), N, INFO )
                IF( INFO.GT.0 )
      $            RETURN
-               CALL STRSM( 'L', 'L', 'N', 'N', N1, N2, ONE, A( N2 ), N,
+               CALL STRSM( 'L', 'L', 'N', 'N', N1, N2, ONE, A( N2 ),
+     $                     N,
      $                     A( 0 ), N )
                CALL SSYRK( 'U', 'T', N2, N1, -ONE, A( 0 ), N, ONE,
      $                     A( N1 ), N )
@@ -330,9 +332,11 @@
                CALL SPOTRF( 'U', N1, A( 0 ), N1, INFO )
                IF( INFO.GT.0 )
      $            RETURN
-               CALL STRSM( 'L', 'U', 'T', 'N', N1, N2, ONE, A( 0 ), N1,
+               CALL STRSM( 'L', 'U', 'T', 'N', N1, N2, ONE, A( 0 ),
+     $                     N1,
      $                     A( N1*N1 ), N1 )
-               CALL SSYRK( 'L', 'T', N2, N1, -ONE, A( N1*N1 ), N1, ONE,
+               CALL SSYRK( 'L', 'T', N2, N1, -ONE, A( N1*N1 ), N1,
+     $                     ONE,
      $                     A( 1 ), N1 )
                CALL SPOTRF( 'L', N2, A( 1 ), N1, INFO )
                IF( INFO.GT.0 )
@@ -347,7 +351,8 @@
                CALL SPOTRF( 'U', N1, A( N2*N2 ), N2, INFO )
                IF( INFO.GT.0 )
      $            RETURN
-               CALL STRSM( 'R', 'U', 'N', 'N', N2, N1, ONE, A( N2*N2 ),
+               CALL STRSM( 'R', 'U', 'N', 'N', N2, N1, ONE,
+     $                     A( N2*N2 ),
      $                     N2, A( 0 ), N2 )
                CALL SSYRK( 'L', 'N', N2, N1, -ONE, A( 0 ), N2, ONE,
      $                     A( N1*N2 ), N2 )
@@ -376,7 +381,8 @@
                CALL SPOTRF( 'L', K, A( 1 ), N+1, INFO )
                IF( INFO.GT.0 )
      $            RETURN
-               CALL STRSM( 'R', 'L', 'T', 'N', K, K, ONE, A( 1 ), N+1,
+               CALL STRSM( 'R', 'L', 'T', 'N', K, K, ONE, A( 1 ),
+     $                     N+1,
      $                     A( K+1 ), N+1 )
                CALL SSYRK( 'U', 'N', K, K, -ONE, A( K+1 ), N+1, ONE,
      $                     A( 0 ), N+1 )
@@ -418,7 +424,8 @@
      $            RETURN
                CALL STRSM( 'L', 'U', 'T', 'N', K, K, ONE, A( K ), N1,
      $                     A( K*( K+1 ) ), K )
-               CALL SSYRK( 'L', 'T', K, K, -ONE, A( K*( K+1 ) ), K, ONE,
+               CALL SSYRK( 'L', 'T', K, K, -ONE, A( K*( K+1 ) ), K,
+     $                     ONE,
      $                     A( 0 ), K )
                CALL SPOTRF( 'L', K, A( 0 ), K, INFO )
                IF( INFO.GT.0 )

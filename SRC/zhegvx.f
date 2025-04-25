@@ -280,7 +280,7 @@
 *>                    i eigenvectors failed to converge.  Their indices
 *>                    are stored in array IFAIL.
 *>             > N:   if INFO = N + i, for 1 <= i <= N, then the leading
-*>                    minor of order i of B is not positive definite.
+*>                    principal minor of order i of B is not positive.
 *>                    The factorization of B could not be completed and
 *>                    no eigenvalues or eigenvectors were computed.
 *> \endverbatim
@@ -293,7 +293,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEeigen
+*> \ingroup hegvx
 *
 *> \par Contributors:
 *  ==================
@@ -338,7 +338,8 @@
       EXTERNAL           LSAME, ILAENV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           XERBLA, ZHEEVX, ZHEGST, ZPOTRF, ZTRMM, ZTRSM
+      EXTERNAL           XERBLA, ZHEEVX, ZHEGST, ZPOTRF, ZTRMM,
+     $                   ZTRSM
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
@@ -422,7 +423,8 @@
 *     Transform problem to standard eigenvalue problem and solve.
 *
       CALL ZHEGST( ITYPE, UPLO, N, A, LDA, B, LDB, INFO )
-      CALL ZHEEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU, ABSTOL,
+      CALL ZHEEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
+     $             ABSTOL,
      $             M, W, Z, LDZ, WORK, LWORK, RWORK, IWORK, IFAIL,
      $             INFO )
 *
@@ -443,7 +445,8 @@
                TRANS = 'C'
             END IF
 *
-            CALL ZTRSM( 'Left', UPLO, TRANS, 'Non-unit', N, M, CONE, B,
+            CALL ZTRSM( 'Left', UPLO, TRANS, 'Non-unit', N, M, CONE,
+     $                  B,
      $                  LDB, Z, LDZ )
 *
          ELSE IF( ITYPE.EQ.3 ) THEN
@@ -457,7 +460,8 @@
                TRANS = 'N'
             END IF
 *
-            CALL ZTRMM( 'Left', UPLO, TRANS, 'Non-unit', N, M, CONE, B,
+            CALL ZTRMM( 'Left', UPLO, TRANS, 'Non-unit', N, M, CONE,
+     $                  B,
      $                  LDB, Z, LDZ )
          END IF
       END IF

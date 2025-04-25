@@ -159,7 +159,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup unmr3
 *
 *> \par Contributors:
 *  ==================
@@ -173,7 +173,8 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE CUNMR3( SIDE, TRANS, M, N, K, L, A, LDA, TAU, C, LDC,
+      SUBROUTINE CUNMR3( SIDE, TRANS, M, N, K, L, A, LDA, TAU, C,
+     $                   LDC,
      $                   WORK, INFO )
 *
 *  -- LAPACK computational routine --

@@ -121,7 +121,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup ungqr
 *
 *  =====================================================================
       SUBROUTINE CUNGQR( M, N, K, A, LDA, TAU, WORK, LWORK, INFO )
@@ -156,7 +156,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -165,7 +166,7 @@
       INFO = 0
       NB = ILAENV( 1, 'CUNGQR', ' ', M, N, K, -1 )
       LWKOPT = MAX( 1, N )*NB
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
@@ -212,7 +213,8 @@
 *              determine the minimum value of NB.
 *
                NB = LWORK / LDWORK
-               NBMIN = MAX( 2, ILAENV( 2, 'CUNGQR', ' ', M, N, K, -1 ) )
+               NBMIN = MAX( 2, ILAENV( 2, 'CUNGQR', ' ', M, N, K,
+     $                      -1 ) )
             END IF
          END IF
       END IF
@@ -266,7 +268,8 @@
 *
 *           Apply H to rows i:m of current block
 *
-            CALL CUNG2R( M-I+1, IB, IB, A( I, I ), LDA, TAU( I ), WORK,
+            CALL CUNG2R( M-I+1, IB, IB, A( I, I ), LDA, TAU( I ),
+     $                   WORK,
      $                   IINFO )
 *
 *           Set rows 1:i-1 of current block to zero
@@ -279,7 +282,7 @@
    50    CONTINUE
       END IF
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = SROUNDUP_LWORK(IWS)
       RETURN
 *
 *     End of CUNGQR

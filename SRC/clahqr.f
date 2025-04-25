@@ -171,7 +171,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup lahqr
 *
 *> \par Contributors:
 *  ==================
@@ -236,7 +236,7 @@
       EXTERNAL           CLADIV, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CLARFG, CSCAL, SLABAD
+      EXTERNAL           CCOPY, CLARFG, CSCAL
 *     ..
 *     .. Statement Functions ..
       REAL               CABS1
@@ -284,10 +284,12 @@
             SC = CONJG( SC ) / ABS( SC )
             H( I, I-1 ) = ABS( H( I, I-1 ) )
             CALL CSCAL( JHI-I+1, SC, H( I, I ), LDH )
-            CALL CSCAL( MIN( JHI, I+1 )-JLO+1, CONJG( SC ), H( JLO, I ),
+            CALL CSCAL( MIN( JHI, I+1 )-JLO+1, CONJG( SC ), H( JLO,
+     $                  I ),
      $                  1 )
             IF( WANTZ )
-     $         CALL CSCAL( IHIZ-ILOZ+1, CONJG( SC ), Z( ILOZ, I ), 1 )
+     $         CALL CSCAL( IHIZ-ILOZ+1, CONJG( SC ), Z( ILOZ, I ),
+     $                     1 )
          END IF
    20 CONTINUE
 *
@@ -298,7 +300,6 @@
 *
       SAFMIN = SLAMCH( 'SAFE MINIMUM' )
       SAFMAX = RONE / SAFMIN
-      CALL SLABAD( SAFMIN, SAFMAX )
       ULP = SLAMCH( 'PRECISION' )
       SMLNUM = SAFMIN*( REAL( NH ) / ULP )
 *
@@ -527,7 +528,8 @@
      $                  CALL CSCAL( I2-J, TEMP, H( J, J+1 ), LDH )
                      CALL CSCAL( J-I1, CONJG( TEMP ), H( I1, J ), 1 )
                      IF( WANTZ ) THEN
-                        CALL CSCAL( NZ, CONJG( TEMP ), Z( ILOZ, J ), 1 )
+                        CALL CSCAL( NZ, CONJG( TEMP ), Z( ILOZ, J ),
+     $                              1 )
                      END IF
                   END IF
   110          CONTINUE

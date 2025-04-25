@@ -151,10 +151,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGBauxiliary
+*> \ingroup laqgb
 *
 *  =====================================================================
-      SUBROUTINE SLAQGB( M, N, KL, KU, AB, LDAB, R, C, ROWCND, COLCND,
+      SUBROUTINE SLAQGB( M, N, KL, KU, AB, LDAB, R, C, ROWCND,
+     $                   COLCND,
      $                   AMAX, EQUED )
 *
 *  -- LAPACK auxiliary routine --

@@ -160,7 +160,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unmql
 *
 *  =====================================================================
       SUBROUTINE SORMQL( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
@@ -194,7 +194,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           LSAME, ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SLARFB, SLARFT, SORM2L, XERBLA
@@ -245,11 +246,12 @@
          IF( M.EQ.0 .OR. N.EQ.0 ) THEN
             LWKOPT = 1
          ELSE
-            NB = MIN( NBMAX, ILAENV( 1, 'SORMQL', SIDE // TRANS, M, N,
+            NB = MIN( NBMAX, ILAENV( 1, 'SORMQL', SIDE // TRANS, M,
+     $                N,
      $                               K, -1 ) )
             LWKOPT = NW*NB + TSIZE
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -270,7 +272,8 @@
       IF( NB.GT.1 .AND. NB.LT.K ) THEN
          IF( LWORK.LT.LWKOPT ) THEN
             NB = (LWORK-TSIZE) / LDWORK
-            NBMIN = MAX( 2, ILAENV( 2, 'SORMQL', SIDE // TRANS, M, N, K,
+            NBMIN = MAX( 2, ILAENV( 2, 'SORMQL', SIDE // TRANS, M, N,
+     $                   K,
      $              -1 ) )
          END IF
       END IF
@@ -279,7 +282,8 @@
 *
 *        Use unblocked code
 *
-         CALL SORM2L( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC, WORK,
+         CALL SORM2L( SIDE, TRANS, M, N, K, A, LDA, TAU, C, LDC,
+     $                WORK,
      $                IINFO )
       ELSE
 *
@@ -325,12 +329,13 @@
 *
 *           Apply H or H**T
 *
-            CALL SLARFB( SIDE, TRANS, 'Backward', 'Columnwise', MI, NI,
+            CALL SLARFB( SIDE, TRANS, 'Backward', 'Columnwise', MI,
+     $                   NI,
      $                   IB, A( 1, I ), LDA, WORK( IWT ), LDT, C, LDC,
      $                   WORK, LDWORK )
    10    CONTINUE
       END IF
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       RETURN
 *
 *     End of SORMQL

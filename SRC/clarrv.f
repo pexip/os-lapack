@@ -266,7 +266,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup larrv
 *
 *> \par Contributors:
 *  ==================
@@ -334,7 +334,8 @@
       EXTERNAL           SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CLAR1V, CLASET, CSSCAL, SCOPY, SLARRB,
+      EXTERNAL           CLAR1V, CLASET, CSSCAL, SCOPY,
+     $                   SLARRB,
      $                   SLARRF
 *     ..
 *     .. Intrinsic Functions ..

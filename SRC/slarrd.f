@@ -319,7 +319,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup OTHERauxiliary
+*> \ingroup larrd
 *
 *  =====================================================================
       SUBROUTINE SLARRD( RANGE, ORDER, N, VL, VU, IL, IU, GERS,
@@ -381,6 +381,7 @@
 *     .. Executable Statements ..
 *
       INFO = 0
+      M = 0
 *
 *     Quick return if possible
 *
@@ -424,13 +425,8 @@
       END IF
 
 *     Initialize error flags
-      INFO = 0
       NCNVRG = .FALSE.
       TOOFEW = .FALSE.
-
-*     Quick return if possible
-      M = 0
-      IF( N.EQ.0 ) RETURN
 
 *     Simplification:
       IF( IRANGE.EQ.INDRNG .AND. IL.EQ.1 .AND. IU.EQ.N ) IRANGE = 1
@@ -470,8 +466,8 @@
  5    CONTINUE
 *     Compute global Gerschgorin bounds and spectral diameter
       TNORM = MAX( ABS( GL ), ABS( GU ) )
-      GL = GL - FUDGE*TNORM*EPS*N - FUDGE*TWO*PIVMIN
-      GU = GU + FUDGE*TNORM*EPS*N + FUDGE*TWO*PIVMIN
+      GL = GL - FUDGE*TNORM*EPS*REAL( N ) - FUDGE*TWO*PIVMIN
+      GU = GU + FUDGE*TNORM*EPS*REAL( N ) + FUDGE*TWO*PIVMIN
 *     [JAN/28/2009] remove the line below since SPDIAM variable not use
 *     SPDIAM = GU - GL
 *     Input arguments for SLAEBZ:
@@ -644,8 +640,8 @@
 *           SPDIAM = GU - GL
 *           GL = GL - FUDGE*SPDIAM*EPS*IN - FUDGE*PIVMIN
 *           GU = GU + FUDGE*SPDIAM*EPS*IN + FUDGE*PIVMIN
-            GL = GL - FUDGE*TNORM*EPS*IN - FUDGE*PIVMIN
-            GU = GU + FUDGE*TNORM*EPS*IN + FUDGE*PIVMIN
+            GL = GL - FUDGE*TNORM*EPS*REAL( IN ) - FUDGE*PIVMIN
+            GU = GU + FUDGE*TNORM*EPS*REAL( IN ) + FUDGE*PIVMIN
 *
             IF( IRANGE.GT.1 ) THEN
                IF( GU.LT.WL ) THEN
@@ -680,7 +676,8 @@
 *           Compute Eigenvalues
             ITMAX = INT( ( LOG( GU-GL+PIVMIN )-LOG( PIVMIN ) ) /
      $              LOG( TWO ) ) + 2
-            CALL SLAEBZ( 2, ITMAX, IN, IN, 1, NB, ATOLI, RTOLI, PIVMIN,
+            CALL SLAEBZ( 2, ITMAX, IN, IN, 1, NB, ATOLI, RTOLI,
+     $                   PIVMIN,
      $                   D( IBEGIN ), E( IBEGIN ), E2( IBEGIN ),
      $                   IDUMMA, WORK( N+1 ), WORK( N+2*IN+1 ), IOUT,
      $                   IWORK, W( M+1 ), IBLOCK( M+1 ), IINFO )

@@ -129,7 +129,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup trcon
 *
 *  =====================================================================
       SUBROUTINE DTRCON( NORM, UPLO, DIAG, N, A, LDA, RCOND, WORK,
@@ -230,7 +230,8 @@
          END IF
          KASE = 0
    10    CONTINUE
-         CALL DLACN2( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE, ISAVE )
+         CALL DLACN2( N, WORK( N+1 ), WORK, IWORK, AINVNM, KASE,
+     $                ISAVE )
          IF( KASE.NE.0 ) THEN
             IF( KASE.EQ.KASE1 ) THEN
 *
@@ -242,7 +243,8 @@
 *
 *              Multiply by inv(A**T).
 *
-               CALL DLATRS( UPLO, 'Transpose', DIAG, NORMIN, N, A, LDA,
+               CALL DLATRS( UPLO, 'Transpose', DIAG, NORMIN, N, A,
+     $                      LDA,
      $                      WORK, SCALE, WORK( 2*N+1 ), INFO )
             END IF
             NORMIN = 'Y'

@@ -44,7 +44,7 @@
 *
 *> \author Weslley Pereira, University of Colorado Denver, USA
 *
-*> \ingroup auxOTHERauxiliary
+*> \ingroup roundup_lwork
 *
 *> \par Further Details:
 *  =====================
@@ -76,7 +76,8 @@
 *
       IF( INT( SROUNDUP_LWORK ) .LT. LWORK ) THEN
 *         Force round up of LWORK
-          SROUNDUP_LWORK = SROUNDUP_LWORK * ( 1.0E+0 + EPSILON(0.0E+0) )
+          SROUNDUP_LWORK = SROUNDUP_LWORK *
+     $                     ( 1.0E+0 + EPSILON(0.0E+0) )
       ENDIF
 *
       RETURN

@@ -8,12 +8,16 @@
 #include "cblas.h"
 #include "cblas_test.h"
 
-void F77_sgemv(int *layout, char *transp, int *m, int *n, float *alpha,
-	       float *a, int *lda, float *x, int *incx, float *beta,
-	       float *y, int *incy ) {
+void F77_sgemv(CBLAS_INT *layout, char *transp, CBLAS_INT *m, CBLAS_INT *n, float *alpha,
+	       float *a, CBLAS_INT *lda, float *x, CBLAS_INT *incx, float *beta,
+	       float *y, CBLAS_INT *incy
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN transp_len
+#endif
+) {
 
   float *A;
-  int i,j,LDA;
+  CBLAS_INT i,j,LDA;
   CBLAS_TRANSPOSE trans;
 
   get_transpose_type(transp, &trans);
@@ -35,11 +39,11 @@ void F77_sgemv(int *layout, char *transp, int *m, int *n, float *alpha,
 		  *m, *n, *alpha, a, *lda, x, *incx, *beta, y, *incy );
 }
 
-void F77_sger(int *layout, int *m, int *n, float *alpha, float *x, int *incx,
-	     float *y, int *incy, float *a, int *lda ) {
+void F77_sger(CBLAS_INT *layout, CBLAS_INT *m, CBLAS_INT *n, float *alpha, float *x, CBLAS_INT *incx,
+	     float *y, CBLAS_INT *incy, float *a, CBLAS_INT *lda ) {
 
   float *A;
-  int i,j,LDA;
+  CBLAS_INT i,j,LDA;
 
   if (*layout == TEST_ROW_MJR) {
      LDA = *n+1;
@@ -60,10 +64,14 @@ void F77_sger(int *layout, int *m, int *n, float *alpha, float *x, int *incx,
      cblas_sger( CblasColMajor, *m, *n, *alpha, x, *incx, y, *incy, a, *lda );
 }
 
-void F77_strmv(int *layout, char *uplow, char *transp, char *diagn,
-	      int *n, float *a, int *lda, float *x, int *incx) {
+void F77_strmv(CBLAS_INT *layout, char *uplow, char *transp, char *diagn,
+	      CBLAS_INT *n, float *a, CBLAS_INT *lda, float *x, CBLAS_INT *incx
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len, FORTRAN_STRLEN transp_len, FORTRAN_STRLEN diagn_len
+#endif
+) {
   float *A;
-  int i,j,LDA;
+  CBLAS_INT i,j,LDA;
   CBLAS_TRANSPOSE trans;
   CBLAS_UPLO uplo;
   CBLAS_DIAG diag;
@@ -88,10 +96,14 @@ void F77_strmv(int *layout, char *uplow, char *transp, char *diagn,
   }
 }
 
-void F77_strsv(int *layout, char *uplow, char *transp, char *diagn,
-	       int *n, float *a, int *lda, float *x, int *incx ) {
+void F77_strsv(CBLAS_INT *layout, char *uplow, char *transp, char *diagn,
+	       CBLAS_INT *n, float *a, CBLAS_INT *lda, float *x, CBLAS_INT *incx
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len, FORTRAN_STRLEN transp_len, FORTRAN_STRLEN diagn_len
+#endif
+) {
   float *A;
-  int i,j,LDA;
+  CBLAS_INT i,j,LDA;
   CBLAS_TRANSPOSE trans;
   CBLAS_UPLO uplo;
   CBLAS_DIAG diag;
@@ -112,11 +124,15 @@ void F77_strsv(int *layout, char *uplow, char *transp, char *diagn,
    else
      cblas_strsv(CblasColMajor, uplo, trans, diag, *n, a, *lda, x, *incx );
 }
-void F77_ssymv(int *layout, char *uplow, int *n, float *alpha, float *a,
-	      int *lda, float *x, int *incx, float *beta, float *y,
-	      int *incy) {
+void F77_ssymv(CBLAS_INT *layout, char *uplow, CBLAS_INT *n, float *alpha, float *a,
+	      CBLAS_INT *lda, float *x, CBLAS_INT *incx, float *beta, float *y,
+	      CBLAS_INT *incy
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len
+#endif
+) {
   float *A;
-  int i,j,LDA;
+  CBLAS_INT i,j,LDA;
   CBLAS_UPLO uplo;
 
   get_uplo_type(uplow,&uplo);
@@ -136,10 +152,14 @@ void F77_ssymv(int *layout, char *uplow, int *n, float *alpha, float *a,
 		 *beta, y, *incy );
 }
 
-void F77_ssyr(int *layout, char *uplow, int *n, float *alpha, float *x,
-	     int *incx, float *a, int *lda) {
+void F77_ssyr(CBLAS_INT *layout, char *uplow, CBLAS_INT *n, float *alpha, float *x,
+	     CBLAS_INT *incx, float *a, CBLAS_INT *lda
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len
+#endif
+) {
   float *A;
-  int i,j,LDA;
+  CBLAS_INT i,j,LDA;
   CBLAS_UPLO uplo;
 
   get_uplo_type(uplow,&uplo);
@@ -160,10 +180,14 @@ void F77_ssyr(int *layout, char *uplow, int *n, float *alpha, float *x,
      cblas_ssyr(CblasColMajor, uplo, *n, *alpha, x, *incx, a, *lda);
 }
 
-void F77_ssyr2(int *layout, char *uplow, int *n, float *alpha, float *x,
-	     int *incx, float *y, int *incy, float *a, int *lda) {
+void F77_ssyr2(CBLAS_INT *layout, char *uplow, CBLAS_INT *n, float *alpha, float *x,
+	     CBLAS_INT *incx, float *y, CBLAS_INT *incy, float *a, CBLAS_INT *lda
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len
+#endif
+) {
   float *A;
-  int i,j,LDA;
+  CBLAS_INT i,j,LDA;
   CBLAS_UPLO uplo;
 
   get_uplo_type(uplow,&uplo);
@@ -184,12 +208,16 @@ void F77_ssyr2(int *layout, char *uplow, int *n, float *alpha, float *x,
      cblas_ssyr2(CblasColMajor, uplo, *n, *alpha, x, *incx, y, *incy, a, *lda);
 }
 
-void F77_sgbmv(int *layout, char *transp, int *m, int *n, int *kl, int *ku,
-	       float *alpha, float *a, int *lda, float *x, int *incx,
-	       float *beta, float *y, int *incy ) {
+void F77_sgbmv(CBLAS_INT *layout, char *transp, CBLAS_INT *m, CBLAS_INT *n, CBLAS_INT *kl, CBLAS_INT *ku,
+	       float *alpha, float *a, CBLAS_INT *lda, float *x, CBLAS_INT *incx,
+	       float *beta, float *y, CBLAS_INT *incy
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN transp_len
+#endif
+) {
 
   float *A;
-  int i,irow,j,jcol,LDA;
+  CBLAS_INT i,irow,j,jcol,LDA;
   CBLAS_TRANSPOSE trans;
 
   get_transpose_type(transp, &trans);
@@ -222,10 +250,14 @@ void F77_sgbmv(int *layout, char *transp, int *m, int *n, int *kl, int *ku,
 		  a, *lda, x, *incx, *beta, y, *incy );
 }
 
-void F77_stbmv(int *layout, char *uplow, char *transp, char *diagn,
-	      int *n, int *k, float *a, int *lda, float *x, int *incx) {
+void F77_stbmv(CBLAS_INT *layout, char *uplow, char *transp, char *diagn,
+	      CBLAS_INT *n, CBLAS_INT *k, float *a, CBLAS_INT *lda, float *x, CBLAS_INT *incx
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len, FORTRAN_STRLEN transp_len, FORTRAN_STRLEN diagn_len
+#endif
+) {
   float *A;
-  int irow, jcol, i, j, LDA;
+  CBLAS_INT irow, jcol, i, j, LDA;
   CBLAS_TRANSPOSE trans;
   CBLAS_UPLO uplo;
   CBLAS_DIAG diag;
@@ -268,10 +300,14 @@ void F77_stbmv(int *layout, char *uplow, char *transp, char *diagn,
      cblas_stbmv(CblasColMajor, uplo, trans, diag, *n, *k, a, *lda, x, *incx);
 }
 
-void F77_stbsv(int *layout, char *uplow, char *transp, char *diagn,
-	      int *n, int *k, float *a, int *lda, float *x, int *incx) {
+void F77_stbsv(CBLAS_INT *layout, char *uplow, char *transp, char *diagn,
+	      CBLAS_INT *n, CBLAS_INT *k, float *a, CBLAS_INT *lda, float *x, CBLAS_INT *incx
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len, FORTRAN_STRLEN transp_len, FORTRAN_STRLEN diagn_len
+#endif
+) {
   float *A;
-  int irow, jcol, i, j, LDA;
+  CBLAS_INT irow, jcol, i, j, LDA;
   CBLAS_TRANSPOSE trans;
   CBLAS_UPLO uplo;
   CBLAS_DIAG diag;
@@ -314,11 +350,15 @@ void F77_stbsv(int *layout, char *uplow, char *transp, char *diagn,
      cblas_stbsv(CblasColMajor, uplo, trans, diag, *n, *k, a, *lda, x, *incx);
 }
 
-void F77_ssbmv(int *layout, char *uplow, int *n, int *k, float *alpha,
-	      float *a, int *lda, float *x, int *incx, float *beta,
-	      float *y, int *incy) {
+void F77_ssbmv(CBLAS_INT *layout, char *uplow, CBLAS_INT *n, CBLAS_INT *k, float *alpha,
+	      float *a, CBLAS_INT *lda, float *x, CBLAS_INT *incx, float *beta,
+	      float *y, CBLAS_INT *incy
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len
+#endif
+) {
   float *A;
-  int i,j,irow,jcol,LDA;
+  CBLAS_INT i,j,irow,jcol,LDA;
   CBLAS_UPLO uplo;
 
   get_uplo_type(uplow,&uplo);
@@ -359,10 +399,14 @@ void F77_ssbmv(int *layout, char *uplow, int *n, int *k, float *alpha,
 		 *beta, y, *incy );
 }
 
-void F77_sspmv(int *layout, char *uplow, int *n, float *alpha, float *ap,
-	      float *x, int *incx, float *beta, float *y, int *incy) {
+void F77_sspmv(CBLAS_INT *layout, char *uplow, CBLAS_INT *n, float *alpha, float *ap,
+	      float *x, CBLAS_INT *incx, float *beta, float *y, CBLAS_INT *incy
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len
+#endif
+) {
   float *A,*AP;
-  int i,j,k,LDA;
+  CBLAS_INT i,j,k,LDA;
   CBLAS_UPLO uplo;
 
   get_uplo_type(uplow,&uplo);
@@ -396,10 +440,14 @@ void F77_sspmv(int *layout, char *uplow, int *n, float *alpha, float *ap,
 		  *incy );
 }
 
-void F77_stpmv(int *layout, char *uplow, char *transp, char *diagn,
-	      int *n, float *ap, float *x, int *incx) {
+void F77_stpmv(CBLAS_INT *layout, char *uplow, char *transp, char *diagn,
+	      CBLAS_INT *n, float *ap, float *x, CBLAS_INT *incx
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len, FORTRAN_STRLEN transp_len, FORTRAN_STRLEN diagn_len
+#endif
+) {
   float *A, *AP;
-  int i, j, k, LDA;
+  CBLAS_INT i, j, k, LDA;
   CBLAS_TRANSPOSE trans;
   CBLAS_UPLO uplo;
   CBLAS_DIAG diag;
@@ -435,10 +483,14 @@ void F77_stpmv(int *layout, char *uplow, char *transp, char *diagn,
      cblas_stpmv( CblasColMajor, uplo, trans, diag, *n, ap, x, *incx );
 }
 
-void F77_stpsv(int *layout, char *uplow, char *transp, char *diagn,
-	      int *n, float *ap, float *x, int *incx) {
+void F77_stpsv(CBLAS_INT *layout, char *uplow, char *transp, char *diagn,
+	      CBLAS_INT *n, float *ap, float *x, CBLAS_INT *incx
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len, FORTRAN_STRLEN transp_len, FORTRAN_STRLEN diagn_len
+#endif
+) {
   float *A, *AP;
-  int i, j, k, LDA;
+  CBLAS_INT i, j, k, LDA;
   CBLAS_TRANSPOSE trans;
   CBLAS_UPLO uplo;
   CBLAS_DIAG diag;
@@ -475,10 +527,14 @@ void F77_stpsv(int *layout, char *uplow, char *transp, char *diagn,
      cblas_stpsv( CblasColMajor, uplo, trans, diag, *n, ap, x, *incx );
 }
 
-void F77_sspr(int *layout, char *uplow, int *n, float *alpha, float *x,
-	     int *incx, float *ap ){
+void F77_sspr(CBLAS_INT *layout, char *uplow, CBLAS_INT *n, float *alpha, float *x,
+	     CBLAS_INT *incx, float *ap
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len
+#endif
+){
   float *A, *AP;
-  int i,j,k,LDA;
+  CBLAS_INT i,j,k,LDA;
   CBLAS_UPLO uplo;
 
   get_uplo_type(uplow,&uplo);
@@ -526,10 +582,14 @@ void F77_sspr(int *layout, char *uplow, int *n, float *alpha, float *x,
      cblas_sspr( CblasColMajor, uplo, *n, *alpha, x, *incx, ap );
 }
 
-void F77_sspr2(int *layout, char *uplow, int *n, float *alpha, float *x,
-	     int *incx, float *y, int *incy, float *ap ){
+void F77_sspr2(CBLAS_INT *layout, char *uplow, CBLAS_INT *n, float *alpha, float *x,
+	     CBLAS_INT *incx, float *y, CBLAS_INT *incy, float *ap
+#ifdef BLAS_FORTRAN_STRLEN_END
+  , FORTRAN_STRLEN uplow_len
+#endif
+){
   float *A, *AP;
-  int i,j,k,LDA;
+  CBLAS_INT i,j,k,LDA;
   CBLAS_UPLO uplo;
 
   get_uplo_type(uplow,&uplo);

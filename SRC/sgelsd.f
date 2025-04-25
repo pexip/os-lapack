@@ -59,12 +59,6 @@
 *> singular values which are less than RCOND times the largest singular
 *> value.
 *>
-*> The divide and conquer algorithm makes very mild assumptions about
-*> floating point arithmetic. It will work on machines with a guard
-*> digit in add/subtract, or on those binary machines without guard
-*> digits which subtract like the Cray X-MP, Cray Y-MP, Cray C-90, or
-*> Cray-2. It could conceivably fail on hexadecimal or decimal machines
-*> without guard digits, but we know of none.
 *> \endverbatim
 *
 *  Arguments:
@@ -195,7 +189,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEsolve
+*> \ingroup gelsd
 *
 *> \par Contributors:
 *  ==================
@@ -235,13 +229,15 @@
       REAL               ANRM, BIGNUM, BNRM, EPS, SFMIN, SMLNUM
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGEBRD, SGELQF, SGEQRF, SLABAD, SLACPY, SLALSD,
-     $                   SLASCL, SLASET, SORMBR, SORMLQ, SORMQR, XERBLA
+      EXTERNAL           SGEBRD, SGELQF, SGEQRF, SLACPY, SLALSD,
+     $                   SLASCL,
+     $                   SLASET, SORMBR, SORMLQ, SORMQR, XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      REAL               SLAMCH, SLANGE
-      EXTERNAL           SLAMCH, SLANGE, ILAENV
+      REAL               SLAMCH, SLANGE, SROUNDUP_LWORK
+      EXTERNAL           SLAMCH, SLANGE, ILAENV,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          INT, LOG, MAX, MIN, REAL
@@ -290,9 +286,11 @@
 *                        columns.
 *
                MM = N
-               MAXWRK = MAX( MAXWRK, N + N*ILAENV( 1, 'SGEQRF', ' ', M,
+               MAXWRK = MAX( MAXWRK, N + N*ILAENV( 1, 'SGEQRF', ' ',
+     $                       M,
      $                       N, -1, -1 ) )
-               MAXWRK = MAX( MAXWRK, N + NRHS*ILAENV( 1, 'SORMQR', 'LT',
+               MAXWRK = MAX( MAXWRK, N + NRHS*ILAENV( 1, 'SORMQR',
+     $                       'LT',
      $                       M, NRHS, N, -1 ) )
             END IF
             IF( M.GE.N ) THEN
@@ -324,7 +322,8 @@
      $                          'SGEBRD', ' ', M, M, -1, -1 ) )
                   MAXWRK = MAX( MAXWRK, M*M + 4*M + NRHS*ILAENV( 1,
      $                          'SORMBR', 'QLT', M, NRHS, M, -1 ) )
-                  MAXWRK = MAX( MAXWRK, M*M + 4*M + ( M - 1 )*ILAENV( 1,
+                  MAXWRK = MAX( MAXWRK,
+     $                          M*M + 4*M + ( M - 1 )*ILAENV( 1,
      $                          'SORMBR', 'PLN', M, NRHS, M, -1 ) )
                   IF( NRHS.GT.1 ) THEN
                      MAXWRK = MAX( MAXWRK, M*M + M + M*NRHS )
@@ -342,9 +341,11 @@
 *
 *                 Path 2 - remaining underdetermined cases.
 *
-                  MAXWRK = 3*M + ( N + M )*ILAENV( 1, 'SGEBRD', ' ', M,
+                  MAXWRK = 3*M + ( N + M )*ILAENV( 1, 'SGEBRD', ' ',
+     $                             M,
      $                     N, -1, -1 )
-                  MAXWRK = MAX( MAXWRK, 3*M + NRHS*ILAENV( 1, 'SORMBR',
+                  MAXWRK = MAX( MAXWRK, 3*M + NRHS*ILAENV( 1,
+     $                          'SORMBR',
      $                          'QLT', M, NRHS, N, -1 ) )
                   MAXWRK = MAX( MAXWRK, 3*M + M*ILAENV( 1, 'SORMBR',
      $                          'PLN', N, NRHS, M, -1 ) )
@@ -354,7 +355,7 @@
             END IF
          END IF
          MINWRK = MIN( MINWRK, MAXWRK )
-         WORK( 1 ) = MAXWRK
+         WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
          IWORK( 1 ) = LIWORK
 *
          IF( LWORK.LT.MINWRK .AND. .NOT.LQUERY ) THEN
@@ -382,7 +383,6 @@
       SFMIN = SLAMCH( 'S' )
       SMLNUM = SFMIN / EPS
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A if max entry outside range [SMLNUM,BIGNUM].
 *
@@ -418,13 +418,15 @@
 *
 *        Scale matrix norm up to SMLNUM.
 *
-         CALL SLASCL( 'G', 0, 0, BNRM, SMLNUM, M, NRHS, B, LDB, INFO )
+         CALL SLASCL( 'G', 0, 0, BNRM, SMLNUM, M, NRHS, B, LDB,
+     $                INFO )
          IBSCL = 1
       ELSE IF( BNRM.GT.BIGNUM ) THEN
 *
 *        Scale matrix norm down to BIGNUM.
 *
-         CALL SLASCL( 'G', 0, 0, BNRM, BIGNUM, M, NRHS, B, LDB, INFO )
+         CALL SLASCL( 'G', 0, 0, BNRM, BIGNUM, M, NRHS, B, LDB,
+     $                INFO )
          IBSCL = 2
       END IF
 *
@@ -457,13 +459,15 @@
 *           Multiply B by transpose(Q).
 *           (Workspace: need N+NRHS, prefer N+NRHS*NB)
 *
-            CALL SORMQR( 'L', 'T', M, NRHS, N, A, LDA, WORK( ITAU ), B,
+            CALL SORMQR( 'L', 'T', M, NRHS, N, A, LDA, WORK( ITAU ),
+     $                   B,
      $                   LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *           Zero out below R.
 *
             IF( N.GT.1 ) THEN
-               CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ), LDA )
+               CALL SLASET( 'L', N-1, N-1, ZERO, ZERO, A( 2, 1 ),
+     $                      LDA )
             END IF
          END IF
 *
@@ -482,7 +486,8 @@
 *        Multiply B by transpose of left bidiagonalizing vectors of R.
 *        (Workspace: need 3*N+NRHS, prefer 3*N+NRHS*NB)
 *
-         CALL SORMBR( 'Q', 'L', 'T', MM, NRHS, N, A, LDA, WORK( ITAUQ ),
+         CALL SORMBR( 'Q', 'L', 'T', MM, NRHS, N, A, LDA,
+     $                WORK( ITAUQ ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *        Solve the bidiagonal least squares problem.
@@ -495,7 +500,8 @@
 *
 *        Multiply B by right bidiagonalizing vectors of R.
 *
-         CALL SORMBR( 'P', 'L', 'N', N, NRHS, N, A, LDA, WORK( ITAUP ),
+         CALL SORMBR( 'P', 'L', 'N', N, NRHS, N, A, LDA,
+     $                WORK( ITAUP ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
       ELSE IF( N.GE.MNTHR .AND. LWORK.GE.4*M+M*M+
@@ -585,7 +591,8 @@
 *        Multiply B by transpose of left bidiagonalizing vectors.
 *        (Workspace: need 3*M+NRHS, prefer 3*M+NRHS*NB)
 *
-         CALL SORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA, WORK( ITAUQ ),
+         CALL SORMBR( 'Q', 'L', 'T', M, NRHS, N, A, LDA,
+     $                WORK( ITAUQ ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
 *        Solve the bidiagonal least squares problem.
@@ -598,7 +605,8 @@
 *
 *        Multiply B by right bidiagonalizing vectors of A.
 *
-         CALL SORMBR( 'P', 'L', 'N', N, NRHS, M, A, LDA, WORK( ITAUP ),
+         CALL SORMBR( 'P', 'L', 'N', N, NRHS, M, A, LDA,
+     $                WORK( ITAUP ),
      $                B, LDB, WORK( NWORK ), LWORK-NWORK+1, INFO )
 *
       END IF
@@ -606,22 +614,26 @@
 *     Undo scaling.
 *
       IF( IASCL.EQ.1 ) THEN
-         CALL SLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB, INFO )
+         CALL SLASCL( 'G', 0, 0, ANRM, SMLNUM, N, NRHS, B, LDB,
+     $                INFO )
          CALL SLASCL( 'G', 0, 0, SMLNUM, ANRM, MINMN, 1, S, MINMN,
      $                INFO )
       ELSE IF( IASCL.EQ.2 ) THEN
-         CALL SLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB, INFO )
+         CALL SLASCL( 'G', 0, 0, ANRM, BIGNUM, N, NRHS, B, LDB,
+     $                INFO )
          CALL SLASCL( 'G', 0, 0, BIGNUM, ANRM, MINMN, 1, S, MINMN,
      $                INFO )
       END IF
       IF( IBSCL.EQ.1 ) THEN
-         CALL SLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB, INFO )
+         CALL SLASCL( 'G', 0, 0, SMLNUM, BNRM, N, NRHS, B, LDB,
+     $                INFO )
       ELSE IF( IBSCL.EQ.2 ) THEN
-         CALL SLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB, INFO )
+         CALL SLASCL( 'G', 0, 0, BIGNUM, BNRM, N, NRHS, B, LDB,
+     $                INFO )
       END IF
 *
    10 CONTINUE
-      WORK( 1 ) = MAXWRK
+      WORK( 1 ) = SROUNDUP_LWORK(MAXWRK)
       IWORK( 1 ) = LIWORK
       RETURN
 *

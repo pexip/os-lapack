@@ -250,7 +250,7 @@
 *>                    i eigenvectors failed to converge.  Their indices
 *>                    are stored in array IFAIL.
 *>             > N:   if INFO = N + i, for 1 <= i <= n, then the leading
-*>                    minor of order i of B is not positive definite.
+*>                    principal minor of order i of B is not positive.
 *>                    The factorization of B could not be completed and
 *>                    no eigenvalues or eigenvectors were computed.
 *> \endverbatim
@@ -263,7 +263,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHEReigen
+*> \ingroup hpgvx
 *
 *> \par Contributors:
 *  ==================
@@ -302,7 +302,8 @@
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CHPEVX, CHPGST, CPPTRF, CTPMV, CTPSV, XERBLA
+      EXTERNAL           CHPEVX, CHPGST, CPPTRF, CTPMV, CTPSV,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MIN
@@ -368,7 +369,8 @@
 *     Transform problem to standard eigenvalue problem and solve.
 *
       CALL CHPGST( ITYPE, UPLO, N, AP, BP, INFO )
-      CALL CHPEVX( JOBZ, RANGE, UPLO, N, AP, VL, VU, IL, IU, ABSTOL, M,
+      CALL CHPEVX( JOBZ, RANGE, UPLO, N, AP, VL, VU, IL, IU, ABSTOL,
+     $             M,
      $             W, Z, LDZ, WORK, RWORK, IWORK, IFAIL, INFO )
 *
       IF( WANTZ ) THEN

@@ -229,7 +229,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16SYcomputational
+*> \ingroup hetrf_rk
 *
 *> \par Further Details:
 *  =====================
@@ -310,7 +310,7 @@
 *        Determine the block size
 *
          NB = ILAENV( 1, 'ZSYTRF_RK', UPLO, N, -1, -1, -1 )
-         LWKOPT = N*NB
+         LWKOPT = MAX( 1, N*NB )
          WORK( 1 ) = LWKOPT
       END IF
 *
@@ -425,7 +425,8 @@
 *           Factorize columns k:k+kb-1 of A and use blocked code to
 *           update columns k+kb:n
 *
-            CALL ZLASYF_RK( UPLO, N-K+1, NB, KB, A( K, K ), LDA, E( K ),
+            CALL ZLASYF_RK( UPLO, N-K+1, NB, KB, A( K, K ), LDA,
+     $                      E( K ),
      $                        IPIV( K ), WORK, LDWORK, IINFO )
 
 

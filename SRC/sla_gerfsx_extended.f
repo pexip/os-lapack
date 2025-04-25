@@ -385,10 +385,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEcomputational
+*> \ingroup la_gerfsx_extended
 *
 *  =====================================================================
-      SUBROUTINE SLA_GERFSX_EXTENDED( PREC_TYPE, TRANS_TYPE, N, NRHS, A,
+      SUBROUTINE SLA_GERFSX_EXTENDED( PREC_TYPE, TRANS_TYPE, N, NRHS,
+     $                                A,
      $                                LDA, AF, LDAF, IPIV, COLEQU, C, B,
      $                                LDB, Y, LDY, BERR_OUT, N_NORMS,
      $                                ERRS_N, ERRS_C, RES,
@@ -453,7 +454,8 @@
       PARAMETER          ( LA_LINRX_RCOND_I = 3 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SAXPY, SCOPY, SGETRS, SGEMV, BLAS_SGEMV_X,
+      EXTERNAL           SAXPY, SCOPY, SGETRS, SGEMV,
+     $                   BLAS_SGEMV_X,
      $                   BLAS_SGEMV2_X, SLA_GEAMV, SLA_WWADDW, SLAMCH,
      $                   CHLA_TRANSTYPE, SLA_LIN_BERR
       REAL               SLAMCH
@@ -628,7 +630,7 @@
             PREVNORMDX = NORMDX
             PREV_DZ_Z = DZ_Z
 *
-*           Update soluton.
+*           Update solution.
 *
             IF ( Y_PREC_STATE .LT. EXTRA_Y ) THEN
                CALL SAXPY( N, 1.0, DY, 1, Y( 1, J ), 1 )
@@ -665,7 +667,8 @@
 *             op(A) = A, A**T, or A**H depending on TRANS (and type).
 *
          CALL SCOPY( N, B( 1, J ), 1, RES, 1 )
-         CALL SGEMV( TRANS, N, N, -1.0, A, LDA, Y(1,J), 1, 1.0, RES, 1 )
+         CALL SGEMV( TRANS, N, N, -1.0, A, LDA, Y(1,J), 1, 1.0, RES,
+     $               1 )
 
          DO I = 1, N
             AYB( I ) = ABS( B( I, J ) )

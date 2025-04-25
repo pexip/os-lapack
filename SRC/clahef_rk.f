@@ -239,7 +239,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEcomputational
+*> \ingroup lahef_rk
 *
 *> \par Contributors:
 *  ==================
@@ -286,7 +286,7 @@
 *     ..
 *     .. Local Scalars ..
       LOGICAL            DONE
-      INTEGER            IMAX, ITEMP, II, J, JB, JJ, JMAX, K, KK, KKW,
+      INTEGER            IMAX, ITEMP, II, J, JMAX, K, KK, KKW,
      $                   KP, KSTEP, KW, P
       REAL               ABSAKK, ALPHA, COLMAX, STEMP, R1, ROWMAX, T,
      $                   SFMIN
@@ -299,7 +299,8 @@
       EXTERNAL           LSAME, ICAMAX, SLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CSSCAL, CGEMM, CGEMV, CLACGV, CSWAP
+      EXTERNAL           CCOPY, CSSCAL, CGEMM, CGEMV, CLACGV,
+     $                   CSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, CONJG, AIMAG, MAX, MIN, REAL, SQRT
@@ -356,7 +357,8 @@
      $      CALL CCOPY( K-1, A( 1, K ), 1, W( 1, KW ), 1 )
          W( K, KW ) = REAL( A( K, K ) )
          IF( K.LT.N ) THEN
-            CALL CGEMV( 'No transpose', K, N-K, -CONE, A( 1, K+1 ), LDA,
+            CALL CGEMV( 'No transpose', K, N-K, -CONE, A( 1, K+1 ),
+     $                  LDA,
      $                  W( K, KW+1 ), LDW, CONE, W( 1, KW ), 1 )
             W( K, KW ) = REAL( W( K, KW ) )
          END IF
@@ -422,7 +424,8 @@
 *                 Copy column IMAX to column KW-1 of W and update it
 *
                   IF( IMAX.GT.1 )
-     $               CALL CCOPY( IMAX-1, A( 1, IMAX ), 1, W( 1, KW-1 ),
+     $               CALL CCOPY( IMAX-1, A( 1, IMAX ), 1, W( 1,
+     $                           KW-1 ),
      $                           1 )
                   W( IMAX, KW-1 ) = REAL( A( IMAX, IMAX ) )
 *
@@ -752,29 +755,11 @@
 *
 *        A11 := A11 - U12*D*U12**H = A11 - U12*W**H
 *
-*        computing blocks of NB columns at a time (note that conjg(W) is
-*        actually stored)
+*        (note that conjg(W) is actually stored)
 *
-         DO 50 J = ( ( K-1 ) / NB )*NB + 1, 1, -NB
-            JB = MIN( NB, K-J+1 )
-*
-*           Update the upper triangle of the diagonal block
-*
-            DO 40 JJ = J, J + JB - 1
-               A( JJ, JJ ) = REAL( A( JJ, JJ ) )
-               CALL CGEMV( 'No transpose', JJ-J+1, N-K, -CONE,
-     $                     A( J, K+1 ), LDA, W( JJ, KW+1 ), LDW, CONE,
-     $                     A( J, JJ ), 1 )
-               A( JJ, JJ ) = REAL( A( JJ, JJ ) )
-   40       CONTINUE
-*
-*           Update the rectangular superdiagonal block
-*
-            IF( J.GE.2 )
-     $         CALL CGEMM( 'No transpose', 'Transpose', J-1, JB, N-K,
-     $                     -CONE, A( 1, K+1 ), LDA, W( J, KW+1 ), LDW,
-     $                     CONE, A( 1, J ), LDA )
-   50    CONTINUE
+         CALL CGEMMTR( 'Upper', 'No transpose', 'Transpose', K, N-K,
+     $                 -CONE, A( 1, K+1 ), LDA, W( 1, KW+1 ), LDW,
+     $                 CONE, A( 1, 1 ), LDA )
 *
 *        Set KB to the number of columns factorized
 *
@@ -875,7 +860,8 @@
 *
 *                 Copy column IMAX to column k+1 of W and update it
 *
-                  CALL CCOPY( IMAX-K, A( IMAX, K ), LDA, W( K, K+1 ), 1)
+                  CALL CCOPY( IMAX-K, A( IMAX, K ), LDA, W( K, K+1 ),
+     $                        1)
                   CALL CLACGV( IMAX-K, W( K, K+1 ), 1 )
                   W( IMAX, K+1 ) = REAL( A( IMAX, IMAX ) )
 *
@@ -902,7 +888,8 @@
                   END IF
 *
                   IF( IMAX.LT.N ) THEN
-                     ITEMP = IMAX + ICAMAX( N-IMAX, W( IMAX+1, K+1 ), 1)
+                     ITEMP = IMAX + ICAMAX( N-IMAX, W( IMAX+1, K+1 ),
+     $                                      1)
                      STEMP = CABS1( W( ITEMP, K+1 ) )
                      IF( STEMP.GT.ROWMAX ) THEN
                         ROWMAX = STEMP
@@ -925,7 +912,8 @@
 *
 *                    copy column K+1 of W to column K of W
 *
-                     CALL CCOPY( N-K+1, W( K, K+1 ), 1, W( K, K ), 1 )
+                     CALL CCOPY( N-K+1, W( K, K+1 ), 1, W( K, K ),
+     $                           1 )
 *
                      DONE = .TRUE.
 *
@@ -954,7 +942,8 @@
 *
 *                    Copy updated JMAXth (next IMAXth) column to Kth of W
 *
-                     CALL CCOPY( N-K+1, W( K, K+1 ), 1, W( K, K ), 1 )
+                     CALL CCOPY( N-K+1, W( K, K+1 ), 1, W( K, K ),
+     $                           1 )
 *
                   END IF
 *
@@ -1014,7 +1003,8 @@
      $                     LDA )
                CALL CLACGV( KP-KK-1, A( KP, KK+1 ), LDA )
                IF( KP.LT.N )
-     $            CALL CCOPY( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ), 1 )
+     $            CALL CCOPY( N-KP, A( KP+1, KK ), 1, A( KP+1, KP ),
+     $                        1 )
 *
 *              Interchange rows KK and KP in first K-1 columns of A
 *              (column K (or K and K+1 for 2-by-2 pivot) of A will be
@@ -1195,29 +1185,11 @@
 *
 *        A22 := A22 - L21*D*L21**H = A22 - L21*W**H
 *
-*        computing blocks of NB columns at a time (note that conjg(W) is
-*        actually stored)
+*        (note that conjg(W) is actually stored)
 *
-         DO 110 J = K, N, NB
-            JB = MIN( NB, N-J+1 )
-*
-*           Update the lower triangle of the diagonal block
-*
-            DO 100 JJ = J, J + JB - 1
-               A( JJ, JJ ) = REAL( A( JJ, JJ ) )
-               CALL CGEMV( 'No transpose', J+JB-JJ, K-1, -CONE,
-     $                     A( JJ, 1 ), LDA, W( JJ, 1 ), LDW, CONE,
-     $                     A( JJ, JJ ), 1 )
-               A( JJ, JJ ) = REAL( A( JJ, JJ ) )
-  100       CONTINUE
-*
-*           Update the rectangular subdiagonal block
-*
-            IF( J+JB.LE.N )
-     $         CALL CGEMM( 'No transpose', 'Transpose', N-J-JB+1, JB,
-     $                     K-1, -CONE, A( J+JB, 1 ), LDA, W( J, 1 ),
-     $                     LDW, CONE, A( J+JB, J ), LDA )
-  110    CONTINUE
+         CALL CGEMMTR( 'Lower', 'No transpose', 'Transpose', N-K+1,
+     $                 K-1, -CONE, A( K, 1 ), LDA, W( K, 1 ), LDW,
+     $                 CONE, A( K, K ), LDA )
 *
 *        Set KB to the number of columns factorized
 *

@@ -117,7 +117,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup larf
 *
 *  =====================================================================
       SUBROUTINE SLARF( SIDE, M, N, V, INCV, TAU, C, LDC, WORK )
@@ -194,7 +194,8 @@
 *
 *           w(1:lastc,1) := C(1:lastv,1:lastc)**T * v(1:lastv,1)
 *
-            CALL SGEMV( 'Transpose', LASTV, LASTC, ONE, C, LDC, V, INCV,
+            CALL SGEMV( 'Transpose', LASTV, LASTC, ONE, C, LDC, V,
+     $                  INCV,
      $           ZERO, WORK, 1 )
 *
 *           C(1:lastv,1:lastc) := C(...) - v(1:lastv,1) * w(1:lastc,1)**T

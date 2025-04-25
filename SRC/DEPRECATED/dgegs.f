@@ -1,4 +1,4 @@
-*> \brief <b> DGEEVX computes the eigenvalues and, optionally, the left and/or right eigenvectors for GE matrices</b>
+*> \brief <b> DGEGS computes the eigenvalues, real Schur form, and, optionally, the left and/or right Schur vectors of a real matrix pair (A,B)</b>
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -358,7 +358,8 @@
       END IF
 *
       IF( ILASCL ) THEN
-         CALL DLASCL( 'G', -1, -1, ANRM, ANRMTO, N, N, A, LDA, IINFO )
+         CALL DLASCL( 'G', -1, -1, ANRM, ANRMTO, N, N, A, LDA,
+     $                IINFO )
          IF( IINFO.NE.0 ) THEN
             INFO = N + 9
             RETURN
@@ -378,7 +379,8 @@
       END IF
 *
       IF( ILBSCL ) THEN
-         CALL DLASCL( 'G', -1, -1, BNRM, BNRMTO, N, N, B, LDB, IINFO )
+         CALL DLASCL( 'G', -1, -1, BNRM, BNRMTO, N, N, B, LDB,
+     $                IINFO )
          IF( IINFO.NE.0 ) THEN
             INFO = N + 9
             RETURN
@@ -496,7 +498,8 @@
 *     Undo scaling
 *
       IF( ILASCL ) THEN
-         CALL DLASCL( 'H', -1, -1, ANRMTO, ANRM, N, N, A, LDA, IINFO )
+         CALL DLASCL( 'H', -1, -1, ANRMTO, ANRM, N, N, A, LDA,
+     $                IINFO )
          IF( IINFO.NE.0 ) THEN
             INFO = N + 9
             RETURN
@@ -516,12 +519,14 @@
       END IF
 *
       IF( ILBSCL ) THEN
-         CALL DLASCL( 'U', -1, -1, BNRMTO, BNRM, N, N, B, LDB, IINFO )
+         CALL DLASCL( 'U', -1, -1, BNRMTO, BNRM, N, N, B, LDB,
+     $                IINFO )
          IF( IINFO.NE.0 ) THEN
             INFO = N + 9
             RETURN
          END IF
-         CALL DLASCL( 'G', -1, -1, BNRMTO, BNRM, N, 1, BETA, N, IINFO )
+         CALL DLASCL( 'G', -1, -1, BNRMTO, BNRM, N, 1, BETA, N,
+     $                IINFO )
          IF( IINFO.NE.0 ) THEN
             INFO = N + 9
             RETURN

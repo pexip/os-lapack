@@ -149,7 +149,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGEcomputational
+*> \ingroup launhr_col_getrfnp2
 *
 *> \par Contributors:
 *  ==================
@@ -163,7 +163,8 @@
 *> \endverbatim
 *
 *  =====================================================================
-      RECURSIVE SUBROUTINE DLAORHR_COL_GETRFNP2( M, N, A, LDA, D, INFO )
+      RECURSIVE SUBROUTINE DLAORHR_COL_GETRFNP2( M, N, A, LDA, D,
+     $                                           INFO )
       IMPLICIT NONE
 *
 *  -- LAPACK computational routine --

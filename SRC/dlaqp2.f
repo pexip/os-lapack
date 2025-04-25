@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERauxiliary
+*> \ingroup laqp2
 *
 *> \par Contributors:
 *  ==================
@@ -168,7 +168,7 @@
 *     ..
 *     .. Local Scalars ..
       INTEGER            I, ITEMP, J, MN, OFFPI, PVT
-      DOUBLE PRECISION   AII, TEMP, TEMP2, TOL3Z
+      DOUBLE PRECISION   TEMP, TEMP2, TOL3Z
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           DLARF, DLARFG, DSWAP
@@ -208,7 +208,8 @@
 *        Generate elementary reflector H(i).
 *
          IF( OFFPI.LT.M ) THEN
-            CALL DLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ), 1,
+            CALL DLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ),
+     $                   1,
      $                   TAU( I ) )
          ELSE
             CALL DLARFG( 1, A( M, I ), A( M, I ), 1, TAU( I ) )
@@ -218,11 +219,8 @@
 *
 *           Apply H(i)**T to A(offset+i:m,i+1:n) from the left.
 *
-            AII = A( OFFPI, I )
-            A( OFFPI, I ) = ONE
-            CALL DLARF( 'Left', M-OFFPI+1, N-I, A( OFFPI, I ), 1,
+            CALL DLARF1F( 'Left', M-OFFPI+1, N-I, A( OFFPI, I ), 1,
      $                  TAU( I ), A( OFFPI, I+1 ), LDA, WORK( 1 ) )
-            A( OFFPI, I ) = AII
          END IF
 *
 *        Update partial column norms.

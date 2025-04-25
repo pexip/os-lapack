@@ -272,7 +272,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERauxiliary
+*> \ingroup larrv
 *
 *> \par Contributors:
 *  ==================
@@ -337,7 +337,8 @@
       EXTERNAL           DLAMCH
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DLAR1V, DLARRB, DLARRF, DLASET,
+      EXTERNAL           DCOPY, DLAR1V, DLARRB, DLARRF,
+     $                   DLASET,
      $                   DSCAL
 *     ..
 *     .. Intrinsic Functions ..

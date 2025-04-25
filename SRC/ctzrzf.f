@@ -116,7 +116,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup tzrzf
 *
 *> \par Contributors:
 *  ==================
@@ -179,7 +179,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -207,7 +208,7 @@
             LWKOPT = M*NB
             LWKMIN = MAX( 1, M )
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY ) THEN
             INFO = -7
@@ -280,7 +281,8 @@
 *              Form the triangular factor of the block reflector
 *              H = H(i+ib-1) . . . H(i+1) H(i)
 *
-               CALL CLARZT( 'Backward', 'Rowwise', N-M, IB, A( I, M1 ),
+               CALL CLARZT( 'Backward', 'Rowwise', N-M, IB, A( I,
+     $                      M1 ),
      $                      LDA, TAU( I ), WORK, LDWORK )
 *
 *              Apply H to A(1:i-1,i:n) from the right
@@ -301,7 +303,7 @@
       IF( MU.GT.0 )
      $   CALL CLATRZ( MU, N, N-M, A, LDA, TAU, WORK )
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
       RETURN
 *

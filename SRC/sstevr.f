@@ -287,7 +287,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHEReigen
+*> \ingroup stevr
 *
 *> \par Contributors:
 *  ==================
@@ -300,7 +300,8 @@
 *>       California at Berkeley, USA \n
 *>
 *  =====================================================================
-      SUBROUTINE SSTEVR( JOBZ, RANGE, N, D, E, VL, VU, IL, IU, ABSTOL,
+      SUBROUTINE SSTEVR( JOBZ, RANGE, N, D, E, VL, VU, IL, IU,
+     $                   ABSTOL,
      $                   M, W, Z, LDZ, ISUPPZ, WORK, LWORK, IWORK,
      $                   LIWORK, INFO )
 *
@@ -336,11 +337,13 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, SLANST
-      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANST
+      REAL               SLAMCH, SLANST, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANST,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTEMR, SSTEIN, SSTERF,
+      EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTEMR, SSTEIN,
+     $                   SSTERF,
      $                   SSWAP, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -389,7 +392,7 @@
       END IF
 *
       IF( INFO.EQ.0 ) THEN
-         WORK( 1 ) = LWMIN
+         WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
          IWORK( 1 ) = LIWMIN
 *
          IF( LWORK.LT.LWMIN .AND. .NOT.LQUERY ) THEN
@@ -497,7 +500,7 @@
             CALL SSTERF( N, W, WORK, INFO )
          ELSE
             CALL SCOPY( N, D, 1, WORK( N+1 ), 1 )
-            IF (ABSTOL .LE. TWO*N*EPS) THEN
+            IF (ABSTOL .LE. TWO*REAL( N )*EPS) THEN
                TRYRAC = .TRUE.
             ELSE
                TRYRAC = .FALSE.
@@ -522,12 +525,14 @@
          ORDER = 'E'
       END IF
 
-      CALL SSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E, M,
+      CALL SSTEBZ( RANGE, ORDER, N, VLL, VUU, IL, IU, ABSTOL, D, E,
+     $             M,
      $             NSPLIT, W, IWORK( INDIBL ), IWORK( INDISP ), WORK,
      $             IWORK( INDIWO ), INFO )
 *
       IF( WANTZ ) THEN
-         CALL SSTEIN( N, D, E, M, W, IWORK( INDIBL ), IWORK( INDISP ),
+         CALL SSTEIN( N, D, E, M, W, IWORK( INDIBL ),
+     $                IWORK( INDISP ),
      $                Z, LDZ, WORK, IWORK( INDIWO ), IWORK( INDIFL ),
      $                INFO )
       END IF
@@ -570,7 +575,7 @@
 *      IF (wantz .and. INDEIG ) Z( 1,1) = Z(1,1) / 1.002 + .002
 *
 *
-      WORK( 1 ) = LWMIN
+      WORK( 1 ) = SROUNDUP_LWORK(LWMIN)
       IWORK( 1 ) = LIWMIN
       RETURN
 *

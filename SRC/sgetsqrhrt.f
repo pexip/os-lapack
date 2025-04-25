@@ -130,14 +130,17 @@
 *>
 *> \param[in] LWORK
 *> \verbatim
+*>          LWORK is INTEGER
 *>          The dimension of the array WORK.
-*>          LWORK >= MAX( LWT + LW1, MAX( LWT+N*N+LW2, LWT+N*N+N ) ),
+*>          If MIN(M,N) = 0, LWORK >= 1, else
+*>          LWORK >= MAX( 1, LWT + LW1, MAX( LWT+N*N+LW2, LWT+N*N+N ) ),
 *>          where
 *>             NUM_ALL_ROW_BLOCKS = CEIL((M-N)/(MB1-N)),
 *>             NB1LOCAL = MIN(NB1,N).
 *>             LWT = NUM_ALL_ROW_BLOCKS * N * NB1LOCAL,
 *>             LW1 = NB1LOCAL * N,
-*>             LW2 = NB1LOCAL * MAX( NB1LOCAL, ( N - NB1LOCAL ) ),
+*>             LW2 = NB1LOCAL * MAX( NB1LOCAL, ( N - NB1LOCAL ) ).
+*>
 *>          If LWORK = -1, then a workspace query is assumed.
 *>          The routine only calculates the optimal size of the WORK
 *>          array, returns this value as the first entry of the WORK
@@ -160,7 +163,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup singleOTHERcomputational
+*> \ingroup getsqrhrt
 *
 *> \par Contributors:
 *  ==================
@@ -174,7 +177,8 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE SGETSQRHRT( M, N, MB1, NB1, NB2, A, LDA, T, LDT, WORK,
+      SUBROUTINE SGETSQRHRT( M, N, MB1, NB1, NB2, A, LDA, T, LDT,
+     $                       WORK,
      $                       LWORK, INFO )
       IMPLICIT NONE
 *
@@ -200,8 +204,13 @@
       INTEGER            I, IINFO, J, LW1, LW2, LWT, LDWT, LWORKOPT,
      $                   NB1LOCAL, NB2LOCAL, NUM_ALL_ROW_BLOCKS
 *     ..
+*     .. External Functions ..
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           SROUNDUP_LWORK
+*     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SLATSQR, SORGTSQR_ROW, SORHR_COL,
+      EXTERNAL           SCOPY, SLATSQR, SORGTSQR_ROW,
+     $                   SORHR_COL,
      $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
@@ -212,7 +221,7 @@
 *     Test the input arguments
 *
       INFO = 0
-      LQUERY  = LWORK.EQ.-1
+      LQUERY = ( LWORK.EQ.-1 )
       IF( M.LT.0 ) THEN
          INFO = -1
       ELSE IF( N.LT.0 .OR. M.LT.N ) THEN
@@ -225,7 +234,7 @@
          INFO = -5
       ELSE IF( LDA.LT.MAX( 1, M ) ) THEN
          INFO = -7
-      ELSE IF( LDT.LT.MAX( 1,  MIN( NB2, N ) ) ) THEN
+      ELSE IF( LDT.LT.MAX( 1, MIN( NB2, N ) ) ) THEN
          INFO = -9
       ELSE
 *
@@ -263,8 +272,9 @@
             LW2 = NB1LOCAL * MAX( NB1LOCAL, ( N - NB1LOCAL ) )
 *
             LWORKOPT = MAX( LWT + LW1, MAX( LWT+N*N+LW2, LWT+N*N+N ) )
+            LWORKOPT = MAX( 1, LWORKOPT )
 *
-            IF( ( LWORK.LT.MAX( 1, LWORKOPT ) ).AND.(.NOT.LQUERY) ) THEN
+            IF( LWORK.LT.LWORKOPT .AND. .NOT.LQUERY ) THEN
                INFO = -11
             END IF
 *
@@ -277,14 +287,14 @@
          CALL XERBLA( 'SGETSQRHRT', -INFO )
          RETURN
       ELSE IF ( LQUERY ) THEN
-         WORK( 1 ) = REAL( LWORKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWORKOPT )
          RETURN
       END IF
 *
 *     Quick return if possible
 *
       IF( MIN( M, N ).EQ.0 ) THEN
-         WORK( 1 ) = REAL( LWORKOPT )
+         WORK( 1 ) = SROUNDUP_LWORK( LWORKOPT )
          RETURN
       END IF
 *
@@ -337,11 +347,12 @@
                A( I, J ) = -ONE * WORK( LWT+N*(J-1)+I )
             END DO
          ELSE
-            CALL SCOPY( N-I+1, WORK(LWT+N*(I-1)+I), N, A( I, I ), LDA )
+            CALL SCOPY( N-I+1, WORK(LWT+N*(I-1)+I), N, A( I, I ),
+     $                  LDA )
          END IF
       END DO
 *
-      WORK( 1 ) = REAL( LWORKOPT )
+      WORK( 1 ) = SROUNDUP_LWORK( LWORKOPT )
       RETURN
 *
 *     End of SGETSQRHRT

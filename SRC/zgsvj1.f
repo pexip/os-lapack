@@ -75,10 +75,10 @@
 *>          Specifies whether the output from this procedure is used
 *>          to compute the matrix V:
 *>          = 'V': the product of the Jacobi rotations is accumulated
-*>                 by postmulyiplying the N-by-N array V.
+*>                 by postmultiplying the N-by-N array V.
 *>                (See the description of V.)
 *>          = 'A': the product of the Jacobi rotations is accumulated
-*>                 by postmulyiplying the MV-by-N array V.
+*>                 by postmultiplying the MV-by-N array V.
 *>                (See the descriptions of MV and V.)
 *>          = 'N': the Jacobi rotations are not accumulated.
 *> \endverbatim
@@ -147,7 +147,7 @@
 *> \param[in] MV
 *> \verbatim
 *>          MV is INTEGER
-*>          If JOBV = 'A', then MV rows of V are post-multipled by a
+*>          If JOBV = 'A', then MV rows of V are post-multiplied by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV = 'N',   then MV is not referenced.
 *> \endverbatim
@@ -155,9 +155,9 @@
 *> \param[in,out] V
 *> \verbatim
 *>          V is COMPLEX*16 array, dimension (LDV,N)
-*>          If JOBV = 'V' then N rows of V are post-multipled by a
+*>          If JOBV = 'V' then N rows of V are post-multiplied by a
 *>                           sequence of Jacobi rotations.
-*>          If JOBV = 'A' then MV rows of V are post-multipled by a
+*>          If JOBV = 'A' then MV rows of V are post-multiplied by a
 *>                           sequence of Jacobi rotations.
 *>          If JOBV = 'N',   then V is not referenced.
 *> \endverbatim
@@ -223,7 +223,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup gsvj1
 *
 *> \par Contributor:
 *  ==================
@@ -485,7 +485,8 @@
                                  IF( ABS( THETA ).GT.BIGTHETA ) THEN
                                     T  = HALF / THETA
                                     CS = ONE
-                                    CALL ZROT( M, A(1,p), 1, A(1,q), 1,
+                                    CALL ZROT( M, A(1,p), 1, A(1,q),
+     $                                         1,
      $                                          CS, CONJG(OMPQ)*T )
                                     IF( RSVEC ) THEN
                                         CALL ZROT( MVL, V(1,p), 1,
@@ -512,7 +513,8 @@
                                     AAPP = AAPP*SQRT( MAX( ZERO,
      $                                         ONE-T*AQOAP*AAPQ1 ) )
 *
-                                    CALL ZROT( M, A(1,p), 1, A(1,q), 1,
+                                    CALL ZROT( M, A(1,p), 1, A(1,q),
+     $                                         1,
      $                                          CS, CONJG(OMPQ)*SN )
                                     IF( RSVEC ) THEN
                                         CALL ZROT( MVL, V(1,p), 1,
@@ -526,15 +528,18 @@
                                IF( AAPP.GT.AAQQ ) THEN
                                     CALL ZCOPY( M, A( 1, p ), 1,
      $                                          WORK, 1 )
-                                    CALL ZLASCL( 'G', 0, 0, AAPP, ONE,
+                                    CALL ZLASCL( 'G', 0, 0, AAPP,
+     $                                           ONE,
      $                                           M, 1, WORK,LDA,
      $                                           IERR )
-                                    CALL ZLASCL( 'G', 0, 0, AAQQ, ONE,
+                                    CALL ZLASCL( 'G', 0, 0, AAQQ,
+     $                                           ONE,
      $                                           M, 1, A( 1, q ), LDA,
      $                                           IERR )
                                     CALL ZAXPY( M, -AAPQ, WORK,
      $                                          1, A( 1, q ), 1 )
-                                    CALL ZLASCL( 'G', 0, 0, ONE, AAQQ,
+                                    CALL ZLASCL( 'G', 0, 0, ONE,
+     $                                           AAQQ,
      $                                           M, 1, A( 1, q ), LDA,
      $                                           IERR )
                                     SVA( q ) = AAQQ*SQRT( MAX( ZERO,
@@ -543,15 +548,18 @@
                                ELSE
                                    CALL ZCOPY( M, A( 1, q ), 1,
      $                                          WORK, 1 )
-                                    CALL ZLASCL( 'G', 0, 0, AAQQ, ONE,
+                                    CALL ZLASCL( 'G', 0, 0, AAQQ,
+     $                                           ONE,
      $                                           M, 1, WORK,LDA,
      $                                           IERR )
-                                    CALL ZLASCL( 'G', 0, 0, AAPP, ONE,
+                                    CALL ZLASCL( 'G', 0, 0, AAPP,
+     $                                           ONE,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
                                     CALL ZAXPY( M, -CONJG(AAPQ),
      $                                   WORK, 1, A( 1, p ), 1 )
-                                    CALL ZLASCL( 'G', 0, 0, ONE, AAPP,
+                                    CALL ZLASCL( 'G', 0, 0, ONE,
+     $                                           AAPP,
      $                                           M, 1, A( 1, p ), LDA,
      $                                           IERR )
                                     SVA( p ) = AAPP*SQRT( MAX( ZERO,
@@ -567,7 +575,8 @@
      $                            THEN
                                  IF( ( AAQQ.LT.ROOTBIG ) .AND.
      $                               ( AAQQ.GT.ROOTSFMIN ) ) THEN
-                                    SVA( q ) = DZNRM2( M, A( 1, q ), 1)
+                                    SVA( q ) = DZNRM2( M, A( 1, q ),
+     $                                   1)
                                   ELSE
                                     T = ZERO
                                     AAQQ = ONE

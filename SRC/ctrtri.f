@@ -102,7 +102,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup trtri
 *
 *  =====================================================================
       SUBROUTINE CTRTRI( UPLO, DIAG, N, A, LDA, INFO )
@@ -198,9 +198,11 @@
 *
 *              Compute rows 1:j-1 of current block column
 *
-               CALL CTRMM( 'Left', 'Upper', 'No transpose', DIAG, J-1,
+               CALL CTRMM( 'Left', 'Upper', 'No transpose', DIAG,
+     $                     J-1,
      $                     JB, ONE, A, LDA, A( 1, J ), LDA )
-               CALL CTRSM( 'Right', 'Upper', 'No transpose', DIAG, J-1,
+               CALL CTRSM( 'Right', 'Upper', 'No transpose', DIAG,
+     $                     J-1,
      $                     JB, -ONE, A( J, J ), LDA, A( 1, J ), LDA )
 *
 *              Compute inverse of current diagonal block

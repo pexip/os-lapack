@@ -114,7 +114,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup pbtrs
 *
 *  =====================================================================
       SUBROUTINE SPBTRS( UPLO, N, KD, NRHS, AB, LDAB, B, LDB, INFO )
@@ -189,7 +189,8 @@
 *
 *           Solve U*X = B, overwriting B with X.
 *
-            CALL STBSV( 'Upper', 'No transpose', 'Non-unit', N, KD, AB,
+            CALL STBSV( 'Upper', 'No transpose', 'Non-unit', N, KD,
+     $                  AB,
      $                  LDAB, B( 1, J ), 1 )
    10    CONTINUE
       ELSE
@@ -200,7 +201,8 @@
 *
 *           Solve L*X = B, overwriting B with X.
 *
-            CALL STBSV( 'Lower', 'No transpose', 'Non-unit', N, KD, AB,
+            CALL STBSV( 'Lower', 'No transpose', 'Non-unit', N, KD,
+     $                  AB,
      $                  LDAB, B( 1, J ), 1 )
 *
 *           Solve L**T *X = B, overwriting B with X.

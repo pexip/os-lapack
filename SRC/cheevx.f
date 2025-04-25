@@ -250,10 +250,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexHEeigen
+*> \ingroup heevx
 *
 *  =====================================================================
-      SUBROUTINE CHEEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
+      SUBROUTINE CHEEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL,
+     $                   IU,
      $                   ABSTOL, M, W, Z, LDZ, WORK, LWORK, RWORK,
      $                   IWORK, IFAIL, INFO )
 *
@@ -294,11 +295,13 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, CLANHE
-      EXTERNAL           LSAME, ILAENV, SLAMCH, CLANHE
+      REAL               SLAMCH, CLANHE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH,
+     $                   CLANHE, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTERF, XERBLA, CSSCAL,
+      EXTERNAL           SCOPY, SSCAL, SSTEBZ, SSTERF, XERBLA,
+     $                   CSSCAL,
      $                   CHETRD, CLACPY, CSTEIN, CSTEQR, CSWAP, CUNGTR,
      $                   CUNMTR
 *     ..
@@ -348,14 +351,15 @@
       IF( INFO.EQ.0 ) THEN
          IF( N.LE.1 ) THEN
             LWKMIN = 1
-            WORK( 1 ) = LWKMIN
+            LWKOPT = 1
          ELSE
             LWKMIN = 2*N
             NB = ILAENV( 1, 'CHETRD', UPLO, N, -1, -1, -1 )
-            NB = MAX( NB, ILAENV( 1, 'CUNMTR', UPLO, N, -1, -1, -1 ) )
-            LWKOPT = MAX( 1, ( NB + 1 )*N )
-            WORK( 1 ) = LWKOPT
+            NB = MAX( NB, ILAENV( 1, 'CUNMTR', UPLO, N, -1,
+     $                           -1, -1 ) )
+            LWKOPT = ( NB + 1 )*N
          END IF
+         WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
          IF( LWORK.LT.LWKMIN .AND. .NOT.LQUERY )
      $      INFO = -17
@@ -504,7 +508,8 @@
 *        Apply unitary matrix used in reduction to tridiagonal
 *        form to eigenvectors returned by CSTEIN.
 *
-         CALL CUNMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ), Z,
+         CALL CUNMTR( 'L', UPLO, 'N', N, M, A, LDA, WORK( INDTAU ),
+     $                Z,
      $                LDZ, WORK( INDWRK ), LLWORK, IINFO )
       END IF
 *
@@ -552,7 +557,7 @@
 *
 *     Set WORK(1) to optimal complex workspace size.
 *
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
       RETURN
 *

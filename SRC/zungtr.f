@@ -116,7 +116,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup ungtr
 *
 *  =====================================================================
       SUBROUTINE ZUNGTR( UPLO, N, A, LDA, TAU, WORK, LWORK, INFO )
@@ -217,7 +217,8 @@
 *
 *        Generate Q(1:n-1,1:n-1)
 *
-         CALL ZUNGQL( N-1, N-1, N-1, A, LDA, TAU, WORK, LWORK, IINFO )
+         CALL ZUNGQL( N-1, N-1, N-1, A, LDA, TAU, WORK, LWORK,
+     $                IINFO )
 *
       ELSE
 *

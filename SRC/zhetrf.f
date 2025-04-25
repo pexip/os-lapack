@@ -107,7 +107,7 @@
 *> \param[in] LWORK
 *> \verbatim
 *>          LWORK is INTEGER
-*>          The length of WORK.  LWORK >=1.  For best performance
+*>          The length of WORK. LWORK >= 1. For best performance
 *>          LWORK >= N*NB, where NB is the block size returned by ILAENV.
 *> \endverbatim
 *>
@@ -130,7 +130,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEcomputational
+*> \ingroup hetrf
 *
 *> \par Further Details:
 *  =====================
@@ -227,7 +227,7 @@
 *        Determine the block size
 *
          NB = ILAENV( 1, 'ZHETRF', UPLO, N, -1, -1, -1 )
-         LWKOPT = N*NB
+         LWKOPT = MAX( 1, N*NB )
          WORK( 1 ) = LWKOPT
       END IF
 *
@@ -244,7 +244,8 @@
          IWS = LDWORK*NB
          IF( LWORK.LT.IWS ) THEN
             NB = MAX( LWORK / LDWORK, 1 )
-            NBMIN = MAX( 2, ILAENV( 2, 'ZHETRF', UPLO, N, -1, -1, -1 ) )
+            NBMIN = MAX( 2, ILAENV( 2, 'ZHETRF', UPLO, N, -1, -1,
+     $                   -1 ) )
          END IF
       ELSE
          IWS = 1
@@ -273,7 +274,8 @@
 *           Factorize columns k-kb+1:k of A and use blocked code to
 *           update columns 1:k-kb
 *
-            CALL ZLAHEF( UPLO, K, NB, KB, A, LDA, IPIV, WORK, N, IINFO )
+            CALL ZLAHEF( UPLO, K, NB, KB, A, LDA, IPIV, WORK, N,
+     $                   IINFO )
          ELSE
 *
 *           Use unblocked code to factorize columns 1:k of A
@@ -313,13 +315,15 @@
 *           Factorize columns k:k+kb-1 of A and use blocked code to
 *           update columns k+kb:n
 *
-            CALL ZLAHEF( UPLO, N-K+1, NB, KB, A( K, K ), LDA, IPIV( K ),
+            CALL ZLAHEF( UPLO, N-K+1, NB, KB, A( K, K ), LDA,
+     $                   IPIV( K ),
      $                   WORK, N, IINFO )
          ELSE
 *
 *           Use unblocked code to factorize columns k:n of A
 *
-            CALL ZHETF2( UPLO, N-K+1, A( K, K ), LDA, IPIV( K ), IINFO )
+            CALL ZHETF2( UPLO, N-K+1, A( K, K ), LDA, IPIV( K ),
+     $                   IINFO )
             KB = N - K + 1
          END IF
 *
@@ -346,6 +350,7 @@
       END IF
 *
    40 CONTINUE
+*
       WORK( 1 ) = LWKOPT
       RETURN
 *

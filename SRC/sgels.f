@@ -37,7 +37,17 @@
 *>
 *> SGELS solves overdetermined or underdetermined real linear systems
 *> involving an M-by-N matrix A, or its transpose, using a QR or LQ
-*> factorization of A.  It is assumed that A has full rank.
+*> factorization of A.
+*>
+*> It is assumed that A has full rank, and only a rudimentary protection
+*> against rank-deficient matrices is provided. This subroutine only detects
+*> exact rank-deficiency, where a diagonal element of the triangular factor
+*> of A is exactly zero.
+*>
+*> It is conceivable for one (or more) of the diagonal elements of the triangular
+*> factor of A to be subnormally tiny numbers without this subroutine signalling
+*> an error. The solutions computed for such almost-rank-deficient matrices may
+*> be less accurate due to a loss of numerical precision.
 *>
 *> The following options are provided:
 *>
@@ -162,7 +172,7 @@
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
 *>          > 0:  if INFO =  i, the i-th diagonal element of the
-*>                triangular factor of A is zero, so that A does not have
+*>                triangular factor of A is exactly zero, so that A does not have
 *>                full rank; the least squares solution could not be
 *>                computed.
 *> \endverbatim
@@ -175,10 +185,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGEsolve
+*> \ingroup gels
 *
 *  =====================================================================
-      SUBROUTINE SGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,
+      SUBROUTINE SGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK,
+     $                  LWORK,
      $                  INFO )
 *
 *  -- LAPACK driver routine --
@@ -210,15 +221,17 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      REAL               SLAMCH, SLANGE
-      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANGE
+      REAL               SLAMCH, SLANGE, SROUNDUP_LWORK
+      EXTERNAL           LSAME, ILAENV, SLAMCH, SLANGE,
+     $                   SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SGELQF, SGEQRF, SLABAD, SLASCL, SLASET, SORMLQ,
+      EXTERNAL           SGELQF, SGEQRF, SLASCL, SLASET,
+     $                   SORMLQ,
      $                   SORMQR, STRTRS, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          MAX, MIN, REAL
+      INTRINSIC          MAX, MIN
 *     ..
 *     .. Executable Statements ..
 *
@@ -227,7 +240,8 @@
       INFO = 0
       MN = MIN( M, N )
       LQUERY = ( LWORK.EQ.-1 )
-      IF( .NOT.( LSAME( TRANS, 'N' ) .OR. LSAME( TRANS, 'T' ) ) ) THEN
+      IF( .NOT.( LSAME( TRANS, 'N' ) .OR.
+     $    LSAME( TRANS, 'T' ) ) ) THEN
          INFO = -1
       ELSE IF( M.LT.0 ) THEN
          INFO = -2
@@ -273,7 +287,7 @@
          END IF
 *
          WSIZE = MAX( 1, MN + MAX( MN, NRHS )*NB )
-         WORK( 1 ) = REAL( WSIZE )
+         WORK( 1 ) = SROUNDUP_LWORK( WSIZE )
 *
       END IF
 *
@@ -295,7 +309,6 @@
 *
       SMLNUM = SLAMCH( 'S' ) / SLAMCH( 'P' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
 *
 *     Scale A, B if max element outside range [SMLNUM,BIGNUM]
 *
@@ -346,7 +359,8 @@
 *
 *        compute QR factorization of A
 *
-         CALL SGEQRF( M, N, A, LDA, WORK( 1 ), WORK( MN+1 ), LWORK-MN,
+         CALL SGEQRF( M, N, A, LDA, WORK( 1 ), WORK( MN+1 ),
+     $                LWORK-MN,
      $                INFO )
 *
 *        workspace at least N, optimally N*NB
@@ -365,7 +379,8 @@
 *
 *           B(1:N,1:NRHS) := inv(R) * B(1:N,1:NRHS)
 *
-            CALL STRTRS( 'Upper', 'No transpose', 'Non-unit', N, NRHS,
+            CALL STRTRS( 'Upper', 'No transpose', 'Non-unit', N,
+     $                   NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
             IF( INFO.GT.0 ) THEN
@@ -411,7 +426,8 @@
 *
 *        Compute LQ factorization of A
 *
-         CALL SGELQF( M, N, A, LDA, WORK( 1 ), WORK( MN+1 ), LWORK-MN,
+         CALL SGELQF( M, N, A, LDA, WORK( 1 ), WORK( MN+1 ),
+     $                LWORK-MN,
      $                INFO )
 *
 *        workspace at least M, optimally M*NB.
@@ -422,7 +438,8 @@
 *
 *           B(1:M,1:NRHS) := inv(L) * B(1:M,1:NRHS)
 *
-            CALL STRTRS( 'Lower', 'No transpose', 'Non-unit', M, NRHS,
+            CALL STRTRS( 'Lower', 'No transpose', 'Non-unit', M,
+     $                   NRHS,
      $                   A, LDA, B, LDB, INFO )
 *
             IF( INFO.GT.0 ) THEN
@@ -492,7 +509,7 @@
       END IF
 *
    50 CONTINUE
-      WORK( 1 ) = REAL( WSIZE )
+      WORK( 1 ) = SROUNDUP_LWORK( WSIZE )
 *
       RETURN
 *

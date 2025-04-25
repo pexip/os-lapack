@@ -37,7 +37,7 @@
 *>\verbatim
 *>
 *> DORBDB2 simultaneously bidiagonalizes the blocks of a tall and skinny
-*> matrix X with orthonomal columns:
+*> matrix X with orthonormal columns:
 *>
 *>                            [ B11 ]
 *>      [ X11 ]   [ P1 |    ] [  0  ]
@@ -173,7 +173,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup unbdb2
 *
 *> \par Further Details:
 *  =====================
@@ -197,7 +197,8 @@
 *>      Algorithms, 50(1):33-65, 2009.
 *>
 *  =====================================================================
-      SUBROUTINE DORBDB2( M, P, Q, X11, LDX11, X21, LDX21, THETA, PHI,
+      SUBROUTINE DORBDB2( M, P, Q, X11, LDX11, X21, LDX21, THETA,
+     $                    PHI,
      $                    TAUP1, TAUP2, TAUQ1, WORK, LWORK, INFO )
 *
 *  -- LAPACK computational routine --
@@ -226,7 +227,8 @@
       LOGICAL            LQUERY
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLARF, DLARFGP, DORBDB5, DROT, DSCAL, XERBLA
+      EXTERNAL           DLARF1F, DLARFGP, DORBDB5, DROT, DSCAL,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       DOUBLE PRECISION   DNRM2
@@ -280,15 +282,15 @@
       DO I = 1, P
 *
          IF( I .GT. 1 ) THEN
-            CALL DROT( Q-I+1, X11(I,I), LDX11, X21(I-1,I), LDX21, C, S )
+            CALL DROT( Q-I+1, X11(I,I), LDX11, X21(I-1,I), LDX21, C,
+     $                 S )
          END IF
          CALL DLARFGP( Q-I+1, X11(I,I), X11(I,I+1), LDX11, TAUQ1(I) )
          C = X11(I,I)
-         X11(I,I) = ONE
-         CALL DLARF( 'R', P-I, Q-I+1, X11(I,I), LDX11, TAUQ1(I),
+         CALL DLARF1F( 'R', P-I, Q-I+1, X11(I,I), LDX11, TAUQ1(I),
      $               X11(I+1,I), LDX11, WORK(ILARF) )
-         CALL DLARF( 'R', M-P-I+1, Q-I+1, X11(I,I), LDX11, TAUQ1(I),
-     $               X21(I,I), LDX21, WORK(ILARF) )
+         CALL DLARF1F( 'R', M-P-I+1, Q-I+1, X11(I,I), LDX11,
+     $                 TAUQ1(I), X21(I,I), LDX21, WORK(ILARF) )
          S = SQRT( DNRM2( P-I, X11(I+1,I), 1 )**2
      $           + DNRM2( M-P-I+1, X21(I,I), 1 )**2 )
          THETA(I) = ATAN2( S, C )
@@ -303,12 +305,10 @@
             PHI(I) = ATAN2( X11(I+1,I), X21(I,I) )
             C = COS( PHI(I) )
             S = SIN( PHI(I) )
-            X11(I+1,I) = ONE
-            CALL DLARF( 'L', P-I, Q-I, X11(I+1,I), 1, TAUP1(I),
+            CALL DLARF1F( 'L', P-I, Q-I, X11(I+1,I), 1, TAUP1(I),
      $                  X11(I+1,I+1), LDX11, WORK(ILARF) )
          END IF
-         X21(I,I) = ONE
-         CALL DLARF( 'L', M-P-I+1, Q-I, X21(I,I), 1, TAUP2(I),
+         CALL DLARF1F( 'L', M-P-I+1, Q-I, X21(I,I), 1, TAUP2(I),
      $               X21(I,I+1), LDX21, WORK(ILARF) )
 *
       END DO
@@ -317,8 +317,7 @@
 *
       DO I = P + 1, Q
          CALL DLARFGP( M-P-I+1, X21(I,I), X21(I+1,I), 1, TAUP2(I) )
-         X21(I,I) = ONE
-         CALL DLARF( 'L', M-P-I+1, Q-I, X21(I,I), 1, TAUP2(I),
+         CALL DLARF1F( 'L', M-P-I+1, Q-I, X21(I,I), 1, TAUP2(I),
      $               X21(I,I+1), LDX21, WORK(ILARF) )
       END DO
 *

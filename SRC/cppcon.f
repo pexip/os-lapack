@@ -111,10 +111,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup ppcon
 *
 *  =====================================================================
-      SUBROUTINE CPPCON( UPLO, N, AP, ANORM, RCOND, WORK, RWORK, INFO )
+      SUBROUTINE CPPCON( UPLO, N, AP, ANORM, RCOND, WORK, RWORK,
+     $                   INFO )
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -211,13 +212,15 @@
 *
 *           Multiply by inv(U).
 *
-            CALL CLATPS( 'Upper', 'No transpose', 'Non-unit', NORMIN, N,
+            CALL CLATPS( 'Upper', 'No transpose', 'Non-unit', NORMIN,
+     $                   N,
      $                   AP, WORK, SCALEU, RWORK, INFO )
          ELSE
 *
 *           Multiply by inv(L).
 *
-            CALL CLATPS( 'Lower', 'No transpose', 'Non-unit', NORMIN, N,
+            CALL CLATPS( 'Lower', 'No transpose', 'Non-unit', NORMIN,
+     $                   N,
      $                   AP, WORK, SCALEL, RWORK, INFO )
             NORMIN = 'Y'
 *

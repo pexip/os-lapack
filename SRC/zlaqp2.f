@@ -122,7 +122,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERauxiliary
+*> \ingroup laqp2
 *
 *> \par Contributors:
 *  ==================
@@ -171,10 +171,9 @@
 *     .. Local Scalars ..
       INTEGER            I, ITEMP, J, MN, OFFPI, PVT
       DOUBLE PRECISION   TEMP, TEMP2, TOL3Z
-      COMPLEX*16         AII
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           ZLARF, ZLARFG, ZSWAP
+      EXTERNAL           ZLARF1F, ZLARFG, ZSWAP
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, DCONJG, MAX, MIN, SQRT
@@ -211,7 +210,8 @@
 *        Generate elementary reflector H(i).
 *
          IF( OFFPI.LT.M ) THEN
-            CALL ZLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ), 1,
+            CALL ZLARFG( M-OFFPI+1, A( OFFPI, I ), A( OFFPI+1, I ),
+     $                   1,
      $                   TAU( I ) )
          ELSE
             CALL ZLARFG( 1, A( M, I ), A( M, I ), 1, TAU( I ) )
@@ -221,12 +221,9 @@
 *
 *           Apply H(i)**H to A(offset+i:m,i+1:n) from the left.
 *
-            AII = A( OFFPI, I )
-            A( OFFPI, I ) = CONE
-            CALL ZLARF( 'Left', M-OFFPI+1, N-I, A( OFFPI, I ), 1,
-     $                  DCONJG( TAU( I ) ), A( OFFPI, I+1 ), LDA,
-     $                  WORK( 1 ) )
-            A( OFFPI, I ) = AII
+            CALL ZLARF1F( 'Left', M-OFFPI+1, N-I, A( OFFPI, I ), 1,
+     $                    CONJG( TAU( I ) ), A( OFFPI, I+1 ), LDA,
+     $                    WORK( 1 ) )
          END IF
 *
 *        Update partial column norms.

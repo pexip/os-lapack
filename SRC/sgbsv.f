@@ -133,7 +133,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realGBsolve
+*> \ingroup gbsv
 *
 *> \par Further Details:
 *  =====================
@@ -158,7 +158,8 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE SGBSV( N, KL, KU, NRHS, AB, LDAB, IPIV, B, LDB, INFO )
+      SUBROUTINE SGBSV( N, KL, KU, NRHS, AB, LDAB, IPIV, B, LDB,
+     $                  INFO )
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -210,7 +211,8 @@
 *
 *        Solve the system A*X = B, overwriting B with X.
 *
-         CALL SGBTRS( 'No transpose', N, KL, KU, NRHS, AB, LDAB, IPIV,
+         CALL SGBTRS( 'No transpose', N, KL, KU, NRHS, AB, LDAB,
+     $                IPIV,
      $                B, LDB, INFO )
       END IF
       RETURN

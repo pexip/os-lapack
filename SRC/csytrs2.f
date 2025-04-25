@@ -124,7 +124,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYcomputational
+*> \ingroup hetrs2
 *
 *  =====================================================================
       SUBROUTINE CSYTRS2( UPLO, N, NRHS, A, LDA, IPIV, B, LDB,
@@ -159,7 +159,8 @@
       EXTERNAL           LSAME
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CSCAL, CSYCONV, CSWAP, CTRSM, XERBLA
+      EXTERNAL           CSCAL, CSYCONV, CSWAP, CTRSM,
+     $                   XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          MAX

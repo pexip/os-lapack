@@ -137,7 +137,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup laed0
 *
 *  =====================================================================
       SUBROUTINE CLAED0( QSIZ, N, D, E, Q, LDQ, QSTORE, LDQS, RWORK,
@@ -172,7 +172,8 @@
       REAL               TEMP
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CCOPY, CLACRM, CLAED7, SCOPY, SSTEQR, XERBLA
+      EXTERNAL           CCOPY, CLACRM, CLAED7, SCOPY, SSTEQR,
+     $                   XERBLA
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV

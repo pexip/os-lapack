@@ -139,7 +139,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleSYcomputational
+*> \ingroup hetrd
 *
 *> \par Further Details:
 *  =====================
@@ -188,7 +188,8 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE DSYTRD( UPLO, N, A, LDA, D, E, TAU, WORK, LWORK, INFO )
+      SUBROUTINE DSYTRD( UPLO, N, A, LDA, D, E, TAU, WORK, LWORK,
+     $                   INFO )
 *
 *  -- LAPACK computational routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --
@@ -247,7 +248,7 @@
 *        Determine the block size.
 *
          NB = ILAENV( 1, 'DSYTRD', UPLO, N, -1, -1, -1 )
-         LWKOPT = N*NB
+         LWKOPT = MAX( 1, N*NB )
          WORK( 1 ) = LWKOPT
       END IF
 *
@@ -315,7 +316,8 @@
 *           Update the unreduced submatrix A(1:i-1,1:i-1), using an
 *           update of the form:  A := A - V*W**T - W*V**T
 *
-            CALL DSYR2K( UPLO, 'No transpose', I-1, NB, -ONE, A( 1, I ),
+            CALL DSYR2K( UPLO, 'No transpose', I-1, NB, -ONE, A( 1,
+     $                   I ),
      $                   LDA, WORK, LDWORK, ONE, A, LDA )
 *
 *           Copy superdiagonal elements back into A, and diagonal

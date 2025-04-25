@@ -117,7 +117,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16HEcomputational
+*> \ingroup hecon_rook
 *
 *> \par Contributors:
 *  ==================
@@ -134,7 +134,8 @@
 *> \endverbatim
 *
 *  =====================================================================
-      SUBROUTINE ZHECON_ROOK( UPLO, N, A, LDA, IPIV, ANORM, RCOND, WORK,
+      SUBROUTINE ZHECON_ROOK( UPLO, N, A, LDA, IPIV, ANORM, RCOND,
+     $                        WORK,
      $                        INFO )
 *
 *  -- LAPACK computational routine --

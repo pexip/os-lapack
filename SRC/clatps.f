@@ -151,7 +151,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup latps
 *
 *> \par Further Details:
 *  =====================
@@ -262,11 +262,12 @@
       INTEGER            ICAMAX, ISAMAX
       REAL               SCASUM, SLAMCH
       COMPLEX            CDOTC, CDOTU, CLADIV
-      EXTERNAL           LSAME, ICAMAX, ISAMAX, SCASUM, SLAMCH, CDOTC,
+      EXTERNAL           LSAME, ICAMAX, ISAMAX, SCASUM, SLAMCH,
+     $                   CDOTC,
      $                   CDOTU, CLADIV
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CSSCAL, CTPSV, SLABAD, SSCAL, XERBLA
+      EXTERNAL           CAXPY, CSSCAL, CTPSV, SSCAL, XERBLA
 *     ..
 *     .. Intrinsic Functions ..
       INTRINSIC          ABS, AIMAG, CMPLX, CONJG, MAX, MIN, REAL
@@ -315,7 +316,6 @@
 *
       SMLNUM = SLAMCH( 'Safe minimum' )
       BIGNUM = ONE / SMLNUM
-      CALL SLABAD( SMLNUM, BIGNUM )
       SMLNUM = SMLNUM / SLAMCH( 'Precision' )
       BIGNUM = ONE / SMLNUM
       SCALE = ONE
@@ -660,7 +660,8 @@
 *                    Compute the update
 *                       x(1:j-1) := x(1:j-1) - x(j) * A(1:j-1,j)
 *
-                     CALL CAXPY( J-1, -X( J )*TSCAL, AP( IP-J+1 ), 1, X,
+                     CALL CAXPY( J-1, -X( J )*TSCAL, AP( IP-J+1 ), 1,
+     $                           X,
      $                           1 )
                      I = ICAMAX( J-1, X, 1 )
                      XMAX = CABS1( X( I ) )

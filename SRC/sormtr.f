@@ -164,10 +164,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERcomputational
+*> \ingroup unmtr
 *
 *  =====================================================================
-      SUBROUTINE SORMTR( SIDE, UPLO, TRANS, M, N, A, LDA, TAU, C, LDC,
+      SUBROUTINE SORMTR( SIDE, UPLO, TRANS, M, N, A, LDA, TAU, C,
+     $                   LDC,
      $                   WORK, LWORK, INFO )
 *
 *  -- LAPACK computational routine --
@@ -192,7 +193,8 @@
 *     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
-      EXTERNAL           ILAENV, LSAME
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, LSAME, SROUNDUP_LWORK
 *     ..
 *     .. External Subroutines ..
       EXTERNAL           SORMQL, SORMQR, XERBLA
@@ -222,7 +224,8 @@
          INFO = -1
       ELSE IF( .NOT.UPPER .AND. .NOT.LSAME( UPLO, 'L' ) ) THEN
          INFO = -2
-      ELSE IF( .NOT.LSAME( TRANS, 'N' ) .AND. .NOT.LSAME( TRANS, 'T' ) )
+      ELSE IF( .NOT.LSAME( TRANS, 'N' ) .AND.
+     $         .NOT.LSAME( TRANS, 'T' ) )
      $          THEN
          INFO = -3
       ELSE IF( M.LT.0 ) THEN
@@ -256,7 +259,7 @@
             END IF
          END IF
          LWKOPT = NW*NB
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       END IF
 *
       IF( INFO.NE.0 ) THEN
@@ -285,7 +288,8 @@
 *
 *        Q was determined by a call to SSYTRD with UPLO = 'U'
 *
-         CALL SORMQL( SIDE, TRANS, MI, NI, NQ-1, A( 1, 2 ), LDA, TAU, C,
+         CALL SORMQL( SIDE, TRANS, MI, NI, NQ-1, A( 1, 2 ), LDA, TAU,
+     $                C,
      $                LDC, WORK, LWORK, IINFO )
       ELSE
 *
@@ -301,7 +305,7 @@
          CALL SORMQR( SIDE, TRANS, MI, NI, NQ-1, A( 2, 1 ), LDA, TAU,
      $                C( I1, I2 ), LDC, WORK, LWORK, IINFO )
       END IF
-      WORK( 1 ) = LWKOPT
+      WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
       RETURN
 *
 *     End of SORMTR

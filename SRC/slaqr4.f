@@ -239,7 +239,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup realOTHERauxiliary
+*> \ingroup laqr4
 *
 *> \par Contributors:
 *  ==================
@@ -316,16 +316,18 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Local Arrays ..
       REAL               ZDUM( 1, 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           SLACPY, SLAHQR, SLANV2, SLAQR2, SLAQR5
+      EXTERNAL           SLACPY, SLAHQR, SLANV2, SLAQR2,
+     $                   SLAQR5
 *     ..
 *     .. Intrinsic Functions ..
-      INTRINSIC          ABS, INT, MAX, MIN, MOD, REAL
+      INTRINSIC          ABS, INT, MAX, MIN, MOD
 *     ..
 *     .. Executable Statements ..
       INFO = 0
@@ -401,7 +403,7 @@
 *        ==== Quick return in case of workspace query. ====
 *
          IF( LWORK.EQ.-1 ) THEN
-            WORK( 1 ) = REAL( LWKOPT )
+            WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
             RETURN
          END IF
 *
@@ -525,7 +527,8 @@
 *
 *           ==== Aggressive early deflation ====
 *
-            CALL SLAQR2( WANTT, WANTZ, N, KTOP, KBOT, NW, H, LDH, ILOZ,
+            CALL SLAQR2( WANTT, WANTZ, N, KTOP, KBOT, NW, H, LDH,
+     $                   ILOZ,
      $                   IHIZ, Z, LDZ, LS, LD, WR, WI, H( KV, 1 ), LDH,
      $                   NHO, H( KV, KT ), LDH, NVE, H( KWV, 1 ), LDH,
      $                   WORK, LWORK )
@@ -569,7 +572,8 @@
                      BB = SS
                      CC = WILK2*SS
                      DD = AA
-                     CALL SLANV2( AA, BB, CC, DD, WR( I-1 ), WI( I-1 ),
+                     CALL SLANV2( AA, BB, CC, DD, WR( I-1 ),
+     $                            WI( I-1 ),
      $                            WR( I ), WI( I ), CS, SN )
    30             CONTINUE
                   IF( KS.EQ.KTOP ) THEN
@@ -732,7 +736,7 @@
 *
 *     ==== Return the optimal value of LWORK. ====
 *
-      WORK( 1 ) = REAL( LWKOPT )
+      WORK( 1 ) = SROUNDUP_LWORK( LWKOPT )
 *
 *     ==== End of SLAQR4 ====
 *

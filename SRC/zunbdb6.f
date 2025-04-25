@@ -41,9 +41,8 @@
 *> with respect to the columns of
 *>      Q = [ Q1 ] .
 *>          [ Q2 ]
-*> The Euclidean norm of X must be one and the columns of Q must be
-*> orthonormal. The orthogonalized vector will be zero if and only if it
-*> lies entirely in the range of Q.
+*> The columns of Q must be orthonormal. The orthogonalized vector will
+*> be zero if and only if it lies entirely in the range of Q.
 *>
 *> The projection is computed with at most two iterations of the
 *> classical Gram-Schmidt algorithm, see
@@ -152,10 +151,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup unbdb6
 *
 *  =====================================================================
-      SUBROUTINE ZUNBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1, Q2,
+      SUBROUTINE ZUNBDB6( M1, M2, N, X1, INCX1, X2, INCX2, Q1, LDQ1,
+     $                    Q2,
      $                    LDQ2, WORK, LWORK, INFO )
 *
 *  -- LAPACK computational routine --
@@ -174,7 +174,7 @@
 *
 *     .. Parameters ..
       DOUBLE PRECISION   ALPHA, REALONE, REALZERO
-      PARAMETER          ( ALPHA = 0.01D0, REALONE = 1.0D0,
+      PARAMETER          ( ALPHA = 0.83D0, REALONE = 1.0D0,
      $                     REALZERO = 0.0D0 )
       COMPLEX*16         NEGONE, ONE, ZERO
       PARAMETER          ( NEGONE = (-1.0D0,0.0D0), ONE = (1.0D0,0.0D0),
@@ -223,25 +223,29 @@
 *
       EPS = DLAMCH( 'Precision' )
 *
+*     Compute the Euclidean norm of X
+*
+      SCL = REALZERO
+      SSQ = REALZERO
+      CALL ZLASSQ( M1, X1, INCX1, SCL, SSQ )
+      CALL ZLASSQ( M2, X2, INCX2, SCL, SSQ )
+      NORM = SCL * SQRT( SSQ )
+*
 *     First, project X onto the orthogonal complement of Q's column
 *     space
-*
-*     Christoph Conrads: In debugging mode the norm should be computed
-*     and an assertion added comparing the norm with one. Alas, Fortran
-*     never made it into 1989 when assert() was introduced into the C
-*     programming language.
-      NORM = REALONE
 *
       IF( M1 .EQ. 0 ) THEN
          DO I = 1, N
             WORK(I) = ZERO
          END DO
       ELSE
-         CALL ZGEMV( 'C', M1, N, ONE, Q1, LDQ1, X1, INCX1, ZERO, WORK,
+         CALL ZGEMV( 'C', M1, N, ONE, Q1, LDQ1, X1, INCX1, ZERO,
+     $               WORK,
      $               1 )
       END IF
 *
-      CALL ZGEMV( 'C', M2, N, ONE, Q2, LDQ2, X2, INCX2, ONE, WORK, 1 )
+      CALL ZGEMV( 'C', M2, N, ONE, Q2, LDQ2, X2, INCX2, ONE, WORK,
+     $            1 )
 *
       CALL ZGEMV( 'N', M1, N, NEGONE, Q1, LDQ1, WORK, 1, ONE, X1,
      $            INCX1 )
@@ -283,11 +287,13 @@
             WORK(I) = ZERO
          END DO
       ELSE
-         CALL ZGEMV( 'C', M1, N, ONE, Q1, LDQ1, X1, INCX1, ZERO, WORK,
+         CALL ZGEMV( 'C', M1, N, ONE, Q1, LDQ1, X1, INCX1, ZERO,
+     $               WORK,
      $               1 )
       END IF
 *
-      CALL ZGEMV( 'C', M2, N, ONE, Q2, LDQ2, X2, INCX2, ONE, WORK, 1 )
+      CALL ZGEMV( 'C', M2, N, ONE, Q2, LDQ2, X2, INCX2, ONE, WORK,
+     $            1 )
 *
       CALL ZGEMV( 'N', M1, N, NEGONE, Q1, LDQ1, WORK, 1, ONE, X1,
      $            INCX1 )

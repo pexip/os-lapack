@@ -264,7 +264,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup OTHERauxiliary
+*> \ingroup lasd7
 *
 *> \par Contributors:
 *  ==================
@@ -273,7 +273,8 @@
 *>     California at Berkeley, USA
 *>
 *  =====================================================================
-      SUBROUTINE SLASD7( ICOMPQ, NL, NR, SQRE, K, D, Z, ZW, VF, VFW, VL,
+      SUBROUTINE SLASD7( ICOMPQ, NL, NR, SQRE, K, D, Z, ZW, VF, VFW,
+     $                   VL,
      $                   VLW, ALPHA, BETA, DSIGMA, IDX, IDXP, IDXQ,
      $                   PERM, GIVPTR, GIVCOL, LDGCOL, GIVNUM, LDGNUM,
      $                   C, S, INFO )

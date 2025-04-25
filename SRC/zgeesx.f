@@ -230,10 +230,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16GEeigen
+*> \ingroup geesx
 *
 *  =====================================================================
-      SUBROUTINE ZGEESX( JOBVS, SORT, SELECT, SENSE, N, A, LDA, SDIM, W,
+      SUBROUTINE ZGEESX( JOBVS, SORT, SELECT, SENSE, N, A, LDA, SDIM,
+     $                   W,
      $                   VS, LDVS, RCONDE, RCONDV, WORK, LWORK, RWORK,
      $                   BWORK, INFO )
 *
@@ -273,8 +274,9 @@
       DOUBLE PRECISION   DUM( 1 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DLABAD, DLASCL, XERBLA, ZCOPY, ZGEBAK, ZGEBAL,
-     $                   ZGEHRD, ZHSEQR, ZLACPY, ZLASCL, ZTRSEN, ZUNGHR
+      EXTERNAL           DLASCL, XERBLA, ZCOPY, ZGEBAK, ZGEBAL,
+     $                   ZGEHRD,
+     $                   ZHSEQR, ZLACPY, ZLASCL, ZTRSEN, ZUNGHR
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -300,7 +302,8 @@
 *
       IF( ( .NOT.WANTVS ) .AND. ( .NOT.LSAME( JOBVS, 'N' ) ) ) THEN
          INFO = -1
-      ELSE IF( ( .NOT.WANTST ) .AND. ( .NOT.LSAME( SORT, 'N' ) ) ) THEN
+      ELSE IF( ( .NOT.WANTST ) .AND.
+     $         ( .NOT.LSAME( SORT, 'N' ) ) ) THEN
          INFO = -2
       ELSE IF( .NOT.( WANTSN .OR. WANTSE .OR. WANTSV .OR. WANTSB ) .OR.
      $         ( .NOT.WANTST .AND. .NOT.WANTSN ) ) THEN
@@ -342,7 +345,8 @@
             IF( .NOT.WANTVS ) THEN
                MAXWRK = MAX( MAXWRK, HSWORK )
             ELSE
-               MAXWRK = MAX( MAXWRK, N + ( N - 1 )*ILAENV( 1, 'ZUNGHR',
+               MAXWRK = MAX( MAXWRK, N + ( N - 1 )*ILAENV( 1,
+     $                       'ZUNGHR',
      $                       ' ', N, 1, N, -1 ) )
                MAXWRK = MAX( MAXWRK, HSWORK )
             END IF
@@ -376,7 +380,6 @@
       EPS = DLAMCH( 'P' )
       SMLNUM = DLAMCH( 'S' )
       BIGNUM = ONE / SMLNUM
-      CALL DLABAD( SMLNUM, BIGNUM )
       SMLNUM = SQRT( SMLNUM ) / EPS
       BIGNUM = ONE / SMLNUM
 *
@@ -421,7 +424,8 @@
 *        (CWorkspace: need 2*N-1, prefer N+(N-1)*NB)
 *        (RWorkspace: none)
 *
-         CALL ZUNGHR( N, ILO, IHI, VS, LDVS, WORK( ITAU ), WORK( IWRK ),
+         CALL ZUNGHR( N, ILO, IHI, VS, LDVS, WORK( ITAU ),
+     $                WORK( IWRK ),
      $                LWORK-IWRK+1, IERR )
       END IF
 *
@@ -452,7 +456,8 @@
 *                     otherwise, need none )
 *        (RWorkspace: none)
 *
-         CALL ZTRSEN( SENSE, JOBVS, BWORK, N, A, LDA, VS, LDVS, W, SDIM,
+         CALL ZTRSEN( SENSE, JOBVS, BWORK, N, A, LDA, VS, LDVS, W,
+     $                SDIM,
      $                RCONDE, RCONDV, WORK( IWRK ), LWORK-IWRK+1,
      $                ICOND )
          IF( .NOT.WANTSN )
@@ -471,7 +476,8 @@
 *        (CWorkspace: none)
 *        (RWorkspace: need N)
 *
-         CALL ZGEBAK( 'P', 'R', N, ILO, IHI, RWORK( IBAL ), N, VS, LDVS,
+         CALL ZGEBAK( 'P', 'R', N, ILO, IHI, RWORK( IBAL ), N, VS,
+     $                LDVS,
      $                IERR )
       END IF
 *
@@ -483,7 +489,8 @@
          CALL ZCOPY( N, A, LDA+1, W, 1 )
          IF( ( WANTSV .OR. WANTSB ) .AND. INFO.EQ.0 ) THEN
             DUM( 1 ) = RCONDV
-            CALL DLASCL( 'G', 0, 0, CSCALE, ANRM, 1, 1, DUM, 1, IERR )
+            CALL DLASCL( 'G', 0, 0, CSCALE, ANRM, 1, 1, DUM, 1,
+     $                   IERR )
             RCONDV = DUM( 1 )
          END IF
       END IF

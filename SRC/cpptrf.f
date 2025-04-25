@@ -79,9 +79,9 @@
 *>          INFO is INTEGER
 *>          = 0:  successful exit
 *>          < 0:  if INFO = -i, the i-th argument had an illegal value
-*>          > 0:  if INFO = i, the leading minor of order i is not
-*>                positive definite, and the factorization could not be
-*>                completed.
+*>          > 0:  if INFO = i, the leading principal minor of order i
+*>                is not positive definite, and the factorization could
+*>                not be completed.
 *> \endverbatim
 *
 *  Authors:
@@ -92,7 +92,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup pptrf
 *
 *> \par Further Details:
 *  =====================
@@ -184,7 +184,8 @@
 *           Compute elements 1:J-1 of column J.
 *
             IF( J.GT.1 )
-     $         CALL CTPSV( 'Upper', 'Conjugate transpose', 'Non-unit',
+     $         CALL CTPSV( 'Upper', 'Conjugate transpose',
+     $                     'Non-unit',
      $                     J-1, AP, AP( JC ), 1 )
 *
 *           Compute U(J,J) and test for non-positive-definiteness.

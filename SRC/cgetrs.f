@@ -114,7 +114,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexGEcomputational
+*> \ingroup getrs
 *
 *  =====================================================================
       SUBROUTINE CGETRS( TRANS, N, NRHS, A, LDA, IPIV, B, LDB, INFO )
@@ -189,7 +189,8 @@
 *
 *        Solve L*X = B, overwriting B with X.
 *
-         CALL CTRSM( 'Left', 'Lower', 'No transpose', 'Unit', N, NRHS,
+         CALL CTRSM( 'Left', 'Lower', 'No transpose', 'Unit', N,
+     $               NRHS,
      $               ONE, A, LDA, B, LDB )
 *
 *        Solve U*X = B, overwriting B with X.
@@ -202,7 +203,8 @@
 *
 *        Solve U**T *X = B or U**H *X = B, overwriting B with X.
 *
-         CALL CTRSM( 'Left', 'Upper', TRANS, 'Non-unit', N, NRHS, ONE,
+         CALL CTRSM( 'Left', 'Upper', TRANS, 'Non-unit', N, NRHS,
+     $               ONE,
      $               A, LDA, B, LDB )
 *
 *        Solve L**T *X = B, or L**H *X = B overwriting B with X.

@@ -1,4 +1,4 @@
-*> \brief <b> SGEEVX computes the eigenvalues and, optionally, the left and/or right eigenvectors for GE matrices</b>
+*> \brief <b> SGEGV computes the eigenvalues and, optionally, the left and/or right eigenvectors of a real matrix pair (A,B).</b>
 *
 *  =========== DOCUMENTATION ===========
 *
@@ -301,8 +301,9 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE SGEGV( JOBVL, JOBVR, N, A, LDA, B, LDB, ALPHAR, ALPHAI,
-     $                  BETA, VL, LDVL, VR, LDVR, WORK, LWORK, INFO )
+      SUBROUTINE SGEGV( JOBVL, JOBVR, N, A, LDA, B, LDB, ALPHAR,
+     $                  ALPHAI, BETA, VL, LDVL, VR, LDVR, WORK, LWORK,
+     $                  INFO )
 *
 *  -- LAPACK driver routine --
 *  -- LAPACK is a software package provided by Univ. of Tennessee,    --

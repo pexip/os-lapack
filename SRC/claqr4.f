@@ -222,7 +222,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERauxiliary
+*> \ingroup laqr4
 *
 *> \par Contributors:
 *  ==================
@@ -519,7 +519,8 @@
 *
 *           ==== Aggressive early deflation ====
 *
-            CALL CLAQR2( WANTT, WANTZ, N, KTOP, KBOT, NW, H, LDH, ILOZ,
+            CALL CLAQR2( WANTT, WANTZ, N, KTOP, KBOT, NW, H, LDH,
+     $                   ILOZ,
      $                   IHIZ, Z, LDZ, LS, LD, W, H( KV, 1 ), LDH, NHO,
      $                   H( KV, KT ), LDH, NVE, H( KWV, 1 ), LDH, WORK,
      $                   LWORK )

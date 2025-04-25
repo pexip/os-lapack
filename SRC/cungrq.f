@@ -121,7 +121,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexOTHERcomputational
+*> \ingroup ungrq
 *
 *  =====================================================================
       SUBROUTINE CUNGRQ( M, N, K, A, LDA, TAU, WORK, LWORK, INFO )
@@ -156,7 +156,8 @@
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV
-      EXTERNAL           ILAENV
+      REAL               SROUNDUP_LWORK
+      EXTERNAL           ILAENV, SROUNDUP_LWORK
 *     ..
 *     .. Executable Statements ..
 *
@@ -181,7 +182,7 @@
             NB = ILAENV( 1, 'CUNGRQ', ' ', M, N, K, -1 )
             LWKOPT = M*NB
          END IF
-         WORK( 1 ) = LWKOPT
+         WORK( 1 ) = SROUNDUP_LWORK(LWKOPT)
 *
          IF( LWORK.LT.MAX( 1, M ) .AND. .NOT.LQUERY ) THEN
             INFO = -8
@@ -221,7 +222,8 @@
 *              determine the minimum value of NB.
 *
                NB = LWORK / LDWORK
-               NBMIN = MAX( 2, ILAENV( 2, 'CUNGRQ', ' ', M, N, K, -1 ) )
+               NBMIN = MAX( 2, ILAENV( 2, 'CUNGRQ', ' ', M, N, K,
+     $                      -1 ) )
             END IF
          END IF
       END IF
@@ -265,7 +267,8 @@
 *
 *              Apply H**H to A(1:m-k+i-1,1:n-k+i+ib-1) from the right
 *
-               CALL CLARFB( 'Right', 'Conjugate transpose', 'Backward',
+               CALL CLARFB( 'Right', 'Conjugate transpose',
+     $                      'Backward',
      $                      'Rowwise', II-1, N-K+I+IB-1, IB, A( II, 1 ),
      $                      LDA, WORK, LDWORK, A, LDA, WORK( IB+1 ),
      $                      LDWORK )
@@ -273,7 +276,8 @@
 *
 *           Apply H**H to columns 1:n-k+i+ib-1 of current block
 *
-            CALL CUNGR2( IB, N-K+I+IB-1, IB, A( II, 1 ), LDA, TAU( I ),
+            CALL CUNGR2( IB, N-K+I+IB-1, IB, A( II, 1 ), LDA,
+     $                   TAU( I ),
      $                   WORK, IINFO )
 *
 *           Set columns n-k+i+ib:n of current block to zero
@@ -286,7 +290,7 @@
    50    CONTINUE
       END IF
 *
-      WORK( 1 ) = IWS
+      WORK( 1 ) = SROUNDUP_LWORK(IWS)
       RETURN
 *
 *     End of CUNGRQ

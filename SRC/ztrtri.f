@@ -102,7 +102,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup trtri
 *
 *  =====================================================================
       SUBROUTINE ZTRTRI( UPLO, DIAG, N, A, LDA, INFO )
@@ -198,9 +198,11 @@
 *
 *              Compute rows 1:j-1 of current block column
 *
-               CALL ZTRMM( 'Left', 'Upper', 'No transpose', DIAG, J-1,
+               CALL ZTRMM( 'Left', 'Upper', 'No transpose', DIAG,
+     $                     J-1,
      $                     JB, ONE, A, LDA, A( 1, J ), LDA )
-               CALL ZTRSM( 'Right', 'Upper', 'No transpose', DIAG, J-1,
+               CALL ZTRSM( 'Right', 'Upper', 'No transpose', DIAG,
+     $                     J-1,
      $                     JB, -ONE, A( J, J ), LDA, A( 1, J ), LDA )
 *
 *              Compute inverse of current diagonal block

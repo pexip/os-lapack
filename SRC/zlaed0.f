@@ -137,7 +137,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup laed0
 *
 *  =====================================================================
       SUBROUTINE ZLAED0( QSIZ, N, D, E, Q, LDQ, QSTORE, LDQS, RWORK,
@@ -172,7 +172,8 @@
       DOUBLE PRECISION   TEMP
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DCOPY, DSTEQR, XERBLA, ZCOPY, ZLACRM, ZLAED7
+      EXTERNAL           DCOPY, DSTEQR, XERBLA, ZCOPY, ZLACRM,
+     $                   ZLAED7
 *     ..
 *     .. External Functions ..
       INTEGER            ILAENV

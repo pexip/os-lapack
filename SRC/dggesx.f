@@ -337,7 +337,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleGEeigen
+*> \ingroup ggesx
 *
 *> \par Further Details:
 *  =====================
@@ -358,7 +358,8 @@
 *> \endverbatim
 *>
 *  =====================================================================
-      SUBROUTINE DGGESX( JOBVSL, JOBVSR, SORT, SELCTG, SENSE, N, A, LDA,
+      SUBROUTINE DGGESX( JOBVSL, JOBVSR, SORT, SELCTG, SENSE, N, A,
+     $                   LDA,
      $                   B, LDB, SDIM, ALPHAR, ALPHAI, BETA, VSL, LDVSL,
      $                   VSR, LDVSR, RCONDE, RCONDV, WORK, LWORK, IWORK,
      $                   LIWORK, BWORK, INFO )
@@ -405,9 +406,9 @@
       DOUBLE PRECISION   DIF( 2 )
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           DGEQRF, DGGBAK, DGGBAL, DGGHRD, DHGEQZ, DLABAD,
-     $                   DLACPY, DLASCL, DLASET, DORGQR, DORMQR, DTGSEN,
-     $                   XERBLA
+      EXTERNAL           DGEQRF, DGGBAK, DGGBAL, DGGHRD, DHGEQZ,
+     $                   DLACPY,
+     $                   DLASCL, DLASET, DORGQR, DORMQR, DTGSEN, XERBLA
 *     ..
 *     .. External Functions ..
       LOGICAL            LSAME
@@ -467,7 +468,8 @@
          INFO = -1
       ELSE IF( IJOBVR.LE.0 ) THEN
          INFO = -2
-      ELSE IF( ( .NOT.WANTST ) .AND. ( .NOT.LSAME( SORT, 'N' ) ) ) THEN
+      ELSE IF( ( .NOT.WANTST ) .AND.
+     $         ( .NOT.LSAME( SORT, 'N' ) ) ) THEN
          INFO = -3
       ELSE IF( .NOT.( WANTSN .OR. WANTSE .OR. WANTSV .OR. WANTSB ) .OR.
      $         ( .NOT.WANTST .AND. .NOT.WANTSN ) ) THEN
@@ -544,7 +546,6 @@
       EPS = DLAMCH( 'P' )
       SAFMIN = DLAMCH( 'S' )
       SAFMAX = ONE / SAFMIN
-      CALL DLABAD( SAFMIN, SAFMAX )
       SMLNUM = SQRT( SAFMIN ) / EPS
       BIGNUM = ONE / SMLNUM
 *
@@ -662,12 +663,14 @@
      $                   IERR )
          END IF
          IF( ILBSCL )
-     $      CALL DLASCL( 'G', 0, 0, BNRMTO, BNRM, N, 1, BETA, N, IERR )
+     $      CALL DLASCL( 'G', 0, 0, BNRMTO, BNRM, N, 1, BETA, N,
+     $                   IERR )
 *
 *        Select eigenvalues
 *
          DO 10 I = 1, N
-            BWORK( I ) = SELCTG( ALPHAR( I ), ALPHAI( I ), BETA( I ) )
+            BWORK( I ) = SELCTG( ALPHAR( I ), ALPHAI( I ),
+     $             BETA( I ) )
    10    CONTINUE
 *
 *        Reorder eigenvalues, transform Generalized Schur vectors, and
@@ -755,8 +758,10 @@
 *
       IF( ILASCL ) THEN
          CALL DLASCL( 'H', 0, 0, ANRMTO, ANRM, N, N, A, LDA, IERR )
-         CALL DLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHAR, N, IERR )
-         CALL DLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHAI, N, IERR )
+         CALL DLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHAR, N,
+     $                IERR )
+         CALL DLASCL( 'G', 0, 0, ANRMTO, ANRM, N, 1, ALPHAI, N,
+     $                IERR )
       END IF
 *
       IF( ILBSCL ) THEN

@@ -170,7 +170,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complex16OTHERcomputational
+*> \ingroup unmhr
 *
 *  =====================================================================
       SUBROUTINE ZUNMHR( SIDE, TRANS, M, N, ILO, IHI, A, LDA, TAU, C,
@@ -225,7 +225,8 @@
       END IF
       IF( .NOT.LEFT .AND. .NOT.LSAME( SIDE, 'R' ) ) THEN
          INFO = -1
-      ELSE IF( .NOT.LSAME( TRANS, 'N' ) .AND. .NOT.LSAME( TRANS, 'C' ) )
+      ELSE IF( .NOT.LSAME( TRANS, 'N' ) .AND.
+     $         .NOT.LSAME( TRANS, 'C' ) )
      $          THEN
          INFO = -2
       ELSE IF( M.LT.0 ) THEN

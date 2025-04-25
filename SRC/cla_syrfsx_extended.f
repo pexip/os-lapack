@@ -382,10 +382,11 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup complexSYcomputational
+*> \ingroup la_herfsx_extended
 *
 *  =====================================================================
-      SUBROUTINE CLA_SYRFSX_EXTENDED( PREC_TYPE, UPLO, N, NRHS, A, LDA,
+      SUBROUTINE CLA_SYRFSX_EXTENDED( PREC_TYPE, UPLO, N, NRHS, A,
+     $                                LDA,
      $                                AF, LDAF, IPIV, COLEQU, C, B, LDB,
      $                                Y, LDY, BERR_OUT, N_NORMS,
      $                                ERR_BNDS_NORM, ERR_BNDS_COMP, RES,
@@ -457,7 +458,8 @@
       INTEGER            ILAUPLO
 *     ..
 *     .. External Subroutines ..
-      EXTERNAL           CAXPY, CCOPY, CSYTRS, CSYMV, BLAS_CSYMV_X,
+      EXTERNAL           CAXPY, CCOPY, CSYTRS, CSYMV,
+     $                   BLAS_CSYMV_X,
      $                   BLAS_CSYMV2_X, CLA_SYAMV, CLA_WWADDW,
      $                   CLA_LIN_BERR
       REAL               SLAMCH
@@ -654,7 +656,7 @@
             PREVNORMDX = NORMDX
             PREV_DZ_Z = DZ_Z
 *
-*           Update soluton.
+*           Update solution.
 *
             IF ( Y_PREC_STATE .LT. EXTRA_Y ) THEN
                CALL CAXPY( N, CMPLX(1.0), DY, 1, Y(1,J), 1 )

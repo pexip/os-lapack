@@ -124,7 +124,7 @@
 *> \author Univ. of Colorado Denver
 *> \author NAG Ltd.
 *
-*> \ingroup doubleOTHERcomputational
+*> \ingroup pbcon
 *
 *  =====================================================================
       SUBROUTINE DPBCON( UPLO, N, KD, AB, LDAB, ANORM, RCOND, WORK,
@@ -223,14 +223,16 @@
 *
 *           Multiply by inv(U).
 *
-            CALL DLATBS( 'Upper', 'No transpose', 'Non-unit', NORMIN, N,
+            CALL DLATBS( 'Upper', 'No transpose', 'Non-unit', NORMIN,
+     $                   N,
      $                   KD, AB, LDAB, WORK, SCALEU, WORK( 2*N+1 ),
      $                   INFO )
          ELSE
 *
 *           Multiply by inv(L).
 *
-            CALL DLATBS( 'Lower', 'No transpose', 'Non-unit', NORMIN, N,
+            CALL DLATBS( 'Lower', 'No transpose', 'Non-unit', NORMIN,
+     $                   N,
      $                   KD, AB, LDAB, WORK, SCALEL, WORK( 2*N+1 ),
      $                   INFO )
             NORMIN = 'Y'
