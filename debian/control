@@ -316,6 +316,14 @@ Description: Basic Linear Algebra Reference implementations, shared library
  .
  This package contains a shared version of the library.
 
+Package: libatlas3-base
+Depends: libblas3 (>= ${binary:Version}), ${misc:Depends}
+Architecture: any
+Multi-Arch: same
+Section: oldlibs
+Description: transitional package
+ This is a transitional package. It can safely be removed.
+
 Package: libblas64-3
 Architecture: any
 Multi-Arch: same
