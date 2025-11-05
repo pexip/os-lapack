@@ -1,3 +1,9 @@
+lapack (3.12.1-6+pexip25u1) pexip-trixie; urgency=medium
+
+  * New upstream release
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Wed, 05 Nov 2025 11:02:50 +0000
+
 lapack (3.12.1-6) unstable; urgency=medium
 
   * Revise the deps for libatlas3-base (transitional) as suggested in #1110359
